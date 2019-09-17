@@ -14,36 +14,36 @@
         </f:facet>
         <title>PrimeFaces Olympia</title>
         <script type="text/javascript">
-            hideMenu = function() {
-                $('#landing-menu').removeClass('fadeInDown').addClass('fadeOutUp');
+			hideMenu = function () {
+				$('#landing-menu').removeClass('fadeInDown').addClass('fadeOutUp');
 
-                setTimeout(function () {
-                    $('#landing-menu').removeClass('landing-menu-active fadeOutUp');
-                    $(document.body).removeClass('landing-body-block-scroll');
-                }, 150);
-            }
+				setTimeout(function () {
+					$('#landing-menu').removeClass('landing-menu-active fadeOutUp');
+					$(document.body).removeClass('landing-body-block-scroll');
+				}, 150);
+			}
 
-            showMenu = function() {
-                $('#landing-menu').addClass('landing-menu-active fadeInDown');
-                $(document.body).addClass('landing-body-block-scroll');
-            }
+			showMenu = function () {
+				$('#landing-menu').addClass('landing-menu-active fadeInDown');
+				$(document.body).addClass('landing-body-block-scroll');
+			}
 
-            $(function() {
-                $('#landing-menu-button').on('click', function(e) {
-                    var menu = $('#landing-menu');
+			$(function () {
+				$('#landing-menu-button').on('click', function (e) {
+					var menu = $('#landing-menu');
 
-                    if(menu.hasClass('landing-menu-active'))
-                        hideMenu();
-                    else
-                        showMenu();
+					if (menu.hasClass('landing-menu-active'))
+						hideMenu();
+					else
+						showMenu();
 
-                    e.preventDefault();
-                });
+					e.preventDefault();
+				});
 
-                $('#landing-menu').find('a').on('click', function(e) {
-                    hideMenu();
-                });
-            });
+				$('#landing-menu').find('a').on('click', function (e) {
+					hideMenu();
+				});
+			});
         </script>
     </h:head>
 
@@ -137,7 +137,7 @@
                 <h3>PrimeFaces Premium Template</h3>
                 <p>Take advantage of media's most prominent business trend, and empowers your internal advertising teams.</p>
 
-                <p:button type="button" outcome="/dashboard" value="Learn More" />
+                <p:button outcome="/dashboard" value="Learn More" />
             </div>
 
             <div id="pricing" class="landing-pricing">
@@ -249,68 +249,68 @@
                         </a>
                     </div>
                 </div>
-                
+
             </div>
         </div>
 
         <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="olympia-layout" />
-   
+
         <script>
-                //<![CDATA[
-                    var $this = this;
-                    
-                    $(document).ready(function(){
-                        $('html').animate({scrollTop:0}, 1);
-                        $('body').animate({scrollTop:0}, 1);
-                    });
-                    
-                    /* Scroll Animate */
-                    $('a[href*="#"]:not([href="#"])').click(function() {
-                        var target = $(this.hash);
-                        if (target.length) {
-                            $('html, body').animate({
-                                scrollTop: target.offset().top - 60
-                            }, 500);
-                            return false;
-                        }   
-                    });
-                    
-                    //window and animation items
-                  var animation_elements = $.find('.animation-element');
-                  var web_window = $(window);
-        
-                  //check to see if any animation containers are currently in view
-                  function check_if_in_view() {
-                        //get current window information
-                        var window_height = web_window.height();
-                        var window_top_position = web_window.scrollTop();
-                        var window_bottom_position = (window_top_position + window_height);
-        
-                        //iterate through elements to see if its in view
-                        $.each(animation_elements, function() {
-                              //get the element sinformation
-                              var element = $(this);
-                              var element_height = $(element).outerHeight();
-                              var element_top_position = $(element).offset().top;
-                              var element_bottom_position = (element_top_position + element_height);
-                              
-                              //check to see if this current container is visible (its viewable if it exists between the viewable space of the viewport)
-                            
-                              if ((element_top_position <= window_bottom_position)) {
-                                element.addClass('in-view');
-                              }
-                              
-                        });
-                  }
-        
-                  //on or scroll, detect elements in view
-                  $(window).on('scroll resize', function() {
-                      check_if_in_view()
-                    })
-                    //trigger our scroll event on initial load
-                  $(window).trigger('scroll');
-                //]]>
-                </script>
+			//<![CDATA[
+			var $this = this;
+
+			$(document).ready(function () {
+				$('html').animate({scrollTop: 0}, 1);
+				$('body').animate({scrollTop: 0}, 1);
+			});
+
+			/* Scroll Animate */
+			$('a[href*="#"]:not([href="#"])').click(function () {
+				var target = $(this.hash);
+				if (target.length) {
+					$('html, body').animate({
+						scrollTop: target.offset().top - 60
+					}, 500);
+					return false;
+				}
+			});
+
+			//window and animation items
+			var animation_elements = $.find('.animation-element');
+			var web_window = $(window);
+
+			//check to see if any animation containers are currently in view
+			function check_if_in_view() {
+				//get current window information
+				var window_height = web_window.height();
+				var window_top_position = web_window.scrollTop();
+				var window_bottom_position = (window_top_position + window_height);
+
+				//iterate through elements to see if its in view
+				$.each(animation_elements, function () {
+					//get the element sinformation
+					var element = $(this);
+					var element_height = $(element).outerHeight();
+					var element_top_position = $(element).offset().top;
+					var element_bottom_position = (element_top_position + element_height);
+
+					//check to see if this current container is visible (its viewable if it exists between the viewable space of the viewport)
+
+					if ((element_top_position <= window_bottom_position)) {
+						element.addClass('in-view');
+					}
+
+				});
+			}
+
+			//on or scroll, detect elements in view
+			$(window).on('scroll resize', function () {
+				check_if_in_view()
+			})
+			//trigger our scroll event on initial load
+			$(window).trigger('scroll');
+			//]]>
+		</script>
     </h:body>
 
 </html>
