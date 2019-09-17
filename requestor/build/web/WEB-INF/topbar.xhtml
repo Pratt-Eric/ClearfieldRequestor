@@ -1,12 +1,12 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+				xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
     <div class="layout-topbar">
         <h:link outcome="/dashboard" styleClass="layout-topbar-logo">
             <p:graphicImage name="images/#{guestPreferences.logo}.png" library="olympia-layout" />
         </h:link>
 
-        <a class="layout-menu-button" href="#">
+        <a class="layout-menu-button" href="/main/dashboard.xhtml">
             <i class="fa fa-bars" />
         </a>
 
@@ -56,17 +56,17 @@
             </li>
             <li>
                 <a href="#" class="layout-topbar-icon-purple">
-                    <i class="fa fa-file-o" />  
+                    <i class="fa fa-file-o" />
                 </a>
             </li>
             <li>
                 <a href="#" class="layout-topbar-icon-yellow">
-                    <i class="fa fa-paper-plane-o" />  
+                    <i class="fa fa-paper-plane-o" />
                 </a>
             </li>
             <li>
                 <a href="#" class="layout-topbar-icon-green">
-                    <i class="fa fa-calendar" />  
+                    <i class="fa fa-calendar" />
                 </a>
             </li>
         </ul>
