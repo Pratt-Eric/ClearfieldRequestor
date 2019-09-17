@@ -1,0 +1,888 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Documentation</ui:define>
+    
+    <ui:define name="head">
+        <style type="text/css">
+            .docs h1 {
+                margin-top: 30px;
+            }
+            
+            .docs p,
+            .docs li {
+                line-height: 1.5;
+            }
+            
+            .docs pre {
+                font-family: monospace;
+                background-color: #EFEFEF;
+                color: #333333;
+                padding: 1em;
+                font-size: 14px;
+                border-radius: 3px;
+                overflow: auto;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="viewname">
+        <li><p:link outcome="/docs">Documentation</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+    
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card docs">   
+                    <h1>Getting Started</h1>
+                    <p>First of all, you'd need SASS to compile CSS, proceed to <a href="https://sass-lang.com/install">SASS Installation</a> before beginning if you do not have SASS available in your command line.</p>
+                    <p>Demo project has an integrated jetty plugin so running the sample is easy as building the css first followed by the mvn jetty:run command.</p>
+<pre>
+sass --update src/main/webapp/resources/ --sourcemap=none
+mvn jetty:run
+</pre> 
+                    <p>Navigate to <b>http://localhost:8080/olympia</b> to view the demos which is exactly same as the live version.</p>                 
+                    
+                    <h1>Layout</h1>
+                    <p>Olympia utilizes <a href="http://docs.oracle.com/javaee/6/tutorial/doc/giqxp.html">JSF templating APIs</a> and provides a main template.xhtml along with additional <i>topbar</i>, <i>sidebar</i>, <i>rightpanel</i> and <i>footer</i> fragments for the base layout. 
+                        These xhtml files must be placed under WEB-INF folder and client pages should reference the template.xhtml as their template. 
+                        Provided empty.xhtml is a sample content page using the main template.xhtml that defines "content" as the main ui:define placeholder. By default template defines 3 placeholders 
+                        (page title, breadcrumb and actual content) and you many add more as per your requirements.</p>
+                        
+                    <p>Sample page below uses the main template from olympia.</p>
+<pre>
+&lt;ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml"&gt;
+                
+    &lt;ui:define name="title"&gt;Test Page&lt;/ui:define&gt;
+
+    &lt;ui:define name="content"&gt;
+        Content goes here
+    &lt;/ui:define&gt;
+
+&lt;/ui:composition&gt;
+</pre>
+                    
+                    <p>Other required assets are the css, javascript and images that are located inside resources/olympia-layout folder, simply copy the olympia-layout folder to your <b>%WEB-APP-FOLDER%/resources</b> folder 
+                        so that final path would be <b>%WEB-APP-FOLDER%/resources/olympia-layout/</b>. Please refer to demo app or maven project of the demo app as the reference.</p>
+                    
+                    <h1>GuestPreferences Bean</h1>
+                    <p>GuestPreferences is a simple session scoped bean to keep the user customizations of the layout, template xhtml files
+                    refer to this bean to dynamically change their behavior such as menu mode or theme. This bean is not necessary to run the olympia
+                    and only used for demo purposes. For example template.xhtml includes layout color depending on a user preference using an EL expression.</p>
+<pre>
+&lt;h:outputStylesheet name="css/layout-\#{guestPreferences.theme}.css" library="olympia-layout" /&gt;
+</pre>               
+                    <p>In your application, you may also need a similar bean to make the template dynamic so that your users will be able to change their preferred menu or theme.</p>  
+                       
+                    <p>Source code of GuestPreferences.</p>
+<pre>
+public class GuestPreferences implements Serializable {
+
+    private String menuMode = "layout-static";
+
+    private String theme = "green-yellow";
+
+    private String menuColor = "layout-menu-light";
+
+    private String topBarColor = "layout-topbar-light";
+
+    private String logo = "logo-olympia";
+
+    public String getTheme() {		
+        return theme;
+    }
+    
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
+
+    public String getMenuMode() {
+        return this.menuMode;
+    }
+
+    public void setMenuMode(String menuMode) {
+        this.menuMode = menuMode;
+    }
+    
+    public String getMenuColor() {
+        return this.menuColor;
+    }
+
+    public void setMenuColor(String menuColor) {
+        this.menuColor = menuColor;
+    } 
+
+    public String getTopBarColor() {
+        return this.topBarColor;
+    }
+
+    public void setTopBarColor(String topBarColor, String logo) {
+        this.topBarColor = topBarColor;
+        this.logo = logo;
+    }
+
+    public String getLogo() {
+        return this.logo;
+    }
+}  
+</pre>
+                    
+                    <h1>Theme</h1>
+                    <p>Olympia provides 10 PrimeFaces theme colors out of the box. Setup of a theme simple as including the theme jar in your classpath and defining primefaces.THEME 
+                        context parameter in web.xml such as "primefaces-olympia-amber". Full list of available themes are;</p>
+                    
+                    <ul>
+                        <li>olympia-amber-teal</li>
+                        <li>olympia-blue-orange</li>
+                        <li>olympia-bluegrey-teal</li>
+                        <li>olympia-brown-cyan</li>
+                        <li>olympia-cyan-amber</li>
+                        <li>olympia-deeporange-blue</li>
+                        <li>olympia-green-yellow</li>
+                        <li>olympia-indigo-yellow</li>
+                        <li>olympia-lime-purple</li>
+                        <li>olympia-purple-blue</li>
+                    </ul>
+                    
+                    <p>A custom theme can be developed by the following steps.</p>
+                    <ul>
+                        <li>Create a custom theme folder such as primefaces-olympia-myown under webapp/resources and place an empty theme.scss inside.</li>
+                        <li>Copy the sass folder from the distribution to webapp/resources.</li>
+                        <li>Define the variables listed below along with the imports at the end.</li>
+                        <li>Build the scss to generate css.</li>
+                        <li>Set primefaces.THEME context parameter as <i>olympia-myown</i></li>
+                        <li>Either bundle the css in a jar file for reuse between different projects or serve from webapp/resources/primefaces-olympia-myown folder using a h:outputStyleSheet.</li>
+                    </ul>
+                    
+                    <p>Here are the variables required to create a theme.</p>
+                        
+<pre>
+//shades
+$primaryColor100:#e3f8f3;
+$primaryColor200:#d8efe9;
+$primaryColor300:#c0e2d9;
+$primaryColor400:#6eceb7;
+$primaryColor500:#61b5a1;
+$primaryColor600:#23594c;
+
+//main color
+$primaryColor:$primaryColor500;
+
+//highlight
+$highlightBgColor:#feedbc;
+$highlightBgColorDark:#ffde7a;
+$highlightColorText:#666666;
+
+@import '../sass/_theme_variables';
+@import '../sass/theme/_core';
+</pre> 
+                        
+                    <p> An example sass command to compile the css would be;</p>
+                        
+<pre>
+sass src/main/webapp/resources/primefaces-olympia-myown/theme.scss src/main/webapp/resources/primefaces-olympia-myown/theme.css  --sourcemap=none
+</pre>
+
+                    <p>Watch mode is handy to avoid compiling everytime when a change is made, instead use the following command
+                    so that sass generates the file whenever you make a customization. This builds all css files whenever a change is made to any scss file.</p>
+<pre>
+sass -w src/main/webapp/resources/ --sourcemap=none
+</pre> 
+
+                    <h1>Layout</h1>
+                    <p>Layout customization is similar to theme method.</p>
+                    <ul>
+                        <li>Choose a layout name such as layout-myown.</li>
+                        <li>Create an empty file named layout-myown.scss inside resources/olympia-layout/css folder.</li>
+                        <li>Copy the sass folder from the distribution to webapp/resources.</li>
+                        <li>Define the variables listed below along with the import at the end.</li>
+                        <li>Build the scss to generate css</li>
+                        <li>Serve the css by importing it using h:outputStylesheet.</li>
+                    </ul>
+
+                    <p>Here are the variables required to create a layout.</p>
+                        
+<pre>
+$primaryColor:#F6F0DB;
+$primaryTextColor:#AA8415;
+
+@import '../../sass/layout/_layout';
+</pre> 
+
+                    <h1>SASS Variables</h1>
+                    <p>In case you'd like to customize common variables such as font-size, the _variables.scss under the sass folder is where they are defined.</p>
+<pre>
+$fontFamily:'Lato',sans-serif;
+$fontSize:14px;
+$textColor:#666666;
+$textSecondaryColor:#a6a6a6;
+$borderRadius:2px;
+$transitionDuration:.2s;
+</pre> 
+
+                    <p>_variables.scss under sass/layout folder define the shared variables of the layout.</p>
+<pre>
+@import '../_variables';
+
+//main
+$bodyBgColor:#f4f4f4;
+
+$footerBgColor:#ffffff;
+$footerBorderColor:#dadada;
+
+//light menu
+$menuBgColor:#ffffff;
+$menuitemTextColor:#666666;
+$menuitemIconColor:#a6a6a6;
+$menuitemHoverBgColor:#eaeaea;
+$menuitemIconHoverColor:#666666;
+$rootMenuitemActiveBgColor:$primaryColor;
+$rootMenuitemActiveIconColor:$primaryTextColor;
+$rootMenuitemActiveTextColor:$primaryTextColor;
+$submenuItemActiveColor:$primaryTextColor;
+$submenuitemBgColor:#f8f8f8;
+
+//dark menu
+$darkMenuBgColor:#333333;
+$darkMenuitemTextColor:#c8c8c8;
+$darkMenuitemIconColor:#a6a6a6;
+$darkMenuitemHoverBgColor:#474747;
+$darkMenuitemIconHoverColor:#dadada;
+$darkRootMenuitemActiveBgColor:$primaryColor;
+$darkRootMenuitemActiveIconColor:$primaryTextColor;
+$darkRootMenuitemActiveTextColor:$primaryTextColor;
+$darkSubmenuItemActiveColor:$primaryTextColor;
+$darkSubmenuitemBgColor:#282828;
+
+$slimMenuTooltipBgColor:#333333;
+$slimMenuTooltipTextColor:#c8c8c8;
+</pre>
+
+                    <p>Similarly __theme_variables.scss files under sass contains the whole set of variables to generate a PrimeFaces theme.</p>
+
+<div style="height:400px;overflow: auto">
+<pre>
+@import './variables';
+
+//icons
+$iconWidth:1em;
+$iconHeight:1em;
+$iconFontSize:1.143em;
+
+//anchors
+$linkColor:$primaryColor400;
+$linkHoverColor:$primaryColor500;
+$linkActiveColor:$primaryColor600;
+
+//input field
+$inputPadding:.429em;
+$inputBgColor:#f4f4f4;
+$inputBorder:1px solid #dadada;
+$inputHoverBorderColor:#a6a6a6;
+$inputFocusBorderColor:$primaryColor500;
+$inputErrorBorderColor:#e7a3a3;
+$inputPlaceholderTextColor:#a6a6a6;
+$inputFocusShadow:0 0 4px 0 #d8efe9;
+$inputTransition:border-color $transitionDuration,box-shadow $transitionDuration;
+
+//groups
+$inputGroupBorderColor:#dadada;
+$inputGroupBgColor:#dbdbdb;
+$inputGroupTextColor:$textColor;
+$inputGroupIconColor:$textSecondaryColor;
+$inputGroupAddonMinWidth:2*$fontSize;
+
+//input lists
+$inputListMinWidth:12em;
+$inputListBgColor:#ffffff;
+$inputListBorder:1px solid #dadada;
+$inputListPadding:0;
+
+$inputListItemPadding:.429em .857em;
+$inputListItemBgColor:transparent;
+$inputListItemTextColor:$textColor;
+$inputListItemHoverBgColor:#f4f4f4;
+$inputListItemHoverTextColor:$textColor;
+$inputListItemHighlightBgColor:$highlightBgColor;
+$inputListItemHighlightTextColor:$highlightColorText;
+$inputListItemBorder:0 none;
+$inputListItemBorderRadius:0;
+$inputListItemMargin:0;
+
+$inputListHeaderPaddingTop:.429em;
+$inputListHeaderPaddingLeft:.857em;
+$inputListHeaderPaddingRight:.857em;
+$inputListHeaderPaddingBottom:.429em;
+$inputListHeaderBgColor:#ffffff;
+$inputListHeaderTextColor:$textColor;
+$inputListHeaderBorder:1px solid #eaeaea;
+
+$inputListHeaderSearchIconColor:$textSecondaryColor;
+$inputListHeaderCloseIconColor:$textColor;
+$inputListHeaderCloseIconHoverColor:$primaryColor500;
+$inputListHeaderCloseIconTransition:color $transitionDuration;
+
+//inputs with panels (password, keyboard)
+$inputContentPanelPadding:.857em;
+$inputContentPanelBgColor:#ffffff;
+$inputContentPanelTextColor:$textColor;
+
+//inputs with overlays
+$inputOverlayBorder:0 none;
+$inputOverlayShadow:0 0 6px 0 rgba(0, 0, 0, 0.16);
+
+//input dropdowns
+$inputDropdownIconColor:$textColor;
+
+//inputs with buttons
+$inputButtonWidth:2.143em;
+
+//button
+$buttonTextOnlyPadding:.429em 1em;
+$buttonWithLeftIconPadding:.429em 1em .429em 2em;
+$buttonWithRightIconPadding:.429em 2em .429em 1em;
+$buttonIconOnlyPadding:.429em;
+$buttonIconOnlyWidth:2.143em;
+
+$buttonBgColor:$primaryColor100;
+$buttonBorder:1px solid $primaryColor200;
+$buttonTextColor:$primaryColor600;
+
+$buttonHoverBgColor:$primaryColor200;
+$buttonHoverBorderColor:$primaryColor300;
+$buttonHoverTextColor:$primaryColor600;
+
+$buttonActiveBgColor:$primaryColor500;
+$buttonActiveTextColor:#ffffff;
+$buttonActiveBorderColor:$primaryColor300;
+
+$buttonFocusOutline:0 none;
+$buttonFocusOutlineOffset:0;
+$buttonFocusShadow:none;
+$buttonFocusBorderColor:$primaryColor500;;
+$buttonTransition:background-color $transitionDuration;
+$raisedButtonShadow:0 2px 4px 0 rgba(0, 0, 0, 0.10);
+$roundedButtonBorderRadius:1em;
+
+//button severities
+$secondaryButtonBgColor:#f3f3f3;
+$secondaryButtonBorder:1px solid #f3f3f3;
+$secondaryButtonTextColor:#333333;
+$secondaryButtonHoverBgColor:#d1d1d1;
+$secondaryButtonHoverTextColor:#212121;
+$secondaryButtonHoverBorderColor:#d1d1d1;
+$secondaryButtonActiveBgColor:$primaryColor;
+$secondaryButtonActiveTextColor:#ffffff;
+$secondaryButtonActiveBorderColor:$primaryColor;
+$secondaryButtonFocusBorderColor:#77CFBA;
+
+$helpButtonBgColor:#A8ECEE;
+$helpButtonTextColor:#282E2E;
+$helpButtonBorder:1px solid #6BDCE0;
+$helpButtonHoverBgColor:#90DEE0;
+$helpButtonHoverTextColor:#282E2E;
+$helpButtonHoverBorderColor:#5CD1D5;
+$helpButtonActiveBgColor:#2BBCC1;
+$helpButtonActiveTextColor:#ffffff;
+$helpButtonActiveBorderColor:#1A9599;
+$helpButtonFocusBorderColor:#2BBCC1;
+
+$warningButtonBgColor:#FEEDBC;
+$warningButtonTextColor:#333333;
+$warningButtonBorder:1px solid #F7DB8A;
+$warningButtonHoverBgColor:#FFDE87;
+$warningButtonHoverTextColor:#333333;
+$warningButtonHoverBorderColor:#F3CE61;
+$warningButtonActiveBgColor:#FDC328;
+$warningButtonActiveTextColor:#333333;
+$warningButtonActiveBorderColor:#DEA818;
+$warningButtonFocusBorderColor:#FDC328;
+
+$successButtonBgColor:#A3E2C6;
+$successButtonTextColor:#323E39;
+$successButtonBorder:1px solid #80CAAA;
+$successButtonHoverBgColor:#80CAAA;
+$successButtonHoverTextColor:#323E39;
+$successButtonHoverBorderColor:#5EA285;
+$successButtonActiveBgColor:#31B57C;
+$successButtonActiveTextColor:#ffffff;
+$successButtonActiveBorderColor:#5EA285;
+$successButtonFocusBorderColor:#31B57C;
+
+$infoButtonBgColor:#A3DEF8;
+$infoButtonTextColor:#3D4447;
+$infoButtonBorder:1px solid #79C8EB;
+$infoButtonHoverBgColor:#81CBEC;
+$infoButtonHoverTextColor:#3D4447;
+$infoButtonHoverBorderColor:#60B7DE;
+$infoButtonActiveBgColor:#3ea9db;
+$infoButtonActiveTextColor:#ffffff;
+$infoButtonActiveBorderColor:#2987B1;
+$infoButtonFocusBorderColor:#3ea9db;
+
+$dangerButtonBgColor:#F4B6B6;
+$dangerButtonTextColor:#262222;
+$dangerButtonBorder:1px solid #E38787;
+$dangerButtonHoverBgColor:#EF9999;
+$dangerButtonHoverTextColor:#262222;
+$dangerButtonHoverBorderColor:#CB5858;
+$dangerButtonActiveBgColor:#EB5656;
+$dangerButtonActiveTextColor:#ffffff;
+$dangerButtonActiveBorderColor:#B73737;
+$dangerButtonFocusBorderColor:#EB5656;
+
+//checkbox
+$checkboxWidth:20px;
+$checkboxHeight:20px;
+$checkboxActiveBorderColor:$primaryColor;
+$checkboxActiveBgColor:$primaryColor;
+$checkboxActiveHoverBgColor:$primaryColor400;
+$checkboxActiveTextColor:#ffffff;
+$checkboxFocusBgColor:$inputBgColor;
+$checkboxFocusTextColor:$textSecondaryColor;
+$checkboxFocusBorderColor:$primaryColor500;
+$checkboxFocusShadow:none;
+$checkboxTransition:background-color $transitionDuration, border-color $transitionDuration;
+
+//radiobutton
+$radioButtonWidth:20px;
+$radioButtonHeight:20px;
+$radioButtonActiveBorderColor:$primaryColor500;
+$radioButtonActiveBgColor:$primaryColor500;
+$radioButtonActiveHoverBgColor:$primaryColor400;
+$radioButtonActiveTextColor:#ffffff;
+$radioButtonFocusBgColor:$inputBgColor;
+$radioButtonFocusTextColor:$textSecondaryColor;
+$radioButtonFocusBorderColor:$primaryColor500;
+$radioButtonFocusShadow:none;
+$radioButtonTransition:background-color $transitionDuration, border-color $transitionDuration;
+
+//togglebutton
+$toggleButtonBgColor:#eaeaea;
+$toggleButtonBorder:1px solid #eaeaea;
+$toggleButtonTextColor:#333333;
+$toggleButtonIconColor:#666666;
+$toggleButtonHoverBgColor:#c8c8c8;
+$toggleButtonHoverBorderColor:#c8c8c8;
+$toggleButtonHoverTextColor:#333333;
+$toggleButtonHoverIconColor:#666666;
+$toggleButtonActiveBgColor:$highlightBgColor;
+$toggleButtonActiveBorderColor:$highlightBgColor;
+$toggleButtonActiveTextColor:$highlightColorText;
+$toggleButtonActiveIconColor:$highlightColorText;
+$toggleButtonActiveHoverBgColor:$highlightBgColorDark;
+$toggleButtonActiveHoverBorderColor:$highlightBgColorDark;
+$toggleButtonActiveHoverTextColor:$highlightColorText;
+$toggleButtonActiveHoverIconColor:$highlightColorText;
+$toggleButtonFocusOutline:0 none;
+$toggleButtonFocusBgColor:#eaeaea;
+$toggleButtonFocusBorderColor:$inputFocusBorderColor;;
+$toggleButtonFocusTextColor:#333333;
+$toggleButtonFocusIconColor:#666666;
+
+//inplace
+$inplacePadding:.429em;
+$inplaceHoverBgColor:#f4f4f4;
+$inplaceHoverTextColor:$textColor;
+$inplaceTransition:background-color $transitionDuration;
+
+//rating
+$ratingTransition:color $transitionDuration;
+$ratingCancelIconColor:#f3b9b9;
+$ratingCancelHoverIconColor:#d66161;
+$ratingIconWidth:1.429em;
+$ratingIconHeight:1.429em;
+$ratingIconFontSize:1.429em;
+$ratingStarIconColor:$textColor;
+$ratingStarIconHoverColor:$primaryColor600;
+$ratingStarActiveIconColor:$primaryColor500;
+
+//slider
+$sliderBgColor:#c4c4c4;
+$sliderHeight:.286em;
+$sliderWidth:.286em;
+$sliderHandleWidth:1.429em;
+$sliderHandleHeight:1.429em;
+$sliderHandleBgColor:#ffffff;
+$sliderHandleBorder:2px solid #7f7f7f;
+$sliderHandleHoverBorder:2px solid $primaryColor;
+$sliderHandleHoverBgColor:2px solid #7f7f7f;
+$sliderHandleFocusBorder:2px solid $primaryColor;
+$sliderHandleFocusBgColor:$primaryColor;
+$sliderHandleBorderRadius:50%;
+$sliderHandleTransition:background-color $transitionDuration;
+$sliderRangeBgColor:$primaryColor;
+
+//calendar
+$calendarWidth:18.571em;
+$calendarNavIconColor:$textSecondaryColor;
+$calendarNavIconHoverColor:$textColor;
+$calendarNavIconTransition:color $transitionDuration;
+$calendarTitlePadding:0 .857em;
+$calendarTitleBgColor:inherit;
+$calendarTitleTextColor:$textColor;
+$calendarTableMargin:.857em 0 0 0;
+$calendarCellPadding:.286em;
+$calendarCellDatePadding:.286em;
+$calendarCellDateAnchorPadding:.286em;
+$calendarCellDateBorder:1px solid transparent;
+$calendarCellDateHoverBgColor:#f4f4f4;
+$calendarCellDateHoverBorder:1px solid #a6a6a6;
+$calendarCellDateBorderRadius:$borderRadius;
+$calendarCellDateSelectedBgColor:$primaryColor;
+$calendarCellDateSelectedTextColor:#ffffff;
+$calendarCellDateSelectedBorder:1px solid $primaryColor300;
+$calendarCellDateTodayBgColor:$primaryColor100;
+$calendarCellDateTodayTextColor:$primaryColor600;
+$calendarCellDateTodayBorder:1px solid $primaryColor200;
+$calendarOverlayBorder:0 none;
+$calendarTimePickerMargin:.857em 0;
+$calendarTimePickerLabelPadding:0;
+$calendarTimePickerInputPadding:.429em 0;
+$calendarTimePickerInputMargin:0 .714em .714em 40%;
+
+//spinner
+$spinnerButtonWidth:1.429em;
+$spinnerButtonBorder:$buttonBorder;
+$spinnerButtonBgColor:$buttonBgColor;
+$spinnerButtonTextColor:$buttonTextColor;
+$spinnerButtonHoverBorder:0 none;
+$spinnerButtonHoverBgColor:$buttonHoverBgColor;
+$spinnerButtonHoverTextColor:$buttonHoverTextColor;
+$spinnerButtonActiveBorder:0 none;
+$spinnerButtonActiveBgColor:$buttonActiveBgColor;
+$spinnerButtonActiveTextColor:$buttonActiveTextColor;
+$spinnerButtonFocusBorder:0 none;
+$spinnerButtonFocusBgColor:$buttonHoverBgColor;
+$spinnerButtonFocusTextColor:$buttonHoverTextColor;
+
+//keyboard
+$keyboardButtonPadding:.429em;
+$keyboardButtonMargin:2px;
+$keyboardButtonBorder:$inputBorder;
+$keyboardButtonBgColor:$inputBgColor;
+$keyboardButtonTextColor:$textColor;
+$keyboardButtonHoverBorder:1px solid $inputHoverBorderColor;
+$keyboardButtonHoverBgColor:$inputBgColor;
+$keyboardButtonHoverTextColor:$textColor;
+$keyboardButtonActiveBorder:1px solid $buttonActiveBorderColor;
+$keyboardButtonActiveBgColor:$buttonActiveBgColor;
+$keyboardButtonActiveTextColor:#ffffff;
+$keyboardSpecialButtonBorder:$buttonBorder;
+$keyboardSpecialButtonBgColor:$buttonBgColor;
+$keyboardSpecialButtonTextColor:$buttonTextColor;
+$keyboardSpecialButtonHoverBorder:1px solid $buttonHoverBorderColor;
+$keyboardSpecialButtonHoverBgColor:$buttonHoverBgColor;
+$keyboardSpecialButtonHoverTextColor:$buttonHoverTextColor;
+
+//chips
+$chipBgColor:$highlightBgColor;
+$chipTextColor:$highlightColorText;
+$chipBorder:1px solid $highlightBgColorDark;
+$chipItemMargin:0 .286em 0 0;
+
+//panel common
+$panelHeaderBorder:1px solid $primaryColor200;
+$panelHeaderBgColor:$primaryColor100;
+$panelHeaderTextColor:$primaryColor600;
+$panelHeaderIconColor:$textColor;
+$panelHeaderIconHoverColor:$primaryColor500;
+$panelHeaderIconTransition:color $transitionDuration;
+$panelHeaderFontWeight:400;
+$panelHeaderPadding:.857em 1em;
+$panelContentBorder:1px solid #dadada;
+$panelContentBgColor:#ffffff;
+$panelContentTextColor:$textColor;
+$panelContentPadding:.571em 1em;
+$panelContentLineHeight:1.5;
+$panelFooterBorder:1px solid #dadada;
+$panelFooterBgColor:#ffffff;
+$panelFooterTextColor:$textColor;
+$panelFooterPadding:.571em 1em;
+$panelHeaderHoverBgColor:#f4f4f4;
+$panelHeaderHoverBorder:1px solid #c8c8c8;
+$panelHeaderHoverTextColor:$textColor;
+$panelHeaderHoverIconColor:$textColor;
+$panelHeaderActiveBgColor:$highlightBgColor;
+$panelHeaderActiveBorder:1px solid #dadada;
+$panelHeaderActiveTextColor:$highlightColorText;
+$panelHeaderActiveIconColor:$highlightColorText;
+$panelHeaderActiveHoverBgColor:$highlightBgColorDark;
+$panelHeaderActiveHoverBorder:1px solid $highlightBgColorDark;
+$panelHeaderActiveHoverTextColor:$highlightColorText;
+$panelHeaderActiveHoverIconColor:$highlightColorText;
+$panelHeaderTransition:background-color $transitionDuration;
+
+//accordion
+$accordionHeaderMargin:2px;
+
+//tabview
+$tabsHeaderSpacing:.214em;
+$tabsNavBorder:0 none;
+$tabsNavBgColor:#ffffff;
+
+//scrollpanel
+$scrollPanelHandleBgColor:#dadada;
+$scrollPanelTrackBorder:0 none;
+$scrollPanelTrackBgColor:#f8f8f8;
+
+//paginator
+$paginatorBgColor:#ffffff;
+$paginatorBorder:1px solid #ebebeb;
+$paginatorIconColor:$textColor;
+$paginatorPadding:.25em 0;
+$paginatorElementWidth:2.286em;
+$paginatorElementHeight:2.286em;
+$paginatorElementHoverBgColor:#f4f4f4;
+$paginatorElementHoverIconColor:$textColor;
+$paginatorElementMargin:0 .125em;
+$paginatorElementBorder:1px solid transparent;
+$paginatorElementHoverBorder:1px solid #a6a6a6;
+$paginatorElementBorderRadius:$borderRadius;
+
+//datatable
+$datatableHeaderCellPadding:.500em 1.214em;
+$datatableHeaderCellBgColor:#ffffff;
+$datatableHeaderCellTextColor:$textColor;
+$datatableHeaderCellFontWeight:700;
+$datatableHeaderCellBorder:1px solid #ebebeb;
+$datatableHeaderCellHoverBgColor:#eaeaea;
+$datatableHeaderCellHoverTextColor:$textColor;
+$datatableBodyRowBgColor:#ffffff;
+$datatableBodyRowTextColor:$textColor;
+$datatableBodyRowBorder:1px solid #ebebeb;
+$datatableBodyRowEvenBgColor:#f8f8f8;
+$datatableBodyRowHoverBgColor:#eaeaea;
+$datatableBodyRowHoverTextColor:#333333;
+$datatableBodyCellPadding:.500em 1.214em;
+$datatableFooterCellPadding:.500em 1.214em;
+$datatableFooterCellBgColor:#ffffff;
+$datatableFooterCellTextColor:$textColor;
+$datatableFooterCellFontWeight:500;
+$datatableFooterCellBorder:1px solid #ebebeb;
+$datatableResizerHelperBgColor:$primaryColor;
+$datatableDataIconColor:$textSecondaryColor;
+
+//schedule
+$scheduleEventBgColor:$highlightBgColor;
+$scheduleEventBorder:1px solid $highlightBgColorDark;
+$scheduleEventTextColor:$highlightColorText;
+
+//tree
+$treeNodePadding:.143em 0;
+$treeNodeLabelPadding:.286em;
+
+//treetable
+$treeTableEditingCellPaddingLeft:1.214em;;
+
+//messages
+$messagesMargin:1em 0;
+$messagesPadding:1em;
+$messagesIconFontSize:1.714em;
+$infoMessageBgColor:#93decc;
+$infoMessageBorder:1px solid #93decc;
+$infoMessageTextColor:#212121;
+$infoMessageIconColor:#212121;
+$warnMessageBgColor:#ffe277;
+$warnMessageBorder:1px solid #ffe277;
+$warnMessageTextColor:#212121;
+$warnMessageIconColor:#212121;
+$errorMessageBgColor:#ff8b8b;
+$errorMessageBorder:1px solid #ff8b8b;
+$errorMessageTextColor:#212121;
+$errorMessageIconColor:#212121;
+$fatalMessageBgColor:#c8c8c8;
+$fatalMessageBorder:1px solid #c8c8c8;
+$fatalMessageTextColor:#212121;
+$fatalMessageIconColor:#212121;
+$growlIconFontSize:3.429em;
+$growlMargin:0 0 1em 0;
+$growlPadding:1em;
+$growlShadow:0 3px .429em 0 rgba(0, 0, 0, 0.16);
+$messagePadding:$inputPadding;
+$messageMargin:0;
+
+//overlays
+$overlayContentBorder:1px solid #f1f1f1;
+$overlayContainerShadow:0 0 6px 0 rgba(0, 0, 0, 0.16);
+
+//overlay panel
+$overlayPanelCloseIconBgColor:$primaryColor200;
+$overlayPanelCloseIconColor:$primaryColor600;
+$overlayPanelCloseIconHoverBgColor:$primaryColor300;
+$overlayPanelCloseIconHoverColor:$primaryColor600;
+
+//tooltip
+$tooltipBgColor:$highlightBgColor;
+$tooltipTextColor:$highlightColorText;
+
+//steps
+$stepsItemBgColor:#ffffff;
+$stepsItemBorder:1px solid #c8c8c8;
+$stepsItemBorderRadius:$borderRadius;
+$stepsItemActiveBorder:1px solid $highlightBgColorDark;
+$stepsItemNumberColor:$textColor;
+$stepsItemTextColor:$textSecondaryColor;
+$stepsItemWidth:2em;
+$stepsItemHeight:2em;
+
+//progressbar
+$progressBarHeight:1.714em;
+$progressBarBorder:0 none;
+$progressBarBgColor:#efefef;
+$progressBarValueBgColor:$primaryColor;
+
+//menu
+$menuitemSubMenuPadding:0;
+$menuBgColor:#ffffff;
+$menuBorder:1px solid #c8c8c8;
+$menuPadding:0;
+$menuTextColor:$textColor;
+$menuitemPadding:.571em .857em;
+$menuitemTextColor:$textColor;
+$menuitemIconColor:$textColor;
+$menuitemHoverTextColor:$textColor;
+$menuitemHoverIconColor:$textColor;
+$menuitemHoverBgColor:#eaeaea;
+$toggleableMenuHeaderMargin:1px;
+$overlayMenuBorder:0 none;
+$overlayMenuShadow:0 0 6px 0 rgba(0, 0, 0, 0.16);
+
+//upload
+$fileItemPadding:0.429em 0.857em;
+
+//misc
+$maskBgColor:rgba(0, 0, 0, 0.4);
+$inlineSpacing:.429em;
+$dataIconColor:$textSecondaryColor;
+$dataIconHoverColor:$textColor;
+
+//general
+$disabledOpacity:.5;
+</pre>
+</div>
+
+                    <h1>Menu</h1>    
+                    <p>Menu is a regular JSF component that supports PrimeFaces MenuModel API, allowing both declarative and programmatic approaches.</p>
+<pre>
+xmlns:po="http://primefaces.org/olympia"
+
+&lt;po:menu&gt;
+&lt;/po:menu&gt;
+</pre>  
+                    <p>Menu has 4 modes; static, overlay, horizontal and slim. Layout wrapper element in template.xhtml is used to define which mode to use by adding specific classes. Default
+                    is static and here is the list of classes for each mode.</p>
+                    <ul>
+                        <li>Static: "layout-static"</li>
+                        <li>Overlay: "layout-overlay"</li>
+                        <li>Horizontal: "layout-horizontal"</li>
+                        <li>Slim: "layout-slim"</li>
+                    </ul>
+
+                    <p>Example layout below always uses a slim mode.</p>
+<pre>
+&lt;div class="layout-wrapper layout-slim"&gt;
+...
+&lt;/div&gt;
+</pre>
+                    
+                    <p>Layout mode can be dynamic using an EL expression as well using an example bean like guestPreferences so that your users can choose the layout they prefer when using your application.</p>
+<pre>
+&lt;div class="layout-wrapper \#{guestPreferences.menuMode}"&gt;
+...
+&lt;/div&gt;
+</pre>
+
+                    <b>Menu Colors</b>
+                    <p>In addition to layout options, menu can be styled as "light" or "dark", default mode is light and in order to enable dark mode, add "layout-menu-dark" to the
+                        "layout-wrapper" div which is the outmost container of the template. Similarly as the layout mode, using a helper bean like GuestPreferences, the choice can be
+                        left to the user as in the demo.</p>
+<pre>
+&lt;div class="layout-wrapper layout-menu-dark"&gt;
+...
+&lt;/div&gt;
+</pre>
+
+                    <b>TopBar Colors</b>
+                    <p>Olympia provides 10 built-in color alternatives for the topbar, default is the light mode where adding a style class to the "layout-wrapper" element such as "layout-topbar-dark" enables the dark option.</p>
+<pre>
+&lt;div class="layout-wrapper layout-topbar-dark"&gt;
+...
+&lt;/div&gt;
+</pre>
+                    <p>The full list of alternative are;</p>
+                    <ul>
+                        <li>layout-topbar-light</li>
+                        <li>layout-topbar-dark</li>
+                        <li>layout-topbar-bluegrey</li>
+                        <li>layout-topbar-purple</li>
+                        <li>layout-topbar-cyan</li>
+                        <li>layout-topbar-pink</li>
+                        <li>layout-topbar-teal</li>
+                        <li>layout-topbar-yellow</li>
+                        <li>layout-topbar-lime</li>
+                        <li>layout-topbar-green</li>
+                    </ul>
+
+                    <h1>Icons</h1>
+                    <p>Olympia Layout uses font awesome icons for layout so enable font awesome support in PrimeFaces by setting primefaces.FONT_AWESOME context parameter in web.xml as true.</p>
+<pre>
+&lt;context-param&gt;
+    &lt;param-name&gt;primefaces.FONT_AWESOME&lt;/param-name&gt;
+    &lt;param-value&gt;true&lt;/param-value&gt;
+&lt;/context-param&gt;
+</pre>              
+
+                    <h1>Card</h1>
+                    <p>Card is a section to group content and layout provides a built-in css for it. Apply .card style class to your container to use it. If the
+                    card has a title defined with h1 tag, add card-w-title to adjust paddings.</p>
+<pre>
+&lt;div class="card"&gt;
+    Content here
+&lt;/div&gt;
+
+&lt;div class="card card-w-title"&gt;
+    &lt;h1&gt;Card with Title&lt;h1&gt;
+    Content here
+&lt;/div&gt;
+</pre>  
+
+                    <h1>Grid CSS</h1>
+                    <p>Olympia uses new PrimeFaces Grid CSS (ui-g-*) throughout the samples however you may also use other Grid Utilities as well including the standard CSS Grid.</p> 
+                    
+                    <h1>Tips</h1>
+                    <ul>
+                        <li>Familiarity with <a href="http://sass-lang.com/">SASS</a> is required to make customizations to the layout and theme.</li>
+                        <li>Demo application war and the maven project tag are included in distribution however you don't necessarily need them to install olympia, 
+                            the actual artifacts required are the layout zip file and the theme jar.</li>
+                    </ul>
+
+                    <h1>Migration Guide</h1>
+                    <p>For seamless updates use the /sass/_layout_styles.scss for overriding the layout styles and /sass/_theme_styles.scss for customizing the them styles instead
+                        of changing the scss files under layout and theme files to avoid maintenance issues. Updates usually require updating the layout and theme folders so 
+                        your changes won't get effected during updates since they are kept in external files.
+                    </p>
+                    
+                    <p>1.0.0 to 1.0.1</p>
+                    <ul>
+                        <li>Update layout.js, layout css and OlympiaMenu*.java files</li>
+                        <li>Replace theme jar with new jar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+    </ui:define>
+
+</ui:composition>

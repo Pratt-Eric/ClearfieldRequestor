@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+    <div class="layout-topbar">
+        <h:link outcome="/dashboard" styleClass="layout-topbar-logo">
+            <p:graphicImage name="images/#{guestPreferences.logo}.png" library="olympia-layout" />
+        </h:link>
+
+        <a class="layout-menu-button" href="#">
+            <i class="fa fa-bars" />
+        </a>
+
+        <a href="#" class="layout-topbar-user">
+            <p:graphicImage name="images/avatar.png" library="olympia-layout" />
+        </a>
+        <ul class="layout-topbar-usermenu">
+            <li class="layout-topbar-usermenu-header">
+                <p:graphicImage name="images/avatar.png" library="olympia-layout" />
+                <div class="layout-topbar-usermenu-info">
+                    <div class="layout-topbar-usermenu-name">Jane Watson</div>
+                    <div class="layout-topbar-usermenu-role">Administrator</div>
+                </div>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-user" />
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-lock" />
+                    <span>Privacy</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-cog" />
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-sign-out" />
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+
+        <ul class="layout-topbar-icons">
+            <li class="layout-topbar-search-item">
+                <div class="layout-topbar-search">
+                    <i class="fa fa-search"></i>
+                    <input type="text" placeholder="Search"/>
+                </div>
+            </li>
+            <li>
+                <a href="#" class="layout-topbar-icon-purple">
+                    <i class="fa fa-file-o" />  
+                </a>
+            </li>
+            <li>
+                <a href="#" class="layout-topbar-icon-yellow">
+                    <i class="fa fa-paper-plane-o" />  
+                </a>
+            </li>
+            <li>
+                <a href="#" class="layout-topbar-icon-green">
+                    <i class="fa fa-calendar" />  
+                </a>
+            </li>
+        </ul>
+    </div>
+
+</ui:composition>
