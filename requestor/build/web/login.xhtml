@@ -22,7 +22,7 @@
         </div>
 
         <div class="login-panel">
-            <h1>SIGN IN TO OLYMPIA</h1>
+            <h1>SIGN IN TO CLEARFIELD REQUESTOR</h1>
 
             <p>Welcome, please use the form to sign-in.</p>
 
@@ -36,11 +36,12 @@
                 <p:inputSwitch />
                 <span >Remember Me</span>
             </div>
-
-            <p:commandButton type="button" value="Login" />
+			<h:form>
+				<p:commandButton value="Login" action="#{loginController.login()}"/>
+			</h:form>
         </div>
 
-        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="olympia-layout" />
+        <h:outputStylesheet name="css/layout-bluegrey-teal.css" library="olympia-layout" />
     </h:body>
 
 </html>
