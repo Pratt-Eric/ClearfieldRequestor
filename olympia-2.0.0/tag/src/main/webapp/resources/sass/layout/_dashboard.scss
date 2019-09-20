@@ -1,0 +1,634 @@
+.layout-dashboard {
+
+    .badge-green {
+        padding: 2px;
+        background-color: #e3f8f3;
+        color: #4b9584;
+        @include border-radius($borderRadius); 
+    }
+
+    .intro-box-detail-container {
+        text-align: right;
+    }
+
+    .intro-box {
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 2em;
+        @include border-radius($borderRadius); 
+
+        .intro-box-name {
+            margin-bottom: 8px;
+        }
+
+        .intro-box-greeting {
+            font-size: 24px;
+        }
+        
+        .intro-box-detail {
+            color: $textSecondaryColor;
+        }
+    }
+
+    .overview-box {
+        border: solid 1px #dcdcdc;
+        padding: 28px;
+        text-align: right;
+        position: relative;
+        margin: 14px 0;
+        @include border-radius($borderRadius);
+
+        .overview-box-content {
+            .overview-box-title {
+                font-size: 16px;
+                letter-spacing: 2.3px;
+            }
+    
+            .overview-box-details {
+                font-size: 24px;
+            }
+        }
+
+        img {
+            position: absolute;
+            width: 98px;
+            height: 78px;
+            left: -1px;
+            top: 50%;
+            margin-top: -39px;
+        }
+        
+        &.overview-box-sales {
+            background-color: #f8ebcb;
+        }
+
+        &.overview-box-views {
+            background-color: #ffe5dc;
+        }
+
+        &.overview-box-users {
+            background-color: #EEE9FA;
+        }
+
+        &.overview-box-checkins {
+            background-color: #e3f8f1;
+        }
+    }
+
+    .section-title {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .service-box {
+        @include clearfix();
+
+        > div {
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        
+        i {
+            font-size: 24px;
+            vertical-align: middle;
+            color: $textSecondaryColor;
+            width: 32px;
+            text-align: center;
+        }
+
+        .service-name {
+            display: block;
+        }
+
+        .service-status {
+            display: block;
+            font-size: 12px;
+            color: $textSecondaryColor;
+        }
+
+        button {
+            float: right;
+            min-width: 84px;
+        }
+    }
+
+    .usercard {
+        margin-bottom: 16px;
+
+        .usercard-header {
+            background: url("\#{resource['olympia-layout:images/dashboard/usercard.png']}");
+            background-size: cover;
+            height: 100px;
+            position: relative;
+            @include border-radius-top($borderRadius); 
+
+            .usercard-name {
+                color: #ffffff;
+                position: absolute;
+                bottom: 2px;
+                left: 72px;
+            }
+
+            img {
+                position: absolute;
+                bottom: -24px;
+                left: 12px;
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        .usercard-content {
+            margin-bottom: 0;
+            @include border-radius(0); 
+            
+            p {
+                color: $textSecondaryColor;
+                margin: 0 0 0 56px;
+                font-size: 12px;
+            }
+
+            ul {
+                list-style-type: none;
+                padding: 0;
+                margin-left: 56px;
+
+                a {
+                    color: $textColor;
+                    display: block;
+                    padding: 6px 0;
+                    border-bottom: 1px solid #eaeaea;
+                    @include clearfix();
+
+                    i {
+                        font-display: 16px;
+
+                        &:last-child {
+                            float: right;
+                            margin-top: 4px;
+                            color: $textSecondaryColor;
+                            @include transition(color $transitionDuration);
+                        }
+                    }
+
+                    .usercard-number {
+                        color: $primaryTextColor;
+                        margin: 0 3px 0 12px;
+                    }
+
+                    &:hover {
+                        i:last-child {
+                            color: $textColor;
+                        }
+                    }
+                }
+            }
+        }
+
+        .usercard-footer {
+            padding: 8px 16px;
+            background-color: #f4f4f4;
+            border: solid 1px #dadada;
+            border-top: 0 none;
+            text-align: right;
+            @include border-radius-bottom($borderRadius); 
+
+            a {
+                color: $textSecondaryColor;
+                @include transition(color $transitionDuration);
+
+                &:hover {
+                    color: $textColor;
+                }
+            }
+        }
+    }
+
+    .inbox {
+        margin-bottom: 16px;
+
+        .inbox-header {
+            padding: 15px 18px;
+            background-color: #f4f4f4;
+            border: 1px solid #dadada;
+            @include clearfix();
+            @include border-radius-top($borderRadius);
+
+            a {
+                float: right;
+                color: $textSecondaryColor;
+                @include transition(color $transitionDuration);
+
+                &:hover {
+                    color: $textColor;
+                }
+            }
+        }
+
+        .inbox-content {
+            background-color: #ffffff;
+            border: 1px solid #dadada;
+            border-top: 0 none;
+            @include border-radius-bottom($borderRadius);
+
+            ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+
+                li {
+                    @include clearfix();
+                    padding: 12px 18px;
+                    border-bottom: 1px solid #eaeaea;
+
+                    &:last-child {
+                        border-bottom: 0 none;
+                    }
+
+                    img {
+                        width: 32px;
+                        height: 32px;
+                        float: left;
+                    }
+
+                    .inbox-sender {
+                        font-weight: 700;
+                        margin-left: 50px;
+                    }
+
+                    .inbox-message {
+                        color: $textSecondaryColor;
+                        margin-left: 50px;
+                    }
+                }
+            }
+        }
+    }
+
+    .transactions {
+        background-color: #ffffff;
+        border: 1px solid #dadada;
+        text-align: center;
+        @include border-radius($borderRadius);
+
+        .transaction-graph {
+            display: inline-block;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 14px;
+            line-height: 52px;
+            @include border-radius(50%);
+        }
+
+        .transaction-type {
+            color: $textSecondaryColor;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .transaction-value {
+            font-size: 16px;
+        }
+
+        .transaction-success {
+            padding: 18px;
+            border-right: 1px solid #dadada;
+
+            .transaction-graph {
+                background-color: #feedbc;
+                border: 6px solid #fec820;
+                color: #cd9c03;
+                border-left-color: transparent;
+                border-bottom-color: transparent;
+                border-top-color: transparent;
+            }
+
+            .transaction-value {
+                color: #fec820;
+            }
+        }
+
+        .transaction-failed {
+            padding: 18px;
+
+            .transaction-graph {
+                background-color: #f0bebe;
+                border: 6px solid #d91818;
+                color: #d91818;
+                border-left-color: transparent;
+                border-bottom-color: transparent;
+                border-top-color: transparent;
+            }
+            
+            .transaction-value {
+                color: #d91818;
+            }
+        }
+    }
+
+    .payments {
+        .payment {
+            .payment-title {
+                font-weight: 700;
+                margin-bottom: 6px;
+            }
+    
+            .payment-time {
+                color: $textSecondaryColor;
+            }
+    
+            .payment-amount {
+                display: inline-block;
+                margin: 12px 0;
+                padding: 12px;
+                background-color: #eaeaea;
+                @include border-radius($borderRadius);   
+            }
+    
+            .payment-sender {
+                border-top: 1px solid #eaeaea;
+                padding-top: 16px;
+    
+                img {
+                    width: 32px;
+                    height: 32px;
+                    vertical-align: middle;
+                }
+    
+                span {
+                    font-weight: 700;
+                    margin-left: 8px;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+
+    .projects {
+        .project {
+            p {
+                color: $textSecondaryColor;
+                margin: 16px 0 24px 0;
+            }
+
+            .project-badge {
+                font-size: 12px;
+                display: inline-block;
+                padding: 5px;
+                color: #cd9c03;
+                background-color: #feedbc;
+                @include border-radius($borderRadius);
+
+                &.project-badge-alt {
+                    color: #917fbb;
+                    background-color: #eae1ff;
+                } 
+            }
+
+            .project-progress {
+                height: 24px;
+                margin-top: 14px;
+                text-align: right;
+                background-color: #eaeaea;
+                @include border-radius($borderRadius);
+                
+                .project-progress-value {
+                    height: 24px;
+                    line-height: 24px;
+                    background-color: #61b5a1;
+                    color: #ffffff;
+                }
+
+                &.project-progress-1 {
+                    .project-progress-value {
+                        width: 33%;
+                    }
+                }
+
+                &.project-progress-2 {
+                    .project-progress-value {
+                        width: 18%;
+                    }
+                }
+
+                &.project-progress-3 {
+                    .project-progress-value {
+                        width: 64%;
+                    }
+                }
+            }
+        }
+    }
+
+    .timeline {        
+        > .ui-g {
+            .ui-g-3 {
+                font-size: 14px;
+                position: relative;
+                color: $textSecondaryColor;
+                border-right: 2px solid #f4f4f4;
+                
+                i {
+                    background-color: transparent;
+                    font-size: 24px;
+                    position: absolute;
+                    top: 6px;
+                    right: -13px;
+                }
+            }
+            
+            .ui-g-9 {
+                padding-left: 1.5em;
+                .event-owner {
+                    font-weight: bold;
+                }
+                
+                .event-text {
+                    color: $textSecondaryColor;
+                    font-size: 14px;
+                    display: block;
+                    padding-bottom: 20px;
+                }
+                
+                .event-content {
+                    img {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+
+    .accounting {
+        text-align: center;
+
+        .accounting-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .accounting-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        img {
+            width: 75%;
+            margin: 24px 0;
+        }
+
+        .accounting-progress {
+            background-color: #d8efe9;
+            height: 8px;
+
+            .accounting-progress-value {
+                background-color: #4b9584; 
+            }
+            
+            .accounting-progress-1 {
+                .accounting-progress-value {
+                    width: 19%;
+                }
+            }
+
+            .accounting-progress-2 {
+                .accounting-progress-value {
+                    width: 22%;
+                }
+            }
+        }
+
+        .accounting-footer {
+            padding: 8px 16px;
+            background-color: #f4f4f4;
+            font-size: 12px;
+            color: $textSecondaryColor;
+            @include border-radius-bottom($borderRadius); 
+        }
+    }
+ 
+    .chat {
+        ul {
+            padding: 12px;
+            margin: 0;
+            list-style-type: none;
+            
+            li {
+                padding: 6px 0;
+
+                img {
+                    width: 36px;
+                    display: inline-block;
+                    vertical-align: middle;
+                }
+                
+                span {
+                    padding: 6px 12px;
+                    display: inline-block;
+                    @include border-radius($borderRadius);
+                }
+                
+                &.message-from {                    
+                    img {
+                        margin-right: 8px;
+                    }
+                    
+                    span {
+                        margin: 4px 0;
+                        background-color: #f8f8f8;
+                        border: solid 1px #eaeaea;
+                        color: $textSecondaryColor;
+                    }
+                }
+                
+                &.message-own {
+                    text-align: right;
+                    
+                    img {
+                        margin-left: 8px;
+                    }
+                    
+                    span {
+                        border: solid 1px #eaeaea;
+                        background: #ffffff;
+                        color: $textSecondaryColor;
+                    }
+                }
+            }
+        }
+        
+        .new-message {
+            background-color: #ffffff;
+            border: 1px solid #dadada;
+            @include border-radius-top($borderRadius);
+
+            textarea {
+                border: 0 none;
+                font-size: $fontSize;
+                font-family: $fontFamily;
+                resize: none;
+                height: 60px;
+                width: 100%;
+                padding: 12px;
+                color: $textColor;
+
+                &:focus {
+                    outline: 0 none;
+                }
+            }
+
+            .new-message-footer {
+                background-color: #f4f4f4;
+                @include clearfix();
+                @include border-radius-bottom($borderRadius); 
+
+                .new-message-icon {
+                    display: inline-block;
+                    color: $textSecondaryColor;
+                    width: 33px;
+                    height: 33px;
+                    text-align: center;
+                    cursor: pointer;
+                    line-height: 33px;
+                    background-color: transparent;
+                    @include transition(background-color $transitionDuration);
+
+                    i {
+                        line-height: inherit;
+                    }
+
+                    &:hover {
+                        background-color: #ffffff;
+                    }
+                }
+
+                .new-message-send {
+                    height: 33px;
+                    cursor: pointer;
+                    display: block;
+                    float: right;
+                    padding: 8px 12px;
+                    background: $primaryColor;
+                    color: $primaryTextColor;
+
+                    &:hover {
+                        background-color: darken($primaryColor, 10%);
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@media screen and (max-width: 40em) {
+    .layout-wrapper {
+        .intro-box {
+            text-align: center;
+            display: block;
+            padding-bottom: 14px;
+        }
+    }
+}

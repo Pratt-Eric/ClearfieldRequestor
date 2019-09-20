@@ -24,6 +24,6 @@ public class LoginController implements Serializable {
 	}
 
 	public String login() {
-		return "/requestor/main/dashboard.xhtml?faces-redirect=true";
+		return "/main/dashboard.xhtml?faces-redirect=true";
 	}
 }
