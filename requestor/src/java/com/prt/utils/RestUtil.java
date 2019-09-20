@@ -18,6 +18,8 @@ import javax.ws.rs.core.Response;
  */
 public class RestUtil {
 
+	public static String BASEURL = "http://localhost:8080/requestordt/data/";
+
 	public static String post(String url, String params) {
 		try {
 			Client client = ClientBuilder.newClient();

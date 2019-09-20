@@ -7,6 +7,7 @@ package com.prt.config;
 
 import com.google.gson.Gson;
 import com.prt.requestor.SQLProcess;
+import com.prt.requestor.SQLUserProcess;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -44,7 +45,9 @@ public class Resource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String postSelectUserCredentials(String supplied) {
 		try {
-
+			Gson gson = new Gson();
+			String username = gson.fromJson(supplied, String.class);
+			return gson.toJson(SQLUserProcess.selectUser(username));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

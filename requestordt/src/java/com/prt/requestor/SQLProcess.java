@@ -5,8 +5,11 @@
  */
 package com.prt.requestor;
 
+import com.prt.models.Password;
 import com.prt.models.User;
+import com.prt.utils.EncryptionHelper;
 import com.prt.utils.HibernateUtil;
+import java.util.Base64;
 import java.util.List;
 import org.hibernate.Session;
 
@@ -27,7 +30,18 @@ public class SQLProcess {
 
 			if (users.isEmpty()) {
 				//create admin user
+				byte[] salt = EncryptionHelper.generateSalt();
+				String saltStr = new String(Base64.getEncoder().encode(salt), "UTF-8");
+				String admin = EncryptionHelper.encrypt("admin", salt);
 
+				Password password = new Password(1, admin, saltStr);
+				User user = new User(1, "admin", "admin", "", "", 1);
+				session.beginTransaction();
+				session.save(password);
+				session.save(user);
+				session.getTransaction().commit();
+
+				session.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

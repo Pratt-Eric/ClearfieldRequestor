@@ -27,10 +27,14 @@
             <p>Welcome, please use the form to sign-in.</p>
 
             <h:outputLabel for="username" value="Username" />
-            <h:inputText id="username" />
+            <h:inputText id="username" value="#{loginController.username}">
+				<p:ajax/>
+			</h:inputText>
 
             <h:outputLabel for="password" value="Password" />
-            <h:inputSecret id="password" />
+            <h:inputSecret id="password" value="#{loginController.password}">
+				<p:ajax/>
+			</h:inputSecret>
 
             <div class="remember-me">
                 <p:inputSwitch />
