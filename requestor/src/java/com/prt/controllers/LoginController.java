@@ -20,10 +20,11 @@ public class LoginController implements Serializable {
 
 	@PostConstruct
 	void init() {
-
+		//create admin user if it doesn't already exist
 	}
 
 	public String login() {
+
 		return "/main/dashboard.xhtml?faces-redirect=true";
 	}
 }
