@@ -41,13 +41,6 @@ Contributor(s):
 -->
 <hibernate-configuration>
   <session-factory>
-    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost/requestordata</property>
-    <property name="hibernate.connection.username">clearfieldrequestor</property>
-    <property name="hibernate.connection.password">1qaz!QAZ2wsx@WSX</property>
-    <mapping resource="com/prt/hibernate/users.hbm.xml"/>
-    <mapping resource="com/prt/hibernate/groups.hbm.xml"/>
-    <mapping resource="com/prt/hibernate/passwords.hbm.xml"/>
-  </session-factory>
+
+    </session-factory>
 </hibernate-configuration>
