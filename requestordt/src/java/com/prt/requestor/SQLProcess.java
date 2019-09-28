@@ -11,7 +11,10 @@ import com.prt.utils.EncryptionHelper;
 import com.prt.utils.HibernateUtil;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -32,10 +35,16 @@ public class SQLProcess {
                 String saltStr = new String(Base64.getEncoder().encode(salt), "UTF-8");
                 String admin = EncryptionHelper.encrypt("admin", salt);
 
-                Password password = new Password(1, admin, saltStr);
-                User user = new User(1, "admin", "admin", "", "", 1);
                 session.beginTransaction();
+                Password password = new Password(UUID.randomUUID(), admin, saltStr);
                 session.save(password);
+                session.getTransaction().commit();
+
+                session.beginTransaction();
+                Criteria criteria = session.createCriteria(Password.class);
+                criteria.add(Restrictions.eq("password", admin));
+                password = (Password) criteria.uniqueResult();
+                User user = new User(UUID.randomUUID(), "admin", "admin", "", "", password.getUuid());
                 session.save(user);
                 session.getTransaction().commit();
 

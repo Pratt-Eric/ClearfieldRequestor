@@ -5,47 +5,50 @@
  */
 package com.prt.models;
 
+import java.io.Serializable;
+import java.util.UUID;
+
 /**
  *
  * @author P-ratt
  */
-public class Password {
+public class Password implements Serializable {
 
-	private String password;
-	private String salt;
-	private int id;
+    private UUID uuid;
+    private String password;
+    private String salt;
 
-	public Password() {
+    public Password() {
 
-	}
+    }
 
-	public Password(int id, String password, String salt) {
-		this.id = id;
-		this.password = password;
-		this.salt = salt;
-	}
+    public Password(UUID uuid, String password, String salt) {
+        this.uuid = uuid;
+        this.password = password;
+        this.salt = salt;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public UUID getUuid() {
+        return uuid;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
 
-	public String getSalt() {
-		return salt;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setSalt(String salt) {
-		this.salt = salt;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public String getSalt() {
+        return salt;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 }

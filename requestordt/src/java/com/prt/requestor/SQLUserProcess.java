@@ -27,7 +27,7 @@ public class SQLUserProcess {
                 criteria.add(Restrictions.eq("username", username));
                 User user = (User) criteria.uniqueResult();
                 criteria = session.createCriteria(Password.class);
-                criteria.add(Restrictions.eq("id", user.getPassword_id()));
+                criteria.add(Restrictions.eq("uuid", user.getPassword_uuid()));
                 Password password = (Password) criteria.uniqueResult();
                 user.setPassword(password.getPassword());
                 user.setSalt(password.getSalt());

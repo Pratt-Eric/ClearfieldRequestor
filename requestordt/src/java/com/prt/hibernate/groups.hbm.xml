@@ -40,11 +40,11 @@ made subject to such option by the copyright holder.
 Contributor(s):
 -->
 <hibernate-mapping>
-	<class name="com.prt.models.Group" table="groups">
-		<id name="id" type="java.lang.Integer" column="id">
-			<generator class="identity"/>
-		</id>
-		<property name="name" type="string" column="name"/>
-		<property name="desc" type="string" column="desc"/>
-	</class>
+    <class name="com.prt.models.Group" table="groups">
+        <id name="uuid" type="java.util.UUID" column="uuid">
+            <generator class="uuid2"/>
+        </id>
+        <property name="name" type="string" column="name"/>
+        <property name="desc" type="string" column="desc"/>
+    </class>
 </hibernate-mapping>
