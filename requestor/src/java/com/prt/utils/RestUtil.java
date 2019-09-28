@@ -18,17 +18,17 @@ import javax.ws.rs.core.Response;
  */
 public class RestUtil {
 
-	public static String BASEURL = "http://localhost:8080/requestordt/data/";
+    public static String BASEURL = "http://localhost:8080/requestordt/webresources/data/";
 
-	public static String post(String url, String params) {
-		try {
-			Client client = ClientBuilder.newClient();
-			WebTarget resource = client.target(url);
-			Response response = resource.request(MediaType.APPLICATION_JSON).post(Entity.json(params));
-			return response.readEntity(String.class);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    public static String post(String url, String params) {
+        try {
+            Client client = ClientBuilder.newClient();
+            WebTarget resource = client.target(url);
+            Response response = resource.request(MediaType.APPLICATION_JSON).post(Entity.json(params));
+            return response.readEntity(String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

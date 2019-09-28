@@ -26,23 +26,20 @@
 
             <p>Welcome, please use the form to sign-in.</p>
 
-            <h:outputLabel for="username" value="Username" />
-            <h:inputText id="username" value="#{loginController.username}">
-				<p:ajax/>
-			</h:inputText>
+            <h:form id="loginform">
+                <p:growl showSummary="true" showDetail="true"/>
+                <h:outputLabel for="username" value="Username" />
+                <h:inputText id="username" value="#{loginController.username}">
+                    <p:ajax/>
+                </h:inputText>
 
-            <h:outputLabel for="password" value="Password" />
-            <h:inputSecret id="password" value="#{loginController.password}">
-				<p:ajax/>
-			</h:inputSecret>
-
-            <div class="remember-me">
-                <p:inputSwitch />
-                <span >Remember Me</span>
-            </div>
-			<h:form>
-				<p:commandButton value="Login" action="#{loginController.login()}"/>
-			</h:form>
+                <h:outputLabel for="password" value="Password" />
+                <h:inputSecret id="password" value="#{loginController.password}">
+                    <p:ajax/>
+                </h:inputSecret>
+                <br/><br/>
+                <p:commandButton value="Login" action="#{loginController.login()}"/>
+            </h:form>
         </div>
 
         <h:outputStylesheet name="css/layout-bluegrey-teal.css" library="olympia-layout" />

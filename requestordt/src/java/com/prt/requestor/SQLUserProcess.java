@@ -18,25 +18,25 @@ import org.hibernate.criterion.Restrictions;
  */
 public class SQLUserProcess {
 
-	private static HibernateUtil conn;
-
-	public static User selectUser(String username) {
-		try {
-			Session session = conn.getSessionFactory().openSession();
-			session.beginTransaction();
-			Criteria criteria = session.createCriteria(User.class);
-			criteria.add(Restrictions.eq("username", username));
-			User user = (User) criteria.uniqueResult();
-			criteria = session.createCriteria(Password.class);
-			criteria.add(Restrictions.eq("id", user.getPassword_id()));
-			Password password = (Password) criteria.uniqueResult();
-			user.setPassword(password.getPassword());
-			user.setSalt(password.getSalt());
-			session.getTransaction().commit();
-			return user;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    public static User selectUser(String username) {
+        try {
+            if (username != null) {
+                Session session = HibernateUtil.getSessionFactory().openSession();
+                session.beginTransaction();
+                Criteria criteria = session.createCriteria(User.class);
+                criteria.add(Restrictions.eq("username", username));
+                User user = (User) criteria.uniqueResult();
+                criteria = session.createCriteria(Password.class);
+                criteria.add(Restrictions.eq("id", user.getPassword_id()));
+                Password password = (Password) criteria.uniqueResult();
+                user.setPassword(password.getPassword());
+                user.setSalt(password.getSalt());
+                session.getTransaction().commit();
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

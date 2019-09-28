@@ -16,6 +16,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.PrimeFaces;
 
 /**
  *
@@ -48,7 +49,7 @@ public class LoginController implements Serializable {
     void init() {
         //create admin user if it doesn't already exist
         Gson gson = new Gson();
-        String success = gson.fromJson(RestUtil.post("http://localhost:8080/requestordt/webresources/data/initialize", gson.toJson(null)), String.class);
+        String success = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/initialize", gson.toJson(null)), String.class);
         if (success == null || success.equalsIgnoreCase("false")) {
             //There was an error initializing the system
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was an error initializing the system"));
@@ -59,7 +60,7 @@ public class LoginController implements Serializable {
         //Get user information and check login info
         try {
             Gson gson = new Gson();
-            User user = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "repository/user/select", gson.toJson(username)), User.class);
+            User user = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select", gson.toJson(username)), User.class);
             if (user != null) {
                 //compare the password returned with the password provided
                 //first, hash the given password
@@ -67,11 +68,14 @@ public class LoginController implements Serializable {
                 if (user.getPassword() != null && user.getSalt() != null) {
                     String compare = EncryptionHelper.encrypt(password, Base64.getDecoder().decode(user.getSalt()));
                     if (compare != null && compare.equals(user.getPassword())) {
+                        //grab user information including avatar if it exists
+
                         return "/main/dashboard.xhtml?faces-redirect=true";
                     }
                 }
             }
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Username and/or Password don't match"));
+            PrimeFaces.current().ajax().update("loginform");
         } catch (Exception e) {
             e.printStackTrace();
         }
