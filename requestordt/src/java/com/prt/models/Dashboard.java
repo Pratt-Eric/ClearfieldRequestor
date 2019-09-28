@@ -13,19 +13,28 @@ import java.util.UUID;
  *
  * @author P-ratt
  */
-public class Group implements Serializable {
+public class Dashboard implements Serializable {
 
     private UUID uuid;
     private String name;
     private String desc;
-    private ArrayList<User> users = new ArrayList<>();
+    private ArrayList<Calendar> calendars = new ArrayList<>();
+    private ArrayList<Budget> budgets = new ArrayList<>();
 
-    public ArrayList<User> getUsers() {
-        return users;
+    public ArrayList<Calendar> getCalendars() {
+        return calendars;
     }
 
-    public void setUsers(ArrayList<User> users) {
-        this.users = users;
+    public void setCalendars(ArrayList<Calendar> calendars) {
+        this.calendars = calendars;
+    }
+
+    public ArrayList<Budget> getBudgets() {
+        return budgets;
+    }
+
+    public void setBudgets(ArrayList<Budget> budgets) {
+        this.budgets = budgets;
     }
 
     public UUID getUuid() {

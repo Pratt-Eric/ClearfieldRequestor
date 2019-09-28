@@ -6,27 +6,18 @@
 package com.prt.models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.UUID;
 
 /**
  *
  * @author P-ratt
  */
-public class Group implements Serializable {
+public class Budget implements Serializable {
 
     private UUID uuid;
     private String name;
     private String desc;
-    private ArrayList<User> users = new ArrayList<>();
-
-    public ArrayList<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(ArrayList<User> users) {
-        this.users = users;
-    }
+    private double remaining;
 
     public UUID getUuid() {
         return uuid;
@@ -50,5 +41,13 @@ public class Group implements Serializable {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public double getRemaining() {
+        return remaining;
+    }
+
+    public void setRemaining(double remaining) {
+        this.remaining = remaining;
     }
 }
