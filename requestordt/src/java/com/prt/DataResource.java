@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.prt.config;
+package com.prt;
 
 import com.google.gson.Gson;
 import com.prt.requestor.SQLProcess;
 import com.prt.requestor.SQLUserProcess;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -33,19 +33,6 @@ public class DataResource {
      * Creates a new instance of DataResource
      */
     public DataResource() {
-    }
-
-    @Path("ugh")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String ugh(String supplied) {
-        try {
-            System.out.println("ugh");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     @Path("initialize")
@@ -159,22 +146,8 @@ public class DataResource {
         return gson.toJson(false);
     }
 
-    @Path("user/remove")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String postRemoveGroup(String content) {
-        Gson gson = new Gson();
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return gson.toJson(false);
-    }
-
     /**
-     * Retrieves representation of an instance of com.prt.config.DataResource
+     * Retrieves representation of an instance of com.prt.DataResource
      *
      * @return an instance of java.lang.String
      */

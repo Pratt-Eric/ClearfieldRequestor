@@ -48,7 +48,7 @@ public class LoginController implements Serializable {
     void init() {
         //create admin user if it doesn't already exist
         Gson gson = new Gson();
-        String success = gson.fromJson(RestUtil.post("http://localhost:8080/requestordt/webresources/data/ugh", gson.toJson(null)), String.class);
+        String success = gson.fromJson(RestUtil.post("http://localhost:8080/requestordt/webresources/data/initialize", gson.toJson(null)), String.class);
         if (success == null || success.equalsIgnoreCase("false")) {
             //There was an error initializing the system
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was an error initializing the system"));
