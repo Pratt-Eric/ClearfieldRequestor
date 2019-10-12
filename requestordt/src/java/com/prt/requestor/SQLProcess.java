@@ -40,6 +40,8 @@ public class SQLProcess {
             while (set.next()) {
                 users.add(new User(set.getString("GUID"), set.getString("USERNAME"), set.getString("FIRSTNAME"), set.getString("LASTNAME"), set.getString("EMAIL"), set.getString("PASSWORD_GUID")));
             }
+            set.close();
+            stmt.close();
 
             if (users.isEmpty()) {
                 //create admin user
@@ -56,13 +58,23 @@ public class SQLProcess {
                 String newPasswordGuid = newPass.getString(3);
                 newPass.close();
 
-                query = "INSERT INTO USERS (USERNAME, FIRSTNAME, PASSWORD_GUID) VALUES (?, ?, ?)";
-                PreparedStatement newUser = conn.prepareStatement(query);
+                query = "{call INSERT INTO USERS (USERNAME, FIRSTNAME, PASSWORD_GUID) VALUES (?, ?, ?) RETURNING GUID INTO ?}";
+                CallableStatement newUser = conn.prepareCall(query);
                 newUser.setString(1, "admin");
                 newUser.setString(2, "admin");
                 newUser.setString(3, newPasswordGuid);
+                newUser.registerOutParameter(4, Types.VARCHAR);
                 newUser.executeUpdate();
+                String newUserGuid = newUser.getString(4);
                 newUser.close();
+
+                query = "INSERT INTO PROFILE (USER_GUID, CALLING) VALUES (?, ?)";
+
+                PreparedStatement stmt2 = conn.prepareStatement(query);
+                stmt2.setString(1, newUserGuid);
+                stmt2.setString(2, "Administrator");
+                stmt2.executeUpdate();
+                stmt2.close();
             }
         } catch (Exception e) {
             e.printStackTrace();

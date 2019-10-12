@@ -24,9 +24,14 @@ public class User implements Serializable {
     private String salt;
     private String picture;
     private String calling;
+    private String createdBy;
 
     public User() {
 
+    }
+
+    public User(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     public User(String guid, String username, String firstname, String lastname, String email, String password_guid) {
@@ -36,6 +41,14 @@ public class User implements Serializable {
         this.lastname = lastname;
         this.email = email;
         this.password_guid = password_guid;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     public String getCalling() {

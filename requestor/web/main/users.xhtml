@@ -11,10 +11,151 @@
         <div class="ui-g">
             <div class="ui-g-12">
                 <div class="card">
-                    Content goes here
+                    <div class="card-title">
+                        <div class="card-title-content">
+                            <h1>Users</h1>
+                            <p:commandButton value="Add User" icon="fa fa-plus" actionListener="#{usersController.startAddUser}" update="addUserForm" oncomplete="PF('addUserDlg').show()" style="margin-bottom: 20px;"/>
+                        </div>
+                    </div>
+                    <div class="card-content card-content-main">
+                        <h:form id="userForm">
+                            <p:growl showDetail="true" showSummary="true"/>
+                            <p:dataTable value="#{usersController.users}" var="user">
+                                <p:column headerText="Username" filterBy="#{user.username}" sortBy="#{user.username}" filterMatchMode="contains">
+                                    <p:outputLabel value="#{user.username}"/>
+                                </p:column>
+                                <p:column headerText="First Name" filterBy="#{user.firstname}" sortBy="#{user.firstname}" filterMatchMode="contains">
+                                    <p:outputLabel value="#{user.firstname}"/>
+                                </p:column>
+                                <p:column headerText="Last Name" filterBy="#{user.lastname}" sortBy="#{user.lastname}" filterMatchMode="contains">
+                                    <p:outputLabel value="#{user.lastname}"/>
+                                </p:column>
+                                <p:column headerText="Email" filterBy="#{user.email}" sortBy="#{user.email}" filterMatchMode="contains">
+                                    <p:outputLabel value="#{user.email}"/>
+                                </p:column>
+                                <p:column headerText="Calling" filterBy="#{user.calling}" sortBy="#{user.calling}" filterMatchMode="contains">
+                                    <p:outputLabel value="#{user.calling}"/>
+                                </p:column>
+                                <p:column headerText="Actions" style="text-align: center; width: 10%;">
+                                    <p:commandLink title="Edit" actionListener="#{usersController.prepareEdit(user)}" update="editUserForm" oncomplete="PF('editUserDlg').show()">
+                                        <i class="fa fa-lg fa-edit"/>
+                                    </p:commandLink>
+                                    <p:commandLink title="Delete" actionListener="#{usersController.prepareEdit(user)}" update="deleteUserForm" oncomplete="PF('deleteUserDlg').show()">
+                                        <i class="fa fa-lg fa-trash"/>
+                                    </p:commandLink>
+                                    <p:commandLink title="Reset Password" actionListener="#{usersController.sendPasswordReset(user)}">
+                                        <i class="fa fa-lg fa-envelope-o"/>
+                                    </p:commandLink>
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <p:dialog modal="true" header="Add User" widgetVar="addUserDlg">
+            <h:form id="addUserForm" style="width: 300px;">
+                <div style="width: 100%;">
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Username"/>
+                        <br/>
+                        <p:inputText value="#{usersController.newUser.username}" style="width: 100%;" required="true">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="First name"/>
+                        <br/>
+                        <p:inputText value="#{usersController.newUser.firstname}" style="width: 100%;">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Last Name"/>
+                        <br/>
+                        <p:inputText value="#{usersController.newUser.lastname}" style="width: 100%;">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Email"/>
+                        <br/>
+                        <p:inputText value="#{usersController.newUser.email}" style="width: 100%;">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Calling"/>
+                        <br/>
+                        <p:inputText value="#{usersController.newUser.calling}" style="width: 100%;">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                </div>
+                <div>
+                    <p:commandButton value="Add User" actionListener="#{usersController.addUser}"/>
+                    <p:commandButton value="Cancel" title="Cancel Add User" oncomplete="PF('addUserDlg').hide()" style="margin-left: 10px;"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog modal="true" header="Edit User" widgetVar="editUserDlg">
+            <h:form id="editUserForm" style="width: 300px;">
+                <div style="width: 100%;">
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Username"/>
+                        <br/>
+                        <p:inputText value="#{usersController.selectedUser.username}" style="width: 100%;" required="true">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="First name"/>
+                        <br/>
+                        <p:inputText value="#{usersController.selectedUser.firstname}" style="width: 100%;">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Last Name"/>
+                        <br/>
+                        <p:inputText value="#{usersController.selectedUser.lastname}" style="width: 100%;">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Email"/>
+                        <br/>
+                        <p:inputText value="#{usersController.selectedUser.email}" style="width: 100%;">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Calling"/>
+                        <br/>
+                        <p:inputText value="#{usersController.selectedUser.calling}" style="width: 100%;">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                </div>
+                <div>
+                    <p:commandButton value="Edit User" actionListener="#{usersController.editUser}"/>
+                    <p:commandButton value="Cancel" title="Cancel Edit User" oncomplete="PF('editUserDlg').hide()" style="margin-left: 10px;"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog modal="true" header="Delete User" widgetVar="deleteUserDlg">
+            <h:form id="deleteUserForm">
+                <p:outputLabel value="Are you sure you want to delete #{usersController.selectedUser.username} from the system?"/>
+                <br/><br/>
+                <div>
+                    <p:commandButton value="Delete User" actionListener="#{usersController.deleteUser}"/>
+                    <p:commandButton value="Cancel" title="Cancel Delete User" oncomplete="PF('deleteUserDlg').hide()" style="margin-left: 10px;"/>
+                </div>
+            </h:form>
+        </p:dialog>
     </ui:define>
 
 </ui:composition>

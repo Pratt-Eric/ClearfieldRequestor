@@ -6,6 +6,7 @@
 package com.prt;
 
 import com.google.gson.Gson;
+import com.prt.models.User;
 import com.prt.requestor.SQLProcess;
 import com.prt.requestor.SQLUserProcess;
 import com.prt.utils.DBConnection;
@@ -80,12 +81,55 @@ public class DataResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String postSelectAllUsers() {
+        Gson gson = new Gson();
         try {
-
+            return gson.toJson(SQLUserProcess.selectAllUsers());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Path("user/add")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String postAddNewUser(String content) {
+        Gson gson = new Gson();
+        try {
+            return gson.toJson(SQLUserProcess.addNewUser(gson.fromJson(content, User.class)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return gson.toJson(false);
+    }
+
+    @Path("user/edit")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String postEditUser(String content) {
+        Gson gson = new Gson();
+        try {
+            return gson.toJson(SQLUserProcess.editExistingUser(gson.fromJson(content, User.class)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return gson.toJson(false);
+    }
+
+    @Path("user/remove")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String postRemoveUser(String content) {
+        Gson gson = new Gson();
+        try {
+            return gson.toJson(SQLUserProcess.removeExistingUser(gson.fromJson(content, User.class)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return gson.toJson(false);
     }
 
     @Path("group/select")
@@ -114,39 +158,39 @@ public class DataResource {
         return null;
     }
 
-    @Path("user/add")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String postAddNewUser(String content) {
-        Gson gson = new Gson();
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return gson.toJson(false);
-    }
-
-    @Path("user/remove")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String postRemoveUser(String content) {
-        Gson gson = new Gson();
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return gson.toJson(false);
-    }
-
     @Path("group/add")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String postAddNewGroup(String content) {
+        Gson gson = new Gson();
+        try {
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return gson.toJson(false);
+    }
+
+    @Path("group/edit")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String postEditGroup(String content) {
+        Gson gson = new Gson();
+        try {
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return gson.toJson(false);
+    }
+
+    @Path("group/remove")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String postRemoveGroup(String content) {
         Gson gson = new Gson();
         try {
 

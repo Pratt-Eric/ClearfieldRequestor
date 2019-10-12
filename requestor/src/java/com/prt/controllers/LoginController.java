@@ -88,6 +88,7 @@ public class LoginController implements Serializable {
 //                        preferences.stream = new ByteArrayOutputStream();
 //                        preferences.stream.write(user.getPicture().getBytes("UTF-8"));
                         preferences.setCalling(user.getCalling());
+                        preferences.setUserGuid(user.getGuid());
                         return "/main/dashboard.xhtml?faces-redirect=true";
                     }
                 }

@@ -26,9 +26,18 @@ public class GuestPreferences implements Serializable {
 
     private String username;
     private String calling;
+    private String userGuid;
     private StreamedContent picture;
     public ByteArrayOutputStream stream = new ByteArrayOutputStream();
     public String imgExt = "";
+
+    public String getUserGuid() {
+        return userGuid;
+    }
+
+    public void setUserGuid(String userGuid) {
+        this.userGuid = userGuid;
+    }
 
     public StreamedContent getPicture() {
         FacesContext context = FacesContext.getCurrentInstance();
