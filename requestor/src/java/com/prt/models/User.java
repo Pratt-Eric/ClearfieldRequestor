@@ -22,6 +22,8 @@ public class User implements Serializable {
     private String password_guid;
     private String password;
     private String salt;
+    private String picture;
+    private String calling;
 
     public User() {
 
@@ -34,6 +36,22 @@ public class User implements Serializable {
         this.lastname = lastname;
         this.email = email;
         this.password_guid = password_guid;
+    }
+
+    public String getCalling() {
+        return calling;
+    }
+
+    public void setCalling(String calling) {
+        this.calling = calling;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public String getSalt() {

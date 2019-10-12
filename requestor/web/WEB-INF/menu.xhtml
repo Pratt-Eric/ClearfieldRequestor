@@ -10,9 +10,17 @@
             <div class="nano-content menu-scroll-content">
                 <h:form id="menuform">
                     <po:menu>
+                        <p:submenu id="om_home" label="ADMIN SETTINGS" icon="fa fa-cogs">
+                            <p:menuitem id="activityTypes" value="Activity Types" icon="fa fa-picture-o" outcome="/main/activities.xhtml"/>
+                            <p:menuitem id="budgets" value="Budgets" icon="fa fa-dollar" outcome="/main/budgets.xhtml"/>
+                            <p:menuitem id="calendars" value="Calendars" icon="fa fa-calendar-o" outcome="/main/calendars.xhtml"/>
+                            <p:menuitem id="groups" value="Groups" icon="fa fa-group" outcome="/main/groups.xhtml"/>
+                            <p:menuitem id="users" value="Users" icon="fa fa-user" outcome="/main/users.xhtml"/>
+                        </p:submenu>
+
                         <p:menuitem id="om_dashboard" value="DASHBOARD" icon="fa fa-fw fa-dashboard" outcome="/main/dashboard" />
 
-                        <p:submenu id="om_requests" label="Requests" icon="fa fa-fw fa-folder">
+                        <p:submenu id="om_requests" label="REQUESTS" icon="fa fa-fw fa-folder">
                             <p:menuitem id="all_requests" value="All Requests" outcome="/main/requests.xhtml"/>
                         </p:submenu>
 

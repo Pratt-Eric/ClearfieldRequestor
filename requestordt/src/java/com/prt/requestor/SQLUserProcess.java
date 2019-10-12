@@ -38,6 +38,7 @@ public class SQLUserProcess {
                     user.setEmail(set.getString("EMAIL"));
                     user.setPassword(set.getString("PASSWORD"));
                     user.setSalt(set.getString("SALT"));
+                    user.setCalling(set.getString("CALLING"));
                 }
                 return user;
             }

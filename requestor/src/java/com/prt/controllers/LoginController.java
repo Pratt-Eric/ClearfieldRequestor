@@ -9,11 +9,13 @@ import com.google.gson.Gson;
 import com.prt.models.User;
 import com.prt.utils.EncryptionHelper;
 import com.prt.utils.RestUtil;
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.Base64;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.PrimeFaces;
@@ -26,8 +28,18 @@ import org.primefaces.PrimeFaces;
 @ViewScoped
 public class LoginController implements Serializable {
 
+    @ManagedProperty("#{guestPreferences}")
+    private GuestPreferences preferences;
     private String username;
     private String password;
+
+    public GuestPreferences getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(GuestPreferences preferences) {
+        this.preferences = preferences;
+    }
 
     public String getUsername() {
         return username;
@@ -69,7 +81,13 @@ public class LoginController implements Serializable {
                     String compare = EncryptionHelper.encrypt(password, Base64.getDecoder().decode(user.getSalt()));
                     if (compare != null && compare.equals(user.getPassword())) {
                         //grab user information including avatar if it exists
-
+                        //set user preferences before redirecting
+                        FacesContext context = FacesContext.getCurrentInstance();
+                        preferences.setUsername(user.getUsername());
+                        //convert picture to bytes
+//                        preferences.stream = new ByteArrayOutputStream();
+//                        preferences.stream.write(user.getPicture().getBytes("UTF-8"));
+                        preferences.setCalling(user.getCalling());
                         return "/main/dashboard.xhtml?faces-redirect=true";
                     }
                 }
