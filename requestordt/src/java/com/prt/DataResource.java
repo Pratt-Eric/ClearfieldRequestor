@@ -8,6 +8,8 @@ package com.prt;
 import com.google.gson.Gson;
 import com.prt.requestor.SQLProcess;
 import com.prt.requestor.SQLUserProcess;
+import com.prt.utils.DBConnection;
+import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -33,6 +35,14 @@ public class DataResource {
      * Creates a new instance of DataResource
      */
     public DataResource() {
+    }
+
+    @PostConstruct
+    public void init() {
+        if (DBConnection.getInstance().getDataSource() == null) {
+            String[] ourContext = context.getRequestUri().getPath().split("/");
+            DBConnection.getInstance().init(ourContext[1]);
+        }
     }
 
     @Path("initialize")

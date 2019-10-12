@@ -5,12 +5,12 @@
  */
 package com.prt.requestor;
 
-import com.prt.models.Password;
 import com.prt.models.User;
-import com.prt.utils.HibernateUtil;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
+import com.prt.utils.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -18,24 +18,38 @@ import org.hibernate.criterion.Restrictions;
  */
 public class SQLUserProcess {
 
-    public static User selectUser(String username) {
+    public static User selectUser(String username) throws SQLException {
+        Connection conn = null;
         try {
             if (username != null) {
-                Session session = HibernateUtil.getSessionFactory().openSession();
-                session.beginTransaction();
-                Criteria criteria = session.createCriteria(User.class);
-                criteria.add(Restrictions.eq("username", username));
-                User user = (User) criteria.uniqueResult();
-                criteria = session.createCriteria(Password.class);
-                criteria.add(Restrictions.eq("uuid", user.getPassword_uuid()));
-                Password password = (Password) criteria.uniqueResult();
-                user.setPassword(password.getPassword());
-                user.setSalt(password.getSalt());
-                session.getTransaction().commit();
+
+                conn = DBConnection.getInstance().getDataSource().getConnection();
+
+                String query = "SELECT * FROM USERS U JOIN PASSWORDS P ON U.PASSWORD_GUID = P.GUID WHERE U.USERNAME = ?";
+                PreparedStatement stmt = conn.prepareStatement(query);
+                stmt.setString(1, username);
+                ResultSet set = stmt.executeQuery();
+                User user = new User();
+                while (set.next()) {
+                    user.setGuid(set.getString("GUID"));
+                    user.setUsername(set.getString("USERNAME"));
+                    user.setFirstname(set.getString("FIRSTNAME"));
+                    user.setLastname(set.getString("LASTNAME"));
+                    user.setEmail(set.getString("EMAIL"));
+                    user.setPassword(set.getString("PASSWORD"));
+                    user.setSalt(set.getString("SALT"));
+                }
                 return user;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            if (conn != null) {
+                conn.rollback();
+            }
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
         }
         return null;
     }

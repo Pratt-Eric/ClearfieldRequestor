@@ -5,37 +5,49 @@
  */
 package com.prt.models;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 /**
  *
  * @author P-ratt
  */
-public class Group {
+public class Group implements Serializable {
 
-	private int id;
-	private String name;
-	private String desc;
+    private String guid;
+    private String name;
+    private String desc;
+    private ArrayList<User> users = new ArrayList<>();
 
-	public int getId() {
-		return id;
-	}
+    public ArrayList<User> getUsers() {
+        return users;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setUsers(ArrayList<User> users) {
+        this.users = users;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getGuid() {
+        return guid;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
 
-	public String getDesc() {
-		return desc;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 }

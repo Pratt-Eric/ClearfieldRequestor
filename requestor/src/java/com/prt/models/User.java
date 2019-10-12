@@ -5,96 +5,99 @@
  */
 package com.prt.models;
 
+import java.io.Serializable;
+import java.util.UUID;
+
 /**
  *
  * @author P-ratt
  */
-public class User {
+public class User implements Serializable {
 
-	private int id;
-	private String username;
-	private String firstname;
-	private String lastname;
-	private String email;
-	private int password_id;
-	private String password;
-	private String salt;
+    private String guid;
+    private String username;
+    private String firstname;
+    private String lastname;
+    private String email;
+    private String password_guid;
+    private String password;
+    private String salt;
 
-	public User() {
+    public User() {
 
-	}
+    }
 
-	public User(int id, String username, String firstname, String lastname, String email, int password_id) {
-		this.id = id;
-		this.username = username;
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.email = email;
-		this.password_id = password_id;
-	}
+    public User(String guid, String username, String firstname, String lastname, String email, String password_guid) {
+        this.guid = guid;
+        this.username = username;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.password_guid = password_guid;
+    }
 
-	public String getSalt() {
-		return salt;
-	}
+    public String getSalt() {
+        return salt;
+    }
 
-	public void setSalt(String salt) {
-		this.salt = salt;
-	}
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 
-	public int getPassword_id() {
-		return password_id;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword_id(int password_id) {
-		this.password_id = password_id;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public String getFirstname() {
+        return firstname;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getLastname() {
+        return lastname;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
 
-	public String getFirstname() {
-		return firstname;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getLastname() {
-		return lastname;
-	}
+    public String getGuid() {
+        return guid;
+    }
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getPassword_guid() {
+        return password_guid;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setPassword_guid(String password_guid) {
+        this.password_guid = password_guid;
+    }
 
 }

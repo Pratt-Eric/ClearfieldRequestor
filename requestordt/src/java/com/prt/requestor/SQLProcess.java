@@ -7,14 +7,18 @@ package com.prt.requestor;
 
 import com.prt.models.Password;
 import com.prt.models.User;
+import com.prt.utils.DBConnection;
 import com.prt.utils.EncryptionHelper;
-import com.prt.utils.HibernateUtil;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.UUID;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -22,12 +26,20 @@ import org.hibernate.criterion.Restrictions;
  */
 public class SQLProcess {
 
-    public static boolean initializeDefaultUser() {
+    public static boolean initializeDefaultUser() throws SQLException {
+        Connection conn = null;
+
         try {
+
+            conn = DBConnection.getInstance().getDataSource().getConnection();
             //Grab users
             //if users is empty then create admin user
-            Session session = HibernateUtil.getSessionFactory().openSession();
-            List<User> users = session.createCriteria(User.class).list();
+            ArrayList<User> users = new ArrayList<>();
+            Statement stmt = conn.createStatement();
+            ResultSet set = stmt.executeQuery("SELECT * FROM USERS");
+            while (set.next()) {
+                users.add(new User(set.getString("GUID"), set.getString("USERNAME"), set.getString("FIRSTNAME"), set.getString("LASTNAME"), set.getString("EMAIL"), set.getString("PASSWORD_GUID")));
+            }
 
             if (users.isEmpty()) {
                 //create admin user
@@ -35,23 +47,32 @@ public class SQLProcess {
                 String saltStr = new String(Base64.getEncoder().encode(salt), "UTF-8");
                 String admin = EncryptionHelper.encrypt("admin", salt);
 
-                session.beginTransaction();
-                Password password = new Password(UUID.randomUUID(), admin, saltStr);
-                session.save(password);
-                session.getTransaction().commit();
+                String query = "{call INSERT INTO PASSWORDS (PASSWORD, SALT) values (?, ?) RETURNING GUID INTO ?}";
+                CallableStatement newPass = conn.prepareCall(query);
+                newPass.setString(1, admin);
+                newPass.setString(2, saltStr);
+                newPass.registerOutParameter(3, Types.VARCHAR);
+                newPass.executeUpdate();
+                String newPasswordGuid = newPass.getString(3);
+                newPass.close();
 
-                session.beginTransaction();
-                Criteria criteria = session.createCriteria(Password.class);
-                criteria.add(Restrictions.eq("password", admin));
-                password = (Password) criteria.uniqueResult();
-                User user = new User(UUID.randomUUID(), "admin", "admin", "", "", password.getUuid());
-                session.save(user);
-                session.getTransaction().commit();
-
-                session.close();
+                query = "INSERT INTO USERS (USERNAME, FIRSTNAME, PASSWORD_GUID) VALUES (?, ?, ?)";
+                PreparedStatement newUser = conn.prepareStatement(query);
+                newUser.setString(1, "admin");
+                newUser.setString(2, "admin");
+                newUser.setString(3, newPasswordGuid);
+                newUser.executeUpdate();
+                newUser.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
+            if (conn != null) {
+                conn.rollback();
+            }
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
         }
         return false;
     }

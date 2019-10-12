@@ -14,12 +14,12 @@ import java.util.UUID;
  */
 public class User implements Serializable {
 
-    private UUID uuid;
+    private String guid;
     private String username;
     private String firstname;
     private String lastname;
     private String email;
-    private UUID password_uuid;
+    private String password_guid;
     private String password;
     private String salt;
 
@@ -27,13 +27,13 @@ public class User implements Serializable {
 
     }
 
-    public User(UUID uuid, String username, String firstname, String lastname, String email, UUID password_uuid) {
-        this.uuid = uuid;
+    public User(String guid, String username, String firstname, String lastname, String email, String password_guid) {
+        this.guid = guid;
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
-        this.password_uuid = password_uuid;
+        this.password_guid = password_guid;
     }
 
     public String getSalt() {
@@ -84,20 +84,20 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public String getGuid() {
+        return guid;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setGuid(String guid) {
+        this.guid = guid;
     }
 
-    public UUID getPassword_uuid() {
-        return password_uuid;
+    public String getPassword_guid() {
+        return password_guid;
     }
 
-    public void setPassword_uuid(UUID password_uuid) {
-        this.password_uuid = password_uuid;
+    public void setPassword_guid(String password_guid) {
+        this.password_guid = password_guid;
     }
 
 }

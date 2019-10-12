@@ -11,8 +11,12 @@
                 <h:form id="menuform">
                     <po:menu>
                         <p:menuitem id="om_dashboard" value="DASHBOARD" icon="fa fa-fw fa-dashboard" outcome="/main/dashboard" />
+
+                        <p:submenu id="om_requests" label="Requests" icon="fa fa-fw fa-folder">
+                            <p:menuitem id="all_requests" value="All Requests" outcome="/main/requests.xhtml"/>
+                        </p:submenu>
+
                         <p:submenu id="om_topbar_mode" label="TOPBAR COLORS" icon="fa fa-fw fa-magic">
-                            <f:attribute name="badge" value="10" />
                             <p:menuitem id="om_customization_topbar_mode_1" value="Light" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-light', 'logo-olympia')}" ajax="false" />
                             <p:menuitem id="om_customization_topbar_mode_2" value="Dark" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-dark', 'logo-olympia-white')}" ajax="false" />
                             <p:menuitem id="om_customization_topbar_mode_3" value="Blue-Grey" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-bluegrey', 'logo-olympia-white')}" ajax="false" />
@@ -35,7 +39,6 @@
                             <p:menuitem id="om_customization_4" value="Horizontal" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-horizontal')}" ajax="false" />
                         </p:submenu>
                         <p:submenu id="om_themes" label="THEMES" icon="fa fa-fw fa-paint-brush">
-                            <f:attribute name="badge" value="10"/>
                             <p:menuitem id="om_theme_1" value="Green Yellow" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('green-yellow')}" ajax="false"/>
                             <p:menuitem id="om_theme_2" value="Purple Blue" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('purple-blue')}" ajax="false"/>
                             <p:menuitem id="om_theme_3" value="Blue Orange" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('blue-orange')}" ajax="false"/>

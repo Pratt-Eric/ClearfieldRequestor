@@ -7,7 +7,6 @@ package com.prt.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  *
@@ -15,7 +14,7 @@ import java.util.UUID;
  */
 public class Group implements Serializable {
 
-    private UUID uuid;
+    private String guid;
     private String name;
     private String desc;
     private ArrayList<User> users = new ArrayList<>();
@@ -28,12 +27,12 @@ public class Group implements Serializable {
         this.users = users;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public String getGuid() {
+        return guid;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setGuid(String guid) {
+        this.guid = guid;
     }
 
     public String getName() {
