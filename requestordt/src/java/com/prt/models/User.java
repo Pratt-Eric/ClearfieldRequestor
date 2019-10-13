@@ -25,6 +25,7 @@ public class User implements Serializable {
     private String picture;
     private String calling;
     private String createdBy;
+    private boolean admin;
 
     public User() {
 
@@ -34,13 +35,22 @@ public class User implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public User(String guid, String username, String firstname, String lastname, String email, String password_guid) {
+    public User(String guid, String username, String firstname, String lastname, String email, String password_guid, boolean admin) {
         this.guid = guid;
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password_guid = password_guid;
+        this.admin = admin;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public String getCreatedBy() {

@@ -36,6 +36,11 @@
                                 <p:column headerText="Calling" filterBy="#{user.calling}" sortBy="#{user.calling}" filterMatchMode="contains">
                                     <p:outputLabel value="#{user.calling}"/>
                                 </p:column>
+                                <p:column headerText="Administrator">
+                                    <p:selectBooleanCheckbox value="#{user.admin}">
+                                        <p:ajax listener="#{usersController.editUser(user)}"/>
+                                    </p:selectBooleanCheckbox>
+                                </p:column>
                                 <p:column headerText="Actions" style="text-align: center; width: 10%;">
                                     <p:commandLink title="Edit" actionListener="#{usersController.prepareEdit(user)}" update="editUserForm" oncomplete="PF('editUserDlg').show()">
                                         <i class="fa fa-lg fa-edit"/>
@@ -92,6 +97,12 @@
                             <p:ajax/>
                         </p:inputText>
                     </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:selectBooleanCheckbox id="newUserAdmin" value="#{usersController.newUser.admin}">
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+                        <p:outputLabel value="Administrator" for="newUserAdmin"/>
+                    </div>
                 </div>
                 <div>
                     <p:commandButton value="Add User" actionListener="#{usersController.addUser}"/>
@@ -137,6 +148,12 @@
                         <p:inputText value="#{usersController.selectedUser.calling}" style="width: 100%;">
                             <p:ajax/>
                         </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:selectBooleanCheckbox id="editUserAdmin" value="#{usersController.selectedUser.admin}">
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+                        <p:outputLabel value="Administrator" for="editUserAdmin"/>
                     </div>
                 </div>
                 <div>

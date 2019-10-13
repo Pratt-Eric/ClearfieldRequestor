@@ -17,7 +17,16 @@ public class Group implements Serializable {
     private String guid;
     private String name;
     private String desc;
+    private boolean admin;
     private ArrayList<User> users = new ArrayList<>();
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
 
     public ArrayList<User> getUsers() {
         return users;

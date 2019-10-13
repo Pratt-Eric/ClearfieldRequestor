@@ -41,7 +41,8 @@ public class SQLUserProcess {
                         + "P.PASSWORD, "
                         + "P.SALT, "
                         + "PROF.CALLING, "
-                        + "U.CREATED_BY "
+                        + "U.CREATED_BY, "
+                        + "U.ADMINISTRATOR "
                         + "FROM USERS U "
                         + "JOIN PASSWORDS P ON U.PASSWORD_GUID = P.GUID "
                         + "JOIN PROFILE PROF ON U.GUID = PROF.USER_GUID "
@@ -59,6 +60,7 @@ public class SQLUserProcess {
                     user.setPassword(set.getString("PASSWORD"));
                     user.setSalt(set.getString("SALT"));
                     user.setCalling(set.getString("CALLING"));
+                    user.setAdmin(set.getString("ADMINISTRATOR").equals("1"));
                 }
                 set.close();
                 stmt.close();
@@ -89,7 +91,8 @@ public class SQLUserProcess {
                     + "U.LASTNAME, "
                     + "U.EMAIL, "
                     + "P.CALLING, "
-                    + "U.CREATED_BY "
+                    + "U.CREATED_BY, "
+                    + "U.ADMINISTRATOR "
                     + "FROM USERS U "
                     + "JOIN PROFILE P ON U.GUID = P.USER_GUID ";
 
@@ -105,6 +108,7 @@ public class SQLUserProcess {
                 user.setEmail(set.getString("EMAIL"));
                 user.setCalling(set.getString("CALLING"));
                 user.setCreatedBy(set.getString("CREATED_BY"));
+                user.setAdmin(set.getString("ADMINISTRATOR").equals("1"));
                 users.add(user);
             }
             set.close();
@@ -145,7 +149,7 @@ public class SQLUserProcess {
             String newPassGuid = passStmt.getString(3);
             passStmt.close();
 
-            String query = "{call INSERT INTO USERS (USERNAME, FIRSTNAME, LASTNAME, EMAIL, PASSWORD_GUID, CREATED_BY, CREATED_DATE) VALUES (?, ?, ?, ?, ?, ?, SYSTIMESTAMP) RETURNING GUID INTO ?}";
+            String query = "{call INSERT INTO USERS (USERNAME, FIRSTNAME, LASTNAME, EMAIL, PASSWORD_GUID, CREATED_BY, CREATED_DATE, ADMINISTRATOR) VALUES (?, ?, ?, ?, ?, ?, SYSTIMESTAMP, ?) RETURNING GUID INTO ?}";
 
             CallableStatement userStmt = conn.prepareCall(query);
             userStmt.setString(1, user.getUsername());
@@ -154,9 +158,10 @@ public class SQLUserProcess {
             userStmt.setString(4, user.getEmail());
             userStmt.setString(5, newPassGuid);
             userStmt.setString(6, user.getCreatedBy());
-            userStmt.registerOutParameter(7, Types.VARCHAR);
+            userStmt.setString(7, user.isAdmin() ? "1" : "0");
+            userStmt.registerOutParameter(8, Types.VARCHAR);
             userStmt.executeUpdate();
-            String newUserGuid = userStmt.getString(7);
+            String newUserGuid = userStmt.getString(8);
             userStmt.close();
 
             query = "INSERT INTO PROFILE (USER_GUID, CALLING) VALUES (?, ?)";
@@ -187,14 +192,15 @@ public class SQLUserProcess {
         try {
             conn = DBConnection.getInstance().getDataSource().getConnection();
 
-            String query = "UPDATE USERS SET USERNAME = ?, FIRSTNAME = ?, LASTNAME = ?, EMAIL = ? WHERE GUID = ?";
+            String query = "UPDATE USERS SET USERNAME = ?, FIRSTNAME = ?, LASTNAME = ?, EMAIL = ?, ADMINISTRATOR = ? WHERE GUID = ?";
 
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getFirstname());
             stmt.setString(3, user.getLastname());
             stmt.setString(4, user.getEmail());
-            stmt.setString(5, user.getGuid());
+            stmt.setString(5, user.isAdmin() ? "1" : "0");
+            stmt.setString(6, user.getGuid());
             stmt.executeUpdate();
             stmt.close();
 

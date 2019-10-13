@@ -103,16 +103,21 @@ public class UsersController implements Serializable {
                 String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/add", gson.toJson(newUser)), String.class);
                 if (result != null && result.equalsIgnoreCase("true")) {
                     init();
-                    PrimeFaces.current().ajax().update("userForm");
                     PrimeFaces.current().executeScript("PF('addUserDlg').hide()");
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully added"));
                 } else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem adding the new user"));
                 }
             }
+            PrimeFaces.current().ajax().update("userForm");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void editUser(User user) {
+        selectedUser = user;
+        editUser();
     }
 
     public void editUser() {
@@ -124,13 +129,13 @@ public class UsersController implements Serializable {
                 String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/edit", gson.toJson(selectedUser)), String.class);
                 if (result != null && result.equalsIgnoreCase("true")) {
                     init();
-                    PrimeFaces.current().ajax().update("userForm");
                     PrimeFaces.current().executeScript("PF('editUserDlg').hide()");
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully edited"));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully modified"));
                 } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem editing the existing user"));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem modifying the existing user"));
                 }
             }
+            PrimeFaces.current().ajax().update("userForm");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,12 +147,12 @@ public class UsersController implements Serializable {
             String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/remove", gson.toJson(selectedUser)), String.class);
             if (result != null && result.equalsIgnoreCase("true")) {
                 init();
-                PrimeFaces.current().ajax().update("userForm");
                 PrimeFaces.current().executeScript("PF('deleteUserDlg').hide()");
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully deleted"));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully removed"));
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem deleting the existing user"));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem removing the existing user"));
             }
+            PrimeFaces.current().ajax().update("userForm");
         } catch (Exception e) {
             e.printStackTrace();
         }

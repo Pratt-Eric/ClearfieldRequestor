@@ -38,7 +38,7 @@ public class SQLProcess {
             Statement stmt = conn.createStatement();
             ResultSet set = stmt.executeQuery("SELECT * FROM USERS");
             while (set.next()) {
-                users.add(new User(set.getString("GUID"), set.getString("USERNAME"), set.getString("FIRSTNAME"), set.getString("LASTNAME"), set.getString("EMAIL"), set.getString("PASSWORD_GUID")));
+                users.add(new User(set.getString("GUID"), set.getString("USERNAME"), set.getString("FIRSTNAME"), set.getString("LASTNAME"), set.getString("EMAIL"), set.getString("PASSWORD_GUID"), set.getString("ADMINISTRATOR").equals("1")));
             }
             set.close();
             stmt.close();

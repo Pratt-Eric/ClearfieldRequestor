@@ -6,7 +6,9 @@
 package com.prt;
 
 import com.google.gson.Gson;
+import com.prt.models.Group;
 import com.prt.models.User;
+import com.prt.requestor.SQLGroupProcess;
 import com.prt.requestor.SQLProcess;
 import com.prt.requestor.SQLUserProcess;
 import com.prt.utils.DBConnection;
@@ -151,7 +153,8 @@ public class DataResource {
     @Produces(MediaType.APPLICATION_JSON)
     public String postSelectAllGroups() {
         try {
-
+            Gson gson = new Gson();
+            return gson.toJson(SQLGroupProcess.selectAllGroups());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -165,7 +168,7 @@ public class DataResource {
     public String postAddNewGroup(String content) {
         Gson gson = new Gson();
         try {
-
+            return gson.toJson(SQLGroupProcess.addNewGroup(gson.fromJson(content, Group.class)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -179,7 +182,7 @@ public class DataResource {
     public String postEditGroup(String content) {
         Gson gson = new Gson();
         try {
-
+            return gson.toJson(SQLGroupProcess.editExistingGroup(gson.fromJson(content, Group.class)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -193,7 +196,7 @@ public class DataResource {
     public String postRemoveGroup(String content) {
         Gson gson = new Gson();
         try {
-
+            return gson.toJson(SQLGroupProcess.removeExistingGroup(gson.fromJson(content, Group.class)));
         } catch (Exception e) {
             e.printStackTrace();
         }

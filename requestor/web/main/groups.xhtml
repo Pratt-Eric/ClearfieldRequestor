@@ -11,10 +11,129 @@
         <div class="ui-g">
             <div class="ui-g-12">
                 <div class="card">
-                    Content goes here
+                    <div class="card-title">
+                        <h1>Groups</h1>
+                        <p:commandButton value="Add Group" icon="fa fa-plus" actionListener="#{groupsController.startAddGroup}" style="margin-bottom: 20px;" update="groupAddForm" oncomplete="PF('groupAddDlg').show()"/>
+                    </div>
+                    <div class="card-content card-content-main">
+                        <h:form id="groupForm">
+                            <p:growl showDetail="true" showSummary="true"/>
+                            <p:dataTable value="#{groupsController.groups}" var="group">
+                                <p:column headerText="Group Name">
+                                    <p:outputLabel value="#{group.name}"/>
+                                </p:column>
+                                <p:column headerText="Group Description">
+                                    <p:outputLabel value="#{group.desc}"/>
+                                </p:column>
+                                <p:column headerText="Associated Users">
+                                    <ui:repeat value="#{group.users}" var="user">
+                                        <p:outputLabel value="#{user.username}"/>
+                                        <br/>
+                                    </ui:repeat>
+                                </p:column>
+                                <p:column headerText="Administrator">
+                                    <p:selectBooleanCheckbox value="#{group.admin}">
+                                        <p:ajax listener="#{groupsController.editGroup(group)}"/>
+                                    </p:selectBooleanCheckbox>
+                                </p:column>
+                                <p:column headerText="Actions">
+                                    <p:commandLink title="Edit Users" actionListener="#{groupsController.selectGroup(group)}" update="userGroupForm" oncomplete="PF('userGroupDlg').show()">
+                                        <i class="fa fa-group"/>
+                                    </p:commandLink>
+                                    <p:commandLink title="Edit" actionListener="#{groupsController.selectGroup(group)}" update="groupEditForm" oncomplete="PF('groupEditDlg').show()">
+                                        <i class="fa fa-edit"/>
+                                    </p:commandLink>
+                                    <p:commandLink title="Delete Group" actionListener="#{groupsController.selectGroup(group)}" update="groupDeleteForm" oncomplete="PF('groupDeleteDlg').show()">
+                                        <i class="fa fa-trash"/>
+                                    </p:commandLink> 
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <p:dialog widgetVar="groupAddDlg" modal="true" header="Add Group">
+            <h:form id="groupAddForm" style="width: 300px;">
+                <div style="width: 100%;">
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Group Name"/>
+                        <br/>
+                        <p:inputText value="#{groupsController.newGroup.name}">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Group Description"/>
+                        <br/>
+                        <p:inputText value="#{groupsController.newGroup.desc}">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:selectBooleanCheckbox id="addGroupAdmin" value="#{groupsController.newGroup.admin}">
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+                        <p:outputLabel value="Administrator" for="addGroupAdmin"/>
+                    </div>
+                </div>
+                <div>
+                    <p:commandButton value="Add Group" actionListener="#{groupsController.addGroup}"/>
+                    <p:commandButton value="Cancel" title="Cancel Add Group" oncomplete="PF('groupAddDlg').hide()" style="margin-left: 10px;"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="groupEditDlg" modal="true" header="Edit Group">
+            <h:form id="groupEditForm">
+                <div style="width: 100%;">
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Group Name"/>
+                        <br/>
+                        <p:inputText value="#{groupsController.selectedGroup.name}">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Group Description"/>
+                        <br/>
+                        <p:inputText value="#{groupsController.selectedGroup.desc}">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:selectBooleanCheckbox id="addGroupAdmin" value="#{groupsController.selectedGroup.admin}">
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+                        <p:outputLabel value="Administrator" for="addGroupAdmin"/>
+                    </div>
+                </div>
+                <div>
+                    <p:commandButton value="Add Group" actionListener="#{groupsController.editGroup}"/>
+                    <p:commandButton value="Cancel" title="Cancel Add Group" oncomplete="PF('groupEditDlg').hide()" style="margin-left: 10px;"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="groupDeleteDlg" modal="true" header="Delete Group">
+            <h:form id="groupDeleteForm">
+                <p:outputLabel value="Are you sure you'd like to delete #{groupsController.selectedGroup.name} from the system?"/>
+                <br/><br/>
+                <p:commandButton value="Delete Group" actionListener="#{groupsController.deleteGroup}"/>
+                <p:commandButton value="Cancel" title="Cancel Delete Group" oncomplete="PF('groupDeleteDlg')hide()" style="margin-left: 10px;"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="userGroupDlg" modal="true" header="Add Users to Group">
+            <h:form id="userGroupForm">
+                <p:selectManyCheckbox value="#{groupsController.selectedUsers}">
+                    <f:selectItems value="#{groupsController.users}" var="user" itemLabel="#{user.username}" itemValue="#{user.guid}"/>
+                </p:selectManyCheckbox>
+                <p:commandButton value="Submit" title="Submit Changes" actionListener="#{groupsController.addUsersToGroup}"/>
+                <p:commandButton value="Cancel" title="Cancel Changes" oncomplete="PF('userGroupDlg').hide()"/>
+            </h:form>
+        </p:dialog>
     </ui:define>
 
 </ui:composition>
