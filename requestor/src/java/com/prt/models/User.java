@@ -14,131 +14,140 @@ import java.util.UUID;
  */
 public class User implements Serializable {
 
-    private String guid;
-    private String username;
-    private String firstname;
-    private String lastname;
-    private String email;
-    private String password_guid;
-    private String password;
-    private String salt;
-    private String picture;
-    private String calling;
-    private String createdBy;
-    private boolean admin;
+	private String guid;
+	private String username;
+	private String firstname;
+	private String lastname;
+	private String email;
+	private String password_guid;
+	private String password;
+	private String salt;
+	private String picture;
+	private String calling;
+	private String createdBy;
+	private boolean admin;
+	private boolean editBudget;
 
-    public User() {
+	public boolean isEditBudget() {
+		return editBudget;
+	}
 
-    }
+	public void setEditBudget(boolean editBudget) {
+		this.editBudget = editBudget;
+	}
 
-    public User(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	public User() {
 
-    public User(String guid, String username, String firstname, String lastname, String email, String password_guid, boolean admin) {
-        this.guid = guid;
-        this.username = username;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.password_guid = password_guid;
-        this.admin = admin;
-    }
+	}
 
-    public boolean isAdmin() {
-        return admin;
-    }
+	public User(String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
+	public User(String guid, String username, String firstname, String lastname, String email, String password_guid, boolean admin) {
+		this.guid = guid;
+		this.username = username;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.email = email;
+		this.password_guid = password_guid;
+		this.admin = admin;
+	}
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
+	public boolean isAdmin() {
+		return admin;
+	}
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
 
-    public String getCalling() {
-        return calling;
-    }
+	public String getCreatedBy() {
+		return createdBy;
+	}
 
-    public void setCalling(String calling) {
-        this.calling = calling;
-    }
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    public String getPicture() {
-        return picture;
-    }
+	public String getCalling() {
+		return calling;
+	}
 
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
+	public void setCalling(String calling) {
+		this.calling = calling;
+	}
 
-    public String getSalt() {
-        return salt;
-    }
+	public String getPicture() {
+		return picture;
+	}
 
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getSalt() {
+		return salt;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String getFirstname() {
-        return firstname;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public String getLastname() {
-        return lastname;
-    }
+	public String getFirstname() {
+		return firstname;
+	}
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getLastname() {
+		return lastname;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
 
-    public String getGuid() {
-        return guid;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getPassword_guid() {
-        return password_guid;
-    }
+	public String getGuid() {
+		return guid;
+	}
 
-    public void setPassword_guid(String password_guid) {
-        this.password_guid = password_guid;
-    }
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
+
+	public String getPassword_guid() {
+		return password_guid;
+	}
+
+	public void setPassword_guid(String password_guid) {
+		this.password_guid = password_guid;
+	}
 
 }

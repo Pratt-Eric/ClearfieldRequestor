@@ -14,49 +14,58 @@ import java.util.ArrayList;
  */
 public class Group implements Serializable {
 
-    private String guid;
-    private String name;
-    private String desc;
-    private boolean admin;
-    private ArrayList<User> users = new ArrayList<>();
+	private String guid;
+	private String name;
+	private String desc;
+	private boolean admin;
+	private ArrayList<User> users = new ArrayList<>();
+	private boolean editBudget;
 
-    public boolean isAdmin() {
-        return admin;
-    }
+	public boolean isEditBudget() {
+		return editBudget;
+	}
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
+	public void setEditBudget(boolean editBudget) {
+		this.editBudget = editBudget;
+	}
 
-    public ArrayList<User> getUsers() {
-        return users;
-    }
+	public boolean isAdmin() {
+		return admin;
+	}
 
-    public void setUsers(ArrayList<User> users) {
-        this.users = users;
-    }
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
 
-    public String getGuid() {
-        return guid;
-    }
+	public ArrayList<User> getUsers() {
+		return users;
+	}
 
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
+	public void setUsers(ArrayList<User> users) {
+		this.users = users;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getGuid() {
+		return guid;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
 
-    public String getDesc() {
-        return desc;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
 }

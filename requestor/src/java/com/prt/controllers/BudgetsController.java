@@ -13,9 +13,12 @@ import com.prt.models.User;
 import com.prt.utils.RestUtil;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
@@ -176,7 +179,15 @@ public class BudgetsController {
 	public void addNewBudget() {
 		try {
 			Gson gson = new Gson();
-
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/add", gson.toJson(newBudget)), String.class);
+			if (result != null && result.equalsIgnoreCase("true")) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The new budget was successfully added"));
+				init();
+				PrimeFaces.current().executeScript("PF('budgetAddDlg').hide()");
+				PrimeFaces.current().ajax().update("budgetForm");
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem adding the new budget"));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -185,7 +196,16 @@ public class BudgetsController {
 	public void editExistingBudget() {
 		try {
 			Gson gson = new Gson();
-
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/edit", gson.toJson(selectedBudget)), String.class);
+			if (result != null && result.equalsIgnoreCase("true")) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The new budget was successfully modified"));
+				init();
+				PrimeFaces.current().executeScript("PF('budgetEditDlg').hide()");
+				PrimeFaces.current().executeScript("PF('budgetUserGroupDlg').hide()");
+				PrimeFaces.current().ajax().update("budgetForm");
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem modifying the existing budget"));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -194,7 +214,15 @@ public class BudgetsController {
 	public void deleteExistingBudget() {
 		try {
 			Gson gson = new Gson();
-
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/remove", gson.toJson(selectedBudget)), String.class);
+			if (result != null && result.equalsIgnoreCase("true")) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The new budget was successfully removed"));
+				init();
+				PrimeFaces.current().executeScript("PF('budgetDeleteDlg').hide()");
+				PrimeFaces.current().ajax().update("budgetForm");
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem removing the existing budget"));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -202,17 +230,45 @@ public class BudgetsController {
 
 	public void addUsersAndGroupsToBudget() {
 		try {
-			Gson gson = new Gson();
+			//run logic to add users and groups to selectedBudget object then call editExistingBudget()
+			selectedBudget.setUsers(new ArrayList<>());
+			selectedBudget.setGroups(new ArrayList<>());
+			for (String selected : usersToAdd) {
+				for (User user : users) {
+					if (user.getGuid().equals(selected)) {
+						boolean found = false;
+						for (User u : selectedBudget.getUsers()) {
+							if (u.getGuid().equals(user.getGuid())) {
+								found = true;
+								break;
+							}
+						}
+						if (!found) {
+							selectedBudget.getUsers().add(user);
+						}
+						break;
+					}
+				}
+			}
+			for (String selected : groupsToAdd) {
+				for (Group group : groups) {
+					if (group.getGuid().equals(selected)) {
+						boolean found = false;
+						for (Group g : selectedBudget.getGroups()) {
+							if (g.getGuid().equals(group.getGuid())) {
+								found = true;
+								break;
+							}
+						}
+						if (!found) {
+							selectedBudget.getGroups().add(group);
+						}
+						break;
+					}
+				}
+			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void assignUsersAndGroupsToBudget() {
-		try {
-			Gson gson = new Gson();
-
+			editExistingBudget();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

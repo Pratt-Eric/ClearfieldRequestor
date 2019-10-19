@@ -19,8 +19,17 @@ public class Budget implements Serializable {
 	private String desc;
 	private double remaining;
 	private Budget parent;
+	private String parentGuid;
 	private ArrayList<User> users = new ArrayList<>();
 	private ArrayList<Group> groups = new ArrayList<>();
+
+	public String getParentGuid() {
+		return parentGuid;
+	}
+
+	public void setParentGuid(String parentGuid) {
+		this.parentGuid = parentGuid;
+	}
 
 	public ArrayList<User> getUsers() {
 		return users;
