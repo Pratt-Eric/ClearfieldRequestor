@@ -205,6 +205,20 @@ public class DataResource {
 		return gson.toJson(false);
 	}
 
+	@Path("budget/select/all")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String selectAllBudgets(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLBudgetProcess.selectAllBudgets());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
 	@Path("budget/add")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

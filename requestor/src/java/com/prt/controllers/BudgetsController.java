@@ -11,6 +11,7 @@ import com.prt.models.Budget;
 import com.prt.models.Group;
 import com.prt.models.User;
 import com.prt.utils.RestUtil;
+import java.io.Serializable;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -28,7 +29,7 @@ import org.primefaces.model.TreeNode;
  */
 @ManagedBean(name = "budgetsController")
 @ViewScoped
-public class BudgetsController {
+public class BudgetsController implements Serializable {
 
 	@ManagedProperty("#{guestPreferences}")
 	private GuestPreferences preferences;
@@ -134,7 +135,7 @@ public class BudgetsController {
 	public void assignBudgetHierarchy(ArrayList<Budget> budgetList) {
 		//first find all that don't have a parent
 		for (Budget budget : budgetList) {
-			if (budget.getParent() == null) {
+			if (budget.getParentGuid() == null) {
 				TreeNode newNode = new DefaultTreeNode(budget, budgets);
 			}
 		}
@@ -142,7 +143,7 @@ public class BudgetsController {
 		//now loop through those that have a parent, find the parent and assign it to the parent accordingly
 		for (Budget budget : budgetList) {
 			if (budget.getParent() != null) {
-				TreeNode node = findNode(budgets, budget);
+				TreeNode node = findNode(budgets, budget.getParent());
 				TreeNode newNode = new DefaultTreeNode(budget, node);
 			}
 		}
@@ -170,10 +171,21 @@ public class BudgetsController {
 	public void prepareAddNewBudget(Budget parent) {
 		newBudget = new Budget();
 		newBudget.setParent(parent);
+		if (parent != null) {
+			newBudget.setParentGuid(parent.getGuid());
+		}
 	}
 
 	public void selectBudget(Budget budget) {
 		selectedBudget = budget;
+		usersToAdd = new ArrayList<>();
+		groupsToAdd = new ArrayList<>();
+		for (User user : selectedBudget.getUsers()) {
+			usersToAdd.add(user.getGuid());
+		}
+		for (Group group : selectedBudget.getGroups()) {
+			groupsToAdd.add(group.getGuid());
+		}
 	}
 
 	public void addNewBudget() {
@@ -198,7 +210,7 @@ public class BudgetsController {
 			Gson gson = new Gson();
 			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/edit", gson.toJson(selectedBudget)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The new budget was successfully modified"));
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The existing budget was successfully modified"));
 				init();
 				PrimeFaces.current().executeScript("PF('budgetEditDlg').hide()");
 				PrimeFaces.current().executeScript("PF('budgetUserGroupDlg').hide()");
@@ -216,7 +228,7 @@ public class BudgetsController {
 			Gson gson = new Gson();
 			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/remove", gson.toJson(selectedBudget)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The new budget was successfully removed"));
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The existing budget was successfully removed"));
 				init();
 				PrimeFaces.current().executeScript("PF('budgetDeleteDlg').hide()");
 				PrimeFaces.current().ajax().update("budgetForm");
@@ -228,50 +240,14 @@ public class BudgetsController {
 		}
 	}
 
-	public void addUsersAndGroupsToBudget() {
+	public String addUsersAndGroupsToBudget(Budget budget) {
 		try {
-			//run logic to add users and groups to selectedBudget object then call editExistingBudget()
-			selectedBudget.setUsers(new ArrayList<>());
-			selectedBudget.setGroups(new ArrayList<>());
-			for (String selected : usersToAdd) {
-				for (User user : users) {
-					if (user.getGuid().equals(selected)) {
-						boolean found = false;
-						for (User u : selectedBudget.getUsers()) {
-							if (u.getGuid().equals(user.getGuid())) {
-								found = true;
-								break;
-							}
-						}
-						if (!found) {
-							selectedBudget.getUsers().add(user);
-						}
-						break;
-					}
-				}
-			}
-			for (String selected : groupsToAdd) {
-				for (Group group : groups) {
-					if (group.getGuid().equals(selected)) {
-						boolean found = false;
-						for (Group g : selectedBudget.getGroups()) {
-							if (g.getGuid().equals(group.getGuid())) {
-								found = true;
-								break;
-							}
-						}
-						if (!found) {
-							selectedBudget.getGroups().add(group);
-						}
-						break;
-					}
-				}
-			}
-
-			editExistingBudget();
+			preferences.selectedBudget = budget;
+			return "/main/budgetpermissions.xhtml?faces-redirect=true";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 }

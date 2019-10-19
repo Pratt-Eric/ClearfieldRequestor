@@ -60,14 +60,14 @@
                     <div style="margin-bottom: 20px;">
                         <p:outputLabel value="Group Name"/>
                         <br/>
-                        <p:inputText value="#{groupsController.newGroup.name}">
+                        <p:inputText value="#{groupsController.newGroup.name}" style="width: 100%;">
                             <p:ajax/>
                         </p:inputText>
                     </div>
                     <div style="margin-bottom: 20px;">
                         <p:outputLabel value="Group Description"/>
                         <br/>
-                        <p:inputText value="#{groupsController.newGroup.desc}">
+                        <p:inputText value="#{groupsController.newGroup.desc}" style="width: 100%;">
                             <p:ajax/>
                         </p:inputText>
                     </div>
@@ -91,14 +91,14 @@
                     <div style="margin-bottom: 20px;">
                         <p:outputLabel value="Group Name"/>
                         <br/>
-                        <p:inputText value="#{groupsController.selectedGroup.name}">
+                        <p:inputText value="#{groupsController.selectedGroup.name}" style="width: 100%;">
                             <p:ajax/>
                         </p:inputText>
                     </div>
                     <div style="margin-bottom: 20px;">
                         <p:outputLabel value="Group Description"/>
                         <br/>
-                        <p:inputText value="#{groupsController.selectedGroup.desc}">
+                        <p:inputText value="#{groupsController.selectedGroup.desc}" style="width: 100%;">
                             <p:ajax/>
                         </p:inputText>
                     </div>
@@ -129,7 +129,7 @@
             <h:form id="userGroupForm">
                 <p:outputLabel value="Users:"/>
                 <br/>
-                <p:selectManyMenu value="#{groupsController.selectedUsers}" showCheckbox="true">
+                <p:selectManyMenu value="#{groupsController.selectedUsers}" showCheckbox="true" style="width: 100%;">
                     <f:selectItems value="#{groupsController.users}" var="user" itemLabel="#{user.username}" itemValue="#{user.guid}"/>
                 </p:selectManyMenu>
                 <br/><br/>

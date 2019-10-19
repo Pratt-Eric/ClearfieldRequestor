@@ -20,6 +20,15 @@ public class Group implements Serializable {
 	private boolean admin;
 	private ArrayList<User> users = new ArrayList<>();
 	private boolean editBudget;
+	private boolean selected;
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 
 	public boolean isEditBudget() {
 		return editBudget;

@@ -1,5 +1,6 @@
 package com.prt.controllers;
 
+import com.prt.models.Budget;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -14,95 +15,96 @@ import org.primefaces.model.StreamedContent;
 @SessionScoped
 public class GuestPreferences implements Serializable {
 
-    private String menuMode = "layout-slim";
+	private String menuMode = "layout-slim";
 
-    private String theme = "bluegrey-teal";
+	private String theme = "bluegrey-teal";
 
-    private String menuColor = "layout-menu-light";
+	private String menuColor = "layout-menu-light";
 
-    private String topBarColor = "layout-topbar-bluegrey";
+	private String topBarColor = "layout-topbar-bluegrey";
 
-    private String logo = "logo-olympia-white";
+	private String logo = "logo-olympia-white";
 
-    private String username;
-    private String calling;
-    private String userGuid;
-    private StreamedContent picture;
-    public ByteArrayOutputStream stream = new ByteArrayOutputStream();
-    public String imgExt = "";
+	private String username;
+	private String calling;
+	private String userGuid;
+	private StreamedContent picture;
+	public ByteArrayOutputStream stream = new ByteArrayOutputStream();
+	public String imgExt = "";
+	public Budget selectedBudget = null;
 
-    public String getUserGuid() {
-        return userGuid;
-    }
+	public String getUserGuid() {
+		return userGuid;
+	}
 
-    public void setUserGuid(String userGuid) {
-        this.userGuid = userGuid;
-    }
+	public void setUserGuid(String userGuid) {
+		this.userGuid = userGuid;
+	}
 
-    public StreamedContent getPicture() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
-            return new DefaultStreamedContent();
-        } else if (stream.size() > 0) {
-            return new DefaultStreamedContent(new ByteArrayInputStream(stream.toByteArray()), "image/" + imgExt.toLowerCase());
-        }
-        return null;
-    }
+	public StreamedContent getPicture() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+			return new DefaultStreamedContent();
+		} else if (stream.size() > 0) {
+			return new DefaultStreamedContent(new ByteArrayInputStream(stream.toByteArray()), "image/" + imgExt.toLowerCase());
+		}
+		return null;
+	}
 
-    public void setPicture(StreamedContent picture) {
-        this.picture = picture;
-    }
+	public void setPicture(StreamedContent picture) {
+		this.picture = picture;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public String getCalling() {
-        return calling;
-    }
+	public String getCalling() {
+		return calling;
+	}
 
-    public void setCalling(String calling) {
-        this.calling = calling;
-    }
+	public void setCalling(String calling) {
+		this.calling = calling;
+	}
 
-    public String getTheme() {
-        return theme;
-    }
+	public String getTheme() {
+		return theme;
+	}
 
-    public void setTheme(String theme) {
-        this.theme = theme;
-    }
+	public void setTheme(String theme) {
+		this.theme = theme;
+	}
 
-    public String getMenuMode() {
-        return this.menuMode;
-    }
+	public String getMenuMode() {
+		return this.menuMode;
+	}
 
-    public void setMenuMode(String menuMode) {
-        this.menuMode = menuMode;
-    }
+	public void setMenuMode(String menuMode) {
+		this.menuMode = menuMode;
+	}
 
-    public String getMenuColor() {
-        return this.menuColor;
-    }
+	public String getMenuColor() {
+		return this.menuColor;
+	}
 
-    public void setMenuColor(String menuColor) {
-        this.menuColor = menuColor;
-    }
+	public void setMenuColor(String menuColor) {
+		this.menuColor = menuColor;
+	}
 
-    public String getTopBarColor() {
-        return this.topBarColor;
-    }
+	public String getTopBarColor() {
+		return this.topBarColor;
+	}
 
-    public void setTopBarColor(String topBarColor, String logo) {
-        this.topBarColor = topBarColor;
-        this.logo = logo;
-    }
+	public void setTopBarColor(String topBarColor, String logo) {
+		this.topBarColor = topBarColor;
+		this.logo = logo;
+	}
 
-    public String getLogo() {
-        return this.logo;
-    }
+	public String getLogo() {
+		return this.logo;
+	}
 }
