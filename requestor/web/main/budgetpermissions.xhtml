@@ -12,51 +12,53 @@
             <div class="ui-g-12">
                 <div class="card">
                     <div class="card-title" style="margin-bottom: 20px;">
-                        <h1>Budget Permissions</h1>
+                        <h1>Budget Permissions - (#{budgetPermissionsController.budget.name})</h1>
                     </div>
                     <div class="card-content card-content-main">
                         <h:form id="budgetForm">
-							<p:panelGrid columns="2">
-								<h:panelGroup>
-									<p:outputLabel value="Users:"/>
-									<p:commandButton icon="fa fa-plus" style="float: right;" value="Add Users" actionListener="#{budgetPermissionsController.startAddUsers}" oncomplete="PF('addUsersDlg').show()"/>
-									<br/>
-									<p:dataTable value="#{budgetPermissionsController.budget.users}" var="user">
-										<p:column headerText="Username">
-											<p:outputLabel value="#{user.username}"/>
-										</p:column>
-										<p:column headerText="Edit Budget">
-											<p:selectBooleanCheckbox value="#{user.editBudget}">
-												<p:ajax listener="#{budgetPermissionsController.editBudgetPermissions}"/>
-											</p:selectBooleanCheckbox>
-										</p:column>
-										<p:column headerText="Actions">
-											<p:commandLink title="Delete User" actionListener="#{budgetPermissionsController.selectUser(user)}" oncomplete="PF('deleteUserDlg').show()">
-												<i class="fa fa-lg fa-trash"/>
-											</p:commandLink>
-										</p:column>
-									</p:dataTable>
-								</h:panelGroup>
-								<h:panelGroup>
-									<p:outputLabel value="Groups:"/>
-									<br/><p:commandButton icon="fa fa-plus" style="float: right;" value="Add Users" actionListener="#{budgetPermissionsController.startAddGroups}" oncomplete="PF('addGroupsDlg').show()"/>
-									<br/>
-									<p:dataTable value="#{budgetPermissionsController.budget.groups}" var="group">
-										<p:column headerText="Group Name">
-											<p:outputLabel value="#{group.name}"/>
-										</p:column>
-										<p:column headerText="Edit Budget">
-											<p:selectBooleanCheckbox value="#{group.editBudget}">
-												<p:ajax listener="#{budgetPermissionsController.editBudgetPermissions}"/>
-											</p:selectBooleanCheckbox>
-										</p:column>
-										<p:column headerText="Actions">
-											<p:commandLink title="Delete Group" actionListener="#{budgetPermissionsController.selectGroup}" oncomplete="PF('deleteGroupDlg').show()">
-												<i class="fa fa-lg fa-trash"/>
-											</p:commandLink>
-										</p:column>
-									</p:dataTable>
-								</h:panelGroup>
+							<p:panelGrid>
+								<p:row>
+									<p:column style="vertical-align: top;">
+										<p:outputLabel value="Users:"/>
+										<p:commandButton icon="fa fa-plus" style="float: right;" value="Add Users" actionListener="#{budgetPermissionsController.startAddUsers}" oncomplete="PF('addUsersDlg').show()"/>
+										<br/><br/>
+										<p:dataTable value="#{budgetPermissionsController.budget.users}" var="user">
+											<p:column headerText="Username">
+												<p:outputLabel value="#{user.username}"/>
+											</p:column>
+											<p:column headerText="Edit Budget" style="text-align: center; width: 15%;">
+												<p:selectBooleanCheckbox value="#{user.editBudget}">
+													<p:ajax listener="#{budgetPermissionsController.editBudgetPermissions}"/>
+												</p:selectBooleanCheckbox>
+											</p:column>
+											<p:column headerText="Actions" style="text-align: center; width: 15%;">
+												<p:commandLink title="Delete User" actionListener="#{budgetPermissionsController.selectUser(user)}" oncomplete="PF('deleteUserDlg').show()">
+													<i class="fa fa-lg fa-trash"/>
+												</p:commandLink>
+											</p:column>
+										</p:dataTable>
+									</p:column>
+									<p:column style="vertical-align: top;">
+										<p:outputLabel value="Groups:"/>
+										<p:commandButton icon="fa fa-plus" style="float: right;" value="Add Groups" actionListener="#{budgetPermissionsController.startAddGroups}" oncomplete="PF('addGroupsDlg').show()"/>
+										<br/><br/>
+										<p:dataTable value="#{budgetPermissionsController.budget.groups}" var="group">
+											<p:column headerText="Group Name">
+												<p:outputLabel value="#{group.name}"/>
+											</p:column>
+											<p:column headerText="Edit Budget" style="text-align: center; width: 15%;">
+												<p:selectBooleanCheckbox value="#{group.editBudget}">
+													<p:ajax listener="#{budgetPermissionsController.editBudgetPermissions}"/>
+												</p:selectBooleanCheckbox>
+											</p:column>
+											<p:column headerText="Actions" style="text-align: center; width: 15%;">
+												<p:commandLink title="Delete Group" actionListener="#{budgetPermissionsController.selectGroup(group)}" oncomplete="PF('deleteGroupDlg').show()">
+													<i class="fa fa-lg fa-trash"/>
+												</p:commandLink>
+											</p:column>
+										</p:dataTable>
+									</p:column>
+								</p:row>
 							</p:panelGrid>
                         </h:form>
                     </div>
@@ -70,12 +72,12 @@
                     <p:outputLabel value="Users:"/>
                     <br/> 
                     <p:selectManyMenu showCheckbox="true" value="#{budgetPermissionsController.selectedUsers}" style="width: 100%;">
-                        <f:selectItems value="#{budgetPermissionsController.users}" var="user" itemLabel="#{user.username}" itemValue="#{user.guid}"/>
+                        <f:selectItems value="#{budgetPermissionsController.availableUsers}" var="user" itemLabel="#{user.username}" itemValue="#{user.guid}"/>
                     </p:selectManyMenu>
 				</div>
 				<div style="margin-top: 20px;">
-					<p:commandButton value="Add Users"/>
-					<p:commandButton value="Cancel" style="margin-left: 10px;"/>
+					<p:commandButton value="Add Users" actionListener="#{budgetPermissionsController.addUsersAndGroups}"/>
+					<p:commandButton value="Cancel" style="margin-left: 10px;" oncomplete="PF('addUsersDlg').hide()"/>
 				</div>
 			</h:form>
 		</p:dialog>
@@ -86,12 +88,12 @@
                     <p:outputLabel value="Groups:"/>
                     <br/>
                     <p:selectManyMenu showCheckbox="true" value="#{budgetPermissionsController.selectedGroups}" style="width: 100%;">
-                        <f:selectItems value="#{budgetPermissionsController.groups}" var="group" itemLabel="#{group.name}" itemValue="#{group.guid}"/>
+                        <f:selectItems value="#{budgetPermissionsController.availableGroups}" var="group" itemLabel="#{group.name}" itemValue="#{group.guid}"/>
                     </p:selectManyMenu>
 				</div>
 				<div style="margin-top: 20px;">
-					<p:commandButton value="Add Groups"/>
-					<p:commandButton value="Cancel" style="margin-left: 10px;"/>
+					<p:commandButton value="Add Groups" actionListener="#{budgetPermissionsController.addUsersAndGroups}"/>
+					<p:commandButton value="Cancel" style="margin-left: 10px;" oncomplete="PF('addGroupsDlg').hide()"/>
 				</div>
 			</h:form>
 		</p:dialog>
@@ -100,8 +102,8 @@
 			<h:form id="deleteUserForm">
 				<p:outputLabel value="Are you sure you want to remove #{budgetPermissionsController.selectedUser.username} from #{budgetPermissionsController.budget.name}?"/>
 				<br/><br/>
-				<p:commandButton value="Remove User"/>
-				<p:commandButton value="Cancel" style="margin-left: 10px;"/>
+				<p:commandButton value="Remove User" actionListener="#{budgetPermissionsController.removeUser}"/>
+				<p:commandButton value="Cancel" style="margin-left: 10px;" oncomplete="PF('deleteUserDlg').hide()"/>
 			</h:form>
 		</p:dialog>
 
@@ -109,8 +111,8 @@
 			<h:form id="deleteGroupForm">
 				<p:outputLabel value="Are you sure you want to remove #{budgetPermissionsController.selectedGroup.name} from #{budgetPermissionsController.budget.name}?"/>
 				<br/><br/>
-				<p:commandButton value="Remove Group"/>
-				<p:commandButton value="Cancel" style="margin-left: 10px;"/>
+				<p:commandButton value="Remove Group" actionListener="#{budgetPermissionsController.removeGroup}"/>
+				<p:commandButton value="Cancel" style="margin-left: 10px;" oncomplete="PF('deleteGroupDlg').hide()"/>
 			</h:form>
 		</p:dialog>
 	</ui:define>
