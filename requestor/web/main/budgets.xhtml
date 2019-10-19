@@ -13,7 +13,7 @@
                 <div class="card">
                     <div class="card-title">
                         <h1>Budgets</h1>
-                        <p:commandButton value="Add Budget" icon="fa fa-plus"/>
+                        <p:commandButton value="Add Budget" icon="fa fa-plus" actionListener="#{budgetsController.prepareAddNewBudget(null)}" update="budgetAddForm" oncomplete="PF('budgetAddDlg').show()"/>
                     </div>
                     <div class="card-content card-content-main">
                         <h:form id="budgetForm">
@@ -38,14 +38,14 @@
                                     </ui:repeat>
                                 </p:column>
                                 <p:column headerText="Actions" style="text-align: center; width: 10%;">
-                                    <p:commandLink title="Edit Budget">
+                                    <p:commandLink title="Edit Budget" actionListener="#{budgetsController.selectBudget(budget)}" update="budgetEditForm" oncomplete="PF('budgetEditDlg').show()">
                                         <i class="fa fa-lg fa-edit"/>
                                     </p:commandLink>
-                                    <p:commandLink title="Add Child Budget">
+                                    <p:commandLink title="Add Child Budget" actionListener="#{budgetsController.prepareAddNewBudget(budget)}" update="budgetAddForm" oncomplete="PF('budgetAddDlg').show()">
                                         <i class="fa fa-lg fa-plus"/>
                                     </p:commandLink>
                                     <p:commandLink title="Delete Budget">
-                                        <i class="fa fa-lg fa-trash"/>
+                                        <i class="fa fa-lg fa-trash" actionListener="#{budgetsController.selectBudget(budget)}" update="budgetDeleteForm" oncomplete="PF('budgetDeleteDlg').show()"/>
                                     </p:commandLink>
                                 </p:column>
                             </p:treeTable>
