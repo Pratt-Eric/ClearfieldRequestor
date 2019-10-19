@@ -36,15 +36,15 @@
                                         <p:ajax listener="#{groupsController.editGroup(group)}"/>
                                     </p:selectBooleanCheckbox>
                                 </p:column>
-                                <p:column headerText="Actions">
-                                    <p:commandLink title="Edit Users" actionListener="#{groupsController.selectGroup(group)}" update="userGroupForm" oncomplete="PF('userGroupDlg').show()">
-                                        <i class="fa fa-group"/>
-                                    </p:commandLink>
+                                <p:column headerText="Actions" style="text-align: center; width: 10%;">
                                     <p:commandLink title="Edit" actionListener="#{groupsController.selectGroup(group)}" update="groupEditForm" oncomplete="PF('groupEditDlg').show()">
-                                        <i class="fa fa-edit"/>
+                                        <i class="fa fa-lg fa-edit"/>
+                                    </p:commandLink>
+                                    <p:commandLink title="Edit Users" actionListener="#{groupsController.selectGroup(group)}" update="userGroupForm" oncomplete="PF('userGroupDlg').show()">
+                                        <i class="fa fa-lg fa-group"/>
                                     </p:commandLink>
                                     <p:commandLink title="Delete Group" actionListener="#{groupsController.selectGroup(group)}" update="groupDeleteForm" oncomplete="PF('groupDeleteDlg').show()">
-                                        <i class="fa fa-trash"/>
+                                        <i class="fa fa-lg fa-trash"/>
                                     </p:commandLink> 
                                 </p:column>
                             </p:dataTable>

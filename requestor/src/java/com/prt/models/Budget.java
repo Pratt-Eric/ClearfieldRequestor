@@ -6,7 +6,7 @@
 package com.prt.models;
 
 import java.io.Serializable;
-import java.util.UUID;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,40 +14,67 @@ import java.util.UUID;
  */
 public class Budget implements Serializable {
 
-    private String guid;
-    private String name;
-    private String desc;
-    private double remaining;
+	private String guid;
+	private String name;
+	private String desc;
+	private double remaining;
+	private Budget parent;
+	private ArrayList<User> users = new ArrayList<>();
+	private ArrayList<Group> groups = new ArrayList<>();
 
-    public String getGuid() {
-        return guid;
-    }
+	public ArrayList<User> getUsers() {
+		return users;
+	}
 
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
+	public void setUsers(ArrayList<User> users) {
+		this.users = users;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public ArrayList<Group> getGroups() {
+		return groups;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setGroups(ArrayList<Group> groups) {
+		this.groups = groups;
+	}
 
-    public String getDesc() {
-        return desc;
-    }
+	public Budget getParent() {
+		return parent;
+	}
 
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
+	public void setParent(Budget parent) {
+		this.parent = parent;
+	}
 
-    public double getRemaining() {
-        return remaining;
-    }
+	public String getGuid() {
+		return guid;
+	}
 
-    public void setRemaining(double remaining) {
-        this.remaining = remaining;
-    }
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+	public double getRemaining() {
+		return remaining;
+	}
+
+	public void setRemaining(double remaining) {
+		this.remaining = remaining;
+	}
 }

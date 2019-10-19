@@ -11,10 +11,132 @@
         <div class="ui-g">
             <div class="ui-g-12">
                 <div class="card">
-                    Content goes here
+                    <div class="card-title">
+                        <h1>Budgets</h1>
+                        <p:commandButton value="Add Budget" icon="fa fa-plus"/>
+                    </div>
+                    <div class="card-content card-content-main">
+                        <h:form id="budgetForm">
+                            <p:growl showDetail="true" showSummary="true"/>
+                            <p:treeTable value="#{budgetsController.budgets}" var="budget">
+                                <p:column headerText="Budget Name">
+                                    <p:outputLabel value="#{budget.name}"/>
+                                </p:column>
+                                <p:column headerText="Budget Description">
+                                    <p:outputLabel value="#{budget.desc}"/>
+                                </p:column>
+                                <p:column headerText="Assigned Users">
+                                    <ui:repeat value="#{budget.users}" var="user">
+                                        <p:outputLabel value="#{user.username}"/>
+                                        <br/>
+                                    </ui:repeat>
+                                </p:column>
+                                <p:column headerText="Assigned Groups">
+                                    <ui:repeat value="#{budget.groups}" var="group">
+                                        <p:outputLabel value="#{group.name}"/>
+                                        <br/>
+                                    </ui:repeat>
+                                </p:column>
+                                <p:column headerText="Actions" style="text-align: center; width: 10%;">
+                                    <p:commandLink title="Edit Budget">
+                                        <i class="fa fa-lg fa-edit"/>
+                                    </p:commandLink>
+                                    <p:commandLink title="Add Child Budget">
+                                        <i class="fa fa-lg fa-plus"/>
+                                    </p:commandLink>
+                                    <p:commandLink title="Delete Budget">
+                                        <i class="fa fa-lg fa-trash"/>
+                                    </p:commandLink>
+                                </p:column>
+                            </p:treeTable>
+                        </h:form>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <p:dialog modal="true" widgetVar="budgetAddDlg" header="Add New Budget">
+            <h:form id="budgetAddForm" style="width: 300px;">
+                <h:panelGroup rendered="#{budgetsController.newBudget.parent ne null}">
+                    <h1>Parent Budget: #{budgetsController.newBudget.parent.name}</h1>
+                </h:panelGroup>
+                <div style="width: 100%;">
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Budget Name"/>
+                        <br/>
+                        <p:inputText value="#{budgetsController.newBudget.name}">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Budget Description"/>
+                        <br/>
+                        <p:inputText value="#{budgetsController.newBudget.desc}">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                </div>
+                <div>
+                    <p:commandButton value="Add Budget" actionListener="#{budgetsController.addNewBudget}"/>
+                    <p:commandButton value="Cancel" title="Cancel Add Budget" oncomplete="PF('budgetAddDlg').hide()"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog modal="true" widgetVar="budgetEditDlg" header="Edit Existing Budget">
+            <h:form id="budgetEditForm" style="width: 300px;">
+                <div style="width: 100%;">
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Budget Name"/>
+                        <br/>
+                        <p:inputText value="#{budgetsController.selectedBudget.name}">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:outputLabel value="Budget Description"/>
+                        <br/>
+                        <p:inputText value="#{budgetsController.selectedBudget.desc}">
+                            <p:ajax/>
+                        </p:inputText>
+                    </div>
+                </div>
+                <div>
+                    <p:commandButton value="Edit Budget" actionListener="#{budgetsController.editExistingBudget}"/>
+                    <p:commandButton value="Cancel" title="Cancel Edit Budget" oncomplete="PF('budgetEditDlg').hide()"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="budgetUserGroupDlg" modal="true" header="Add Users And Groups To Budget">
+            <h:form id="budgetUserGroupForm" style="width: 300px;">
+                <div>
+                    <p:outputLabel value="Users:"/>
+                    <br/>
+                    <p:selectManyMenu showCheckbox="true" value="#{budgetsController.usersToAdd}">
+                        <f:selectItems value="#{budgetsController.users}" var="user" itemLabel="#{user.username}" itemValue="#{user.guid}"/>
+                    </p:selectManyMenu>
+                    <br/>
+                    <p:selectManyMenu showCheckbox="true" value="#{budgetsController.groupsToAdd}">
+                        <f:selectItems value="#{budgetsController.groups}" var="group" itemLabel="#{group.name}" itemValue="#{group.guid}"/>
+                    </p:selectManyMenu>
+                </div>
+                <div>
+                    <p:commandButton value="Add To Budget" title="Add users and groups to budget" actionListener="#{budgetsController.assignUsersAndGroupsToBudget}"/>
+                    <p:commandButton value="Cancel" oncomplete="PF('budgetUserGroupDlg').hide()"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="budgetDeleteDlg" modal="true" header="Delete Group">
+            <h:form id="budgetDeleteForm">
+                <p:outputLabel value="Are you sure you'd like to delete #{budgetsController.selectedBudget.name} from the system?"/>
+                <br/><br/>
+                <p:commandButton value="Delete Group" actionListener="#{budgetsController.deleteExistingBudget}"/>
+                <p:commandButton value="Cancel" title="Cancel Delete Group" oncomplete="PF('budgetDeleteDlg')hide()" style="margin-left: 10px;"/>
+            </h:form>
+        </p:dialog>
+
     </ui:define>
 
 </ui:composition>
