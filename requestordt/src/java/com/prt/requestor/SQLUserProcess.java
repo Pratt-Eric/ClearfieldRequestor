@@ -31,6 +31,7 @@ public class SQLUserProcess {
             if (username != null) {
 
                 conn = DBConnection.getInstance().getDataSource().getConnection();
+                conn.setAutoCommit(false);
 
                 String query = "SELECT "
                         + "U.GUID, "
@@ -73,6 +74,7 @@ public class SQLUserProcess {
             }
         } finally {
             if (conn != null) {
+                conn.setAutoCommit(true);
                 conn.close();
             }
         }
@@ -83,6 +85,7 @@ public class SQLUserProcess {
         Connection conn = null;
         try {
             conn = DBConnection.getInstance().getDataSource().getConnection();
+            conn.setAutoCommit(false);
 
             String query = "SELECT "
                     + "U.GUID, "
@@ -119,6 +122,7 @@ public class SQLUserProcess {
             e.printStackTrace();
         } finally {
             if (conn != null) {
+                conn.setAutoCommit(true);
                 conn.close();
             }
         }
@@ -129,6 +133,7 @@ public class SQLUserProcess {
         Connection conn = null;
         try {
             conn = DBConnection.getInstance().getDataSource().getConnection();
+            conn.setAutoCommit(false);
 
             //generate random password to create user account with
             byte[] newPassBytes = new byte[8];
@@ -181,6 +186,7 @@ public class SQLUserProcess {
             }
         } finally {
             if (conn != null) {
+                conn.setAutoCommit(true);
                 conn.close();
             }
         }
@@ -191,6 +197,7 @@ public class SQLUserProcess {
         Connection conn = null;
         try {
             conn = DBConnection.getInstance().getDataSource().getConnection();
+            conn.setAutoCommit(false);
 
             String query = "UPDATE USERS SET USERNAME = ?, FIRSTNAME = ?, LASTNAME = ?, EMAIL = ?, ADMINISTRATOR = ? WHERE GUID = ?";
 
@@ -221,6 +228,7 @@ public class SQLUserProcess {
             }
         } finally {
             if (conn != null) {
+                conn.setAutoCommit(true);
                 conn.close();
             }
         }
@@ -231,6 +239,7 @@ public class SQLUserProcess {
         Connection conn = null;
         try {
             conn = DBConnection.getInstance().getDataSource().getConnection();
+            conn.setAutoCommit(false);
 
             String query = "DELETE FROM USERS WHERE GUID = ?";
 
@@ -247,6 +256,7 @@ public class SQLUserProcess {
             }
         } finally {
             if (conn != null) {
+                conn.setAutoCommit(true);
                 conn.close();
             }
         }

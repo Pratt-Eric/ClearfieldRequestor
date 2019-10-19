@@ -141,6 +141,7 @@ public class GroupsController implements Serializable {
                 init();
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Group has been modified successfully"));
                 PrimeFaces.current().executeScript("PF('groupEditDlg').hide()");
+                PrimeFaces.current().executeScript("PF('userGroupDlg').hide()");
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem modifying the selected group"));
             }
@@ -168,15 +169,28 @@ public class GroupsController implements Serializable {
 
     public void selectGroup(Group group) {
         selectedGroup = group;
+        for (User user : selectedGroup.getUsers()) {
+            selectedUsers.add(user.getGuid());
+        }
     }
 
     public void addUsersToGroup() {
         try {
+            selectedGroup.setUsers(new ArrayList<>());
             for (String user : selectedUsers) {
                 for (User u : users) {
-                    if (u.getGuid().equals(user) && !selectedGroup.getUsers().contains(u)) {
-                        selectedGroup.getUsers().add(u);
-                        break;
+                    if (u.getGuid().equals(user)) {
+                        boolean found = false;
+                        for (User u2 : selectedGroup.getUsers()) {
+                            if (u2.getGuid().equals(u.getGuid())) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            selectedGroup.getUsers().add(u);
+                            break;
+                        }
                     }
                 }
             }

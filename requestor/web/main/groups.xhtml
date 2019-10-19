@@ -110,7 +110,7 @@
                     </div>
                 </div>
                 <div>
-                    <p:commandButton value="Add Group" actionListener="#{groupsController.editGroup}"/>
+                    <p:commandButton value="Edit Group" actionListener="#{groupsController.editGroup}"/>
                     <p:commandButton value="Cancel" title="Cancel Add Group" oncomplete="PF('groupEditDlg').hide()" style="margin-left: 10px;"/>
                 </div>
             </h:form>
@@ -127,9 +127,12 @@
 
         <p:dialog widgetVar="userGroupDlg" modal="true" header="Add Users to Group">
             <h:form id="userGroupForm">
-                <p:selectManyCheckbox value="#{groupsController.selectedUsers}">
+                <p:outputLabel value="Users:"/>
+                <br/>
+                <p:selectManyMenu value="#{groupsController.selectedUsers}" showCheckbox="true">
                     <f:selectItems value="#{groupsController.users}" var="user" itemLabel="#{user.username}" itemValue="#{user.guid}"/>
-                </p:selectManyCheckbox>
+                </p:selectManyMenu>
+                <br/><br/>
                 <p:commandButton value="Submit" title="Submit Changes" actionListener="#{groupsController.addUsersToGroup}"/>
                 <p:commandButton value="Cancel" title="Cancel Changes" oncomplete="PF('userGroupDlg').hide()"/>
             </h:form>

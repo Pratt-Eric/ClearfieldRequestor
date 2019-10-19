@@ -32,6 +32,7 @@ public class SQLProcess {
         try {
 
             conn = DBConnection.getInstance().getDataSource().getConnection();
+            conn.setAutoCommit(false);
             //Grab users
             //if users is empty then create admin user
             ArrayList<User> users = new ArrayList<>();
@@ -83,6 +84,7 @@ public class SQLProcess {
             }
         } finally {
             if (conn != null) {
+                conn.setAutoCommit(true);
                 conn.close();
             }
         }
