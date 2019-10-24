@@ -73,21 +73,27 @@ public class SQLBudgetProcess {
 
 			ArrayList<Budget> budgets = new ArrayList<>();
 
-			String query = "SELECT "
-					+ "B.GUID, "
-					+ "B.NAME, "
-					+ "B.\"DESC\", "
-					+ "B.PARENT, "
-					+ "B.REMAINING, "
-					+ "BPX.EDITABLE, "
-					+ "B2.NAME PARENT_NAME "
-					+ "FROM BUDGETS B "
-					+ "JOIN BUDGET_PERMISSIONS_XREF BPX ON BPX.BUDGET_GUID = B.GUID "
-					+ "LEFT JOIN BUDGETS B2 ON B.PARENT = B2.GUID "
-					+ "WHERE BPX.USER_GUID = ? OR BPX.GROUP_GUID IN (SELECT UGX.GROUP_GUID FROM USER_GROUP_XREF UGX WHERE UGX.USER_GUID = ?)";
+			String query = ""
+					+ "SELECT DISTINCT "
+					+ "TBL.GUID, "
+					+ "TBL.NAME, "
+					+ "TBL.\"DESC\", "
+					+ "TBL.PARENT, "
+					+ "TBL.REMAINING, "
+					+ "TBL.PARENT_NAME, "
+					+ "CASE WHEN BPX1.GUID IS NOT NULL THEN 1 ELSE 0 END AS EDITABLE "
+					+ "FROM "
+					+ "		(SELECT DISTINCT B.GUID, B.NAME, B.\"DESC\", B.PARENT, B.REMAINING, B2.NAME PARENT_NAME "
+					+ "		 FROM BUDGETS B LEFT JOIN BUDGETS B2 ON B.PARENT = B2.GUID) TBL "
+					+ "JOIN BUDGET_PERMISSIONS_XREF BPX1 ON BPX1.BUDGET_GUID = TBL.GUID AND BPX1.EDITABLE = 1 "
+					+ "JOIN BUDGET_PERMISSIONS_XREF BPX2 ON BPX2.BUDGET_GUID = TBL.GUID AND BPX2.EDITABLE = 0 "
+					+ "WHERE (BPX1.USER_GUID = ? OR BPX2.USER_GUID = ?) OR (BPX1.GROUP_GUID IN (SELECT UGX.GROUP_GUID FROM USER_GROUP_XREF UGX WHERE UGX.USER_GUID = ?) OR BPX2.GROUP_GUID IN (SELECT UGX.GROUP_GUID FROM USER_GROUP_XREF UGX WHERE UGX.USER_GUID = ?))";
+
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, userGuid);
 			stmt.setString(2, userGuid);
+			stmt.setString(3, userGuid);
+			stmt.setString(4, userGuid);
 			ResultSet set = stmt.executeQuery();
 			while (set.next()) {
 				Budget budget = new Budget();
@@ -170,12 +176,14 @@ public class SQLBudgetProcess {
 					User user = new User();
 					user.setGuid(userGuid);
 					user.setUsername(set.getString("USERNAME"));
+					user.setEditBudget(set.getString("EDITABLE").equals("1"));
 					budget.getUsers().add(user);
 				}
 				if (groupGuid != null && !groupGuid.isEmpty()) {
 					Group group = new Group();
 					group.setGuid(groupGuid);
 					group.setName(set.getString("GROUP_NAME"));
+					group.setEditBudget(set.getString("EDITABLE").equals("1"));
 					budget.getGroups().add(group);
 				}
 			}
@@ -231,6 +239,11 @@ public class SQLBudgetProcess {
 			stmt.executeUpdate();
 			stmt.close();
 
+			//any children need to be adjusted if their amount exceeds the maximum of the parent
+			if (budget.getParentGuid() != null && !budget.getParentGuid().isEmpty()) {
+				adjustChildBudgets(conn, budget.getParentGuid(), budget.getRemaining());
+			}
+
 			conn.commit();
 			return true;
 		} catch (Exception e) {
@@ -245,6 +258,38 @@ public class SQLBudgetProcess {
 			}
 		}
 		return false;
+	}
+
+	public static void adjustChildBudgets(Connection conn, String parentGuid, double max) {
+		try {
+			//select the budget based on parent guid
+			//if the remaining amount is above the max, then we need to adjust it to the max
+			String select = "SELECT PARENT, REMAINING FROM BUDGETS WHERE GUID = ?";
+			String update = "UPDATE BUDGETS SET REMAINING = ? WHERE GUID = ?";
+			PreparedStatement selectStmt = conn.prepareStatement(select);
+			selectStmt.setString(1, parentGuid);
+			ResultSet set = selectStmt.executeQuery();
+			while (set.next()) {
+				String parent = set.getString("PARENT");
+				double amt = Double.parseDouble(set.getString("REMAINING"));
+				if (amt > max) {
+					amt = max;
+					PreparedStatement updateStmt = conn.prepareStatement(update);
+					updateStmt.setString(1, String.valueOf(max));
+					updateStmt.setString(2, parentGuid);
+					updateStmt.executeUpdate();
+					updateStmt.close();
+				}
+				if (parent != null && !parent.isEmpty()) {
+					adjustChildBudgets(conn, parent, max - amt);
+				}
+			}
+			set.close();
+			selectStmt.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static boolean editExistingBudget(Budget budget) throws SQLException {

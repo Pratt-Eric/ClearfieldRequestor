@@ -27,7 +27,7 @@ import org.primefaces.PrimeFaces;
 @ViewScoped
 public class UserBudgetController implements Serializable {
 
-	@ManagedProperty("#{guestPreferences")
+	@ManagedProperty("#{guestPreferences}")
 	private GuestPreferences preferences;
 	private ArrayList<Budget> budgets = new ArrayList<>();
 	private Budget selectedBudget;
@@ -80,6 +80,7 @@ public class UserBudgetController implements Serializable {
 			Gson gson = new Gson();
 			budgets = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/select/all/user", gson.toJson(preferences.getUserGuid())), new TypeToken<ArrayList<Budget>>() {
 			}.getType());
+			System.out.println("Test");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

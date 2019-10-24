@@ -27,7 +27,8 @@
 									<p:outputLabel value="#{budget.parentName}"/>
 								</p:column>
 								<p:column headerText="Remaining Funds" style="text-align: center;">
-									<p:outputLabel value="#{budget.remaining}"/>
+									<p:outputLabel value="$"/>
+									<p:inputNumber readonly="true" value="#{budget.remaining}" decimalPlaces="2"/>
 								</p:column>
 								<p:column headerText="Actions" rendered="#{budget.editable}" style="text-align: center;">
 									<p:commandLink title="Edit Remaining Funds" actionListener="#{userBudgetController.updateSelectedBudget(budget)}" update="editBudgetForm" oncomplete="PF('editBudgetDlg').show()">
