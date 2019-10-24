@@ -30,7 +30,7 @@
 									<p:outputLabel value="$"/>
 									<p:inputNumber readonly="true" value="#{budget.remaining}" decimalPlaces="2"/>
 								</p:column>
-								<p:column headerText="Actions" rendered="#{budget.editable}" style="text-align: center;">
+								<p:column headerText="Actions" style="text-align: center; width: 15%;">
 									<p:commandLink title="Edit Remaining Funds" actionListener="#{userBudgetController.updateSelectedBudget(budget)}" update="editBudgetForm" oncomplete="PF('editBudgetDlg').show()">
 										<i class="fa fa-lg fa-edit"/>
 									</p:commandLink>

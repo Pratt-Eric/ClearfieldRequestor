@@ -15,6 +15,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
@@ -231,6 +234,14 @@ public class SQLBudgetProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
+			//before saving the budget, we must verify the budget and sibling budgets don't exceed the parent's budget
+			if (budget.getParentGuid() != null && !budget.getParentGuid().isEmpty()) {
+				double availableAmt = returnAvailableBudgetAmount(conn, budget.getParentGuid());
+				if (budget.getRemaining() > availableAmt && availableAmt > -1) {
+					budget.setRemaining(availableAmt);
+				}
+			}
+
 			String query = "UPDATE BUDGETS SET REMAINING = ? WHERE GUID = ?";
 
 			PreparedStatement stmt = conn.prepareStatement(query);
@@ -240,9 +251,7 @@ public class SQLBudgetProcess {
 			stmt.close();
 
 			//any children need to be adjusted if their amount exceeds the maximum of the parent
-			if (budget.getParentGuid() != null && !budget.getParentGuid().isEmpty()) {
-				adjustChildBudgets(conn, budget.getParentGuid(), budget.getRemaining());
-			}
+			adjustChildBudgets(conn, budget.getGuid(), budget.getRemaining());
 
 			conn.commit();
 			return true;
@@ -260,17 +269,98 @@ public class SQLBudgetProcess {
 		return false;
 	}
 
+	public static double returnAvailableBudgetAmount(Connection conn, String parentGuid) {
+		try {
+			//first get the root parent
+			//grab the total remaining for the parent
+			//then I can recurse through the children subtracting from the root amount for each child we get to and return the remainder at the end
+			double available = -1;
+			String rootParent = getRootParentGuid(conn, parentGuid);
+			String query = "SELECT REMAINING FROM BUDGETS WHERE GUID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, rootParent);
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				available = Double.parseDouble(set.getString("REMAINING"));
+			}
+			set.close();
+			stmt.close();
+			if (available > -1) {
+				//recurse through children and subtract from available for each child found
+				available -= returnAvailableBudgetAmount(conn, parentGuid, available);
+			}
+			return available;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	public static double returnAvailableBudgetAmount(Connection conn, String guid, double available) {
+		try {
+			//get all children of guid and subtract their remaining amounts from "available"
+			//then recurse for each child found
+			Map<String, Double> children = new HashMap<>();
+			String query = "SELECT GUID, REMAINING FROM BUDGETS WHERE PARENT = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, guid);
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				children.put(set.getString("GUID"), Double.parseDouble(set.getString("REMAINING")));
+				available -= Double.parseDouble(set.getString("REMAINING"));
+			}
+			set.close();
+			stmt.close();
+
+			Iterator<String> list = children.keySet().iterator();
+			while (list.hasNext()) {
+				String child = list.next();
+				available -= returnAvailableBudgetAmount(conn, child, children.get(child));
+			}
+
+			return available;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	public static String getRootParentGuid(Connection conn, String parentGuid) {
+		try {
+			String newParent = null;
+			String parent = "SELECT GUID FROM BUDGETS WHERE PARENT = ?";
+			PreparedStatement stmt = conn.prepareStatement(parent);
+			stmt.setString(1, parentGuid);
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				newParent = set.getString("GUID");
+			}
+			set.close();
+			stmt.close();
+			if (newParent != null && !newParent.isEmpty()) {
+				String root = getRootParentGuid(conn, newParent);
+				if (root != null) {
+					return root;
+				}
+			}
+			return newParent;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static void adjustChildBudgets(Connection conn, String parentGuid, double max) {
 		try {
 			//select the budget based on parent guid
 			//if the remaining amount is above the max, then we need to adjust it to the max
-			String select = "SELECT PARENT, REMAINING FROM BUDGETS WHERE GUID = ?";
+			String select = "SELECT GUID, REMAINING FROM BUDGETS WHERE PARENT = ?";
 			String update = "UPDATE BUDGETS SET REMAINING = ? WHERE GUID = ?";
 			PreparedStatement selectStmt = conn.prepareStatement(select);
 			selectStmt.setString(1, parentGuid);
 			ResultSet set = selectStmt.executeQuery();
 			while (set.next()) {
-				String parent = set.getString("PARENT");
+				String guid = set.getString("GUID");
 				double amt = Double.parseDouble(set.getString("REMAINING"));
 				if (amt > max) {
 					amt = max;
@@ -280,8 +370,8 @@ public class SQLBudgetProcess {
 					updateStmt.executeUpdate();
 					updateStmt.close();
 				}
-				if (parent != null && !parent.isEmpty()) {
-					adjustChildBudgets(conn, parent, max - amt);
+				if (guid != null && !guid.isEmpty()) {
+					adjustChildBudgets(conn, guid, max - amt);
 				}
 			}
 			set.close();
