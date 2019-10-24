@@ -216,7 +216,21 @@ public class DataResource {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return gson.toJson(false);
+		return null;
+	}
+
+	@Path("budget/select/all/user")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String selectAllBudgetsForUser(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLBudgetProcess.selectAllBudgetsForUser(gson.fromJson(content, String.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Path("budget/add")
@@ -241,6 +255,20 @@ public class DataResource {
 		Gson gson = new Gson();
 		try {
 			return gson.toJson(SQLBudgetProcess.editExistingBudget(gson.fromJson(content, Budget.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
+	@Path("budget/edit/user")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postEditBudgetFromUser(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLBudgetProcess.editUserBudget(gson.fromJson(content, Budget.class)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

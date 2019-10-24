@@ -65,6 +65,60 @@ public class SQLBudgetProcess {
 		return null;
 	}
 
+	public static ArrayList<Budget> selectAllBudgetsForUser(String userGuid) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			ArrayList<Budget> budgets = new ArrayList<>();
+
+			String query = "SELECT "
+					+ "B.GUID, "
+					+ "B.NAME, "
+					+ "B.\"DESC\", "
+					+ "B.PARENT, "
+					+ "B.REMAINING, "
+					+ "BPX.EDITABLE, "
+					+ "B2.NAME PARENT_NAME "
+					+ "FROM BUDGETS B "
+					+ "JOIN BUDGET_PERMISSIONS_XREF BPX ON BPX.BUDGET_GUID = B.GUID "
+					+ "LEFT JOIN BUDGETS B2 ON B.PARENT = B2.GUID "
+					+ "WHERE BPX.USER_GUID = ? OR BPX.GROUP_GUID IN (SELECT UGX.GROUP_GUID FROM USER_GROUP_XREF UGX WHERE UGX.USER_GUID = ?)";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, userGuid);
+			stmt.setString(2, userGuid);
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				Budget budget = new Budget();
+				budget.setGuid(set.getString("GUID"));
+				budget.setName(set.getString("NAME"));
+				budget.setDesc(set.getString("DESC"));
+				budget.setParentGuid(set.getString("PARENT"));
+				budget.setRemaining(Double.parseDouble(set.getString("REMAINING")));
+				budget.setEditable(set.getString("EDITABLE").equals("1"));
+				budget.setParentName(set.getString("PARENT_NAME"));
+
+				budgets.add(budget);
+			}
+			set.close();
+			stmt.close();
+
+			return budgets;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return null;
+	}
+
 	private static void assignParents(Connection conn, Budget budget) {
 		try {
 			String query = "SELECT B.NAME, B.\"DESC\", B.PARENT FROM BUDGETS B WHERE B.GUID = ?";
@@ -147,6 +201,37 @@ public class SQLBudgetProcess {
 			stmt.executeUpdate();
 			stmt.close();
 
+			conn.commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return false;
+	}
+
+	public static boolean editUserBudget(Budget budget) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			String query = "UPDATE BUDGETS SET REMAINING = ? WHERE GUID = ?";
+
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setDouble(1, budget.getRemaining());
+			stmt.setString(2, budget.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			conn.commit();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -204,6 +289,7 @@ public class SQLBudgetProcess {
 			insertStmt.executeBatch();
 			insertStmt.close();
 
+			conn.commit();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -239,6 +325,7 @@ public class SQLBudgetProcess {
 
 			removeChildren(conn, budget.getGuid());
 
+			conn.commit();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -279,6 +366,8 @@ public class SQLBudgetProcess {
 				removeChildren(conn, budget);
 			}
 
+			conn.commit();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

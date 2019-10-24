@@ -22,6 +22,24 @@ public class Budget implements Serializable {
 	private String parentGuid;
 	private ArrayList<User> users = new ArrayList<>();
 	private ArrayList<Group> groups = new ArrayList<>();
+	private boolean editable;
+	private String parentName;
+
+	public String getParentName() {
+		return parentName;
+	}
+
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
 
 	public String getParentGuid() {
 		return parentGuid;

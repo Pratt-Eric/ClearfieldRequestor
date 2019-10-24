@@ -91,8 +91,8 @@ public class SQLGroupProcess {
 			stmt.executeUpdate();
 			stmt.close();
 
+			conn.commit();
 			return true;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (conn != null) {
@@ -141,8 +141,8 @@ public class SQLGroupProcess {
 				add.close();
 			}
 
+			conn.commit();
 			return true;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (conn != null) {
@@ -170,8 +170,8 @@ public class SQLGroupProcess {
 			stmt.executeUpdate();
 			stmt.close();
 
+			conn.commit();
 			return true;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (conn != null) {

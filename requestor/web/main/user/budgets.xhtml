@@ -16,12 +16,84 @@
                     </div>
                     <div class="card-content card-content-main">
                         <h:form id="budgetForm">
-
+							<p:dataTable value="#{userBudgetController.budgets}" var="budget">
+								<p:column headerText="Budget Name">
+									<p:outputLabel value="#{budget.name}"/>
+								</p:column>
+								<p:column headerText="Budget Description">
+									<p:outputLabel value="#{budget.desc}"/>
+								</p:column>
+								<p:column headerText="Parent Budget">
+									<p:outputLabel value="#{budget.parentName}"/>
+								</p:column>
+								<p:column headerText="Remaining Funds" style="text-align: center;">
+									<p:outputLabel value="#{budget.remaining}"/>
+								</p:column>
+								<p:column headerText="Actions" rendered="#{budget.editable}" style="text-align: center;">
+									<p:commandLink title="Edit Remaining Funds" actionListener="#{userBudgetController.updateSelectedBudget(budget)}" update="editBudgetForm" oncomplete="PF('editBudgetDlg').show()">
+										<i class="fa fa-lg fa-edit"/>
+									</p:commandLink>
+									<p:commandLink title="Add Funds to Budget" actionListener="#{userBudgetController.updateSelectedBudget(budget)}" update="addForm" oncomplete="PF('addDlg').show()">
+										<i class="fa fa-lg fa-plus"/>
+									</p:commandLink>
+									<p:commandLink title="Subtract Funds from Budget" actionListener="#{userBudgetController.updateSelectedBudget(budget)}" update="minusForm" oncomplete="PF('minusDlg').show()">
+										<i class="fa fa-lg fa-minus"/>
+									</p:commandLink>
+								</p:column>
+							</p:dataTable>
                         </h:form>
                     </div>
                 </div>
             </div>
         </div>
+
+		<p:dialog modal="true" widgetVar="editBudgetDlg" header="Edit Remaining Funds">
+			<h:form id="editBudgetForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<p:outputLabel value="Current Funds:"/>
+					<br/>
+					<p:inputNumber value="#{userBudgetController.selectedBudget.remaining}" decimalPlaces="2">
+						<p:ajax/>
+					</p:inputNumber>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Edit Funds" actionListener="#{userBudgetController.editBudget}"/>
+					<p:commandButton value="Cancel" oncomplete="PF('editBudgetDlg').hide()" style="margin-left: 10px;"/>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" widgetVar="addDlg" header="Add Amount To Funds">
+			<h:form id="addForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<p:outputLabel value="Funds to add:"/>
+					<br/>
+					<p:inputNumber value="#{userBudgetController.amountToAdjust}" decimalPlaces="2">
+						<p:ajax/>
+					</p:inputNumber>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Add Funds" actionListener="#{userBudgetController.adjustFunds(1)}"/>
+					<p:commandButton value="Cancel" oncomplete="PF('addDlg').hide()" style="margin-left: 10px;"/>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" widgetVar="minusDlg" header="Subtract Amount From Funds">
+			<h:form id="minusForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<p:outputLabel value="Funds to subtract:"/>
+					<br/>
+					<p:inputNumber value="#{userBudgetController.amountToAdjust}" decimalPlaces="2">
+						<p:ajax/>
+					</p:inputNumber>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Subtract Funds" actionListener="#{userBudgetController.adjustFunds(-1)}"/>
+					<p:commandButton value="Cancel" oncomplete="PF('minusDlg').hide()" style="margin-left: 10px;"/>
+				</div>
+			</h:form>
+		</p:dialog>
     </ui:define>
 
 </ui:composition>
