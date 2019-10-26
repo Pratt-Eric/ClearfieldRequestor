@@ -14,6 +14,9 @@
             <meta name="apple-mobile-web-app-capable" content="yes" />
         </f:facet>
         <title><ui:insert name="title">Clearfield Requestor</ui:insert></title>
+		<f:metadata>
+			<f:viewAction action="#{guestPreferences.isLoggedInForwardHome}"/>
+		</f:metadata>
         <h:outputScript name="js/nanoscroller.js" library="olympia-layout" />
         <h:outputScript name="js/layout.js" library="olympia-layout" />
         <ui:insert name="head"/>

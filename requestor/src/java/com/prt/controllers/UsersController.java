@@ -27,144 +27,144 @@ import org.primefaces.PrimeFaces;
 @ViewScoped
 public class UsersController implements Serializable {
 
-    @ManagedProperty("#{guestPreferences}")
-    private GuestPreferences preferences;
-    private ArrayList<User> users = new ArrayList<>();
-    private User newUser;
-    private String selectedUserGuid;
-    private User selectedUser;
+	@ManagedProperty("#{guestPreferences}")
+	private GuestPreferences preferences;
+	private ArrayList<User> users = new ArrayList<>();
+	private User newUser;
+	private String selectedUserGuid;
+	private User selectedUser;
 
-    public GuestPreferences getPreferences() {
-        return preferences;
-    }
+	public GuestPreferences getPreferences() {
+		return preferences;
+	}
 
-    public void setPreferences(GuestPreferences preferences) {
-        this.preferences = preferences;
-    }
+	public void setPreferences(GuestPreferences preferences) {
+		this.preferences = preferences;
+	}
 
-    public ArrayList<User> getUsers() {
-        return users;
-    }
+	public ArrayList<User> getUsers() {
+		return users;
+	}
 
-    public void setUsers(ArrayList<User> users) {
-        this.users = users;
-    }
+	public void setUsers(ArrayList<User> users) {
+		this.users = users;
+	}
 
-    public User getNewUser() {
-        return newUser;
-    }
+	public User getNewUser() {
+		return newUser;
+	}
 
-    public void setNewUser(User newUser) {
-        this.newUser = newUser;
-    }
+	public void setNewUser(User newUser) {
+		this.newUser = newUser;
+	}
 
-    public String getSelectedUserGuid() {
-        return selectedUserGuid;
-    }
+	public String getSelectedUserGuid() {
+		return selectedUserGuid;
+	}
 
-    public void setSelectedUserGuid(String selectedUserGuid) {
-        this.selectedUserGuid = selectedUserGuid;
-    }
+	public void setSelectedUserGuid(String selectedUserGuid) {
+		this.selectedUserGuid = selectedUserGuid;
+	}
 
-    public User getSelectedUser() {
-        return selectedUser;
-    }
+	public User getSelectedUser() {
+		return selectedUser;
+	}
 
-    public void setSelectedUser(User selectedUser) {
-        this.selectedUser = selectedUser;
-    }
+	public void setSelectedUser(User selectedUser) {
+		this.selectedUser = selectedUser;
+	}
 
-    @PostConstruct
-    void init() {
-        try {
-            //grab all users and display them
-            Gson gson = new Gson();
-            users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/all", null), new TypeToken<ArrayList<User>>() {
-            }.getType());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	@PostConstruct
+	void init() {
+		try {
+			//grab all users and display them
+			Gson gson = new Gson();
+			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/all", null), new TypeToken<ArrayList<User>>() {
+			}.getType());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    public void startAddUser() {
-        newUser = new User(preferences.getUserGuid());
-    }
+	public void startAddUser() {
+		newUser = new User(preferences.userGuid);
+	}
 
-    public void prepareEdit(User selected) {
-        selectedUser = selected;
-    }
+	public void prepareEdit(User selected) {
+		selectedUser = selected;
+	}
 
-    public void addUser() {
-        try {
-            if (newUser.getUsername().contains(" ")) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Username cannot have any white space in it"));
-            } else {
-                Gson gson = new Gson();
-                String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/add", gson.toJson(newUser)), String.class);
-                if (result != null && result.equalsIgnoreCase("true")) {
-                    init();
-                    PrimeFaces.current().executeScript("PF('addUserDlg').hide()");
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully added"));
-                } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem adding the new user"));
-                }
-            }
-            PrimeFaces.current().ajax().update("userForm");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	public void addUser() {
+		try {
+			if (newUser.getUsername().contains(" ")) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Username cannot have any white space in it"));
+			} else {
+				Gson gson = new Gson();
+				String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/add", gson.toJson(newUser)), String.class);
+				if (result != null && result.equalsIgnoreCase("true")) {
+					init();
+					PrimeFaces.current().executeScript("PF('addUserDlg').hide()");
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully added"));
+				} else {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem adding the new user"));
+				}
+			}
+			PrimeFaces.current().ajax().update("userForm");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    public void editUser(User user) {
-        selectedUser = user;
-        editUser();
-    }
+	public void editUser(User user) {
+		selectedUser = user;
+		editUser();
+	}
 
-    public void editUser() {
-        try {
-            if (selectedUser.getUsername().contains(" ")) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Username cannot have any white space in it"));
-            } else {
-                Gson gson = new Gson();
-                String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/edit", gson.toJson(selectedUser)), String.class);
-                if (result != null && result.equalsIgnoreCase("true")) {
-                    init();
-                    PrimeFaces.current().executeScript("PF('editUserDlg').hide()");
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully modified"));
-                } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem modifying the existing user"));
-                }
-            }
-            PrimeFaces.current().ajax().update("userForm");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	public void editUser() {
+		try {
+			if (selectedUser.getUsername().contains(" ")) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Username cannot have any white space in it"));
+			} else {
+				Gson gson = new Gson();
+				String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/edit", gson.toJson(selectedUser)), String.class);
+				if (result != null && result.equalsIgnoreCase("true")) {
+					init();
+					PrimeFaces.current().executeScript("PF('editUserDlg').hide()");
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully modified"));
+				} else {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem modifying the existing user"));
+				}
+			}
+			PrimeFaces.current().ajax().update("userForm");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    public void deleteUser() {
-        try {
-            Gson gson = new Gson();
-            String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/remove", gson.toJson(selectedUser)), String.class);
-            if (result != null && result.equalsIgnoreCase("true")) {
-                init();
-                PrimeFaces.current().executeScript("PF('deleteUserDlg').hide()");
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully removed"));
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem removing the existing user"));
-            }
-            PrimeFaces.current().ajax().update("userForm");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	public void deleteUser() {
+		try {
+			Gson gson = new Gson();
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/remove", gson.toJson(selectedUser)), String.class);
+			if (result != null && result.equalsIgnoreCase("true")) {
+				init();
+				PrimeFaces.current().executeScript("PF('deleteUserDlg').hide()");
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully removed"));
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem removing the existing user"));
+			}
+			PrimeFaces.current().ajax().update("userForm");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    public void sendPasswordReset(User user) {
-        try {
-            //do the things to email a password reset link to the user
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Email Sent", "An email has been sent to the user to reset their password"));
-            PrimeFaces.current().ajax().update("userForm");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	public void sendPasswordReset(User user) {
+		try {
+			//do the things to email a password reset link to the user
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Email Sent", "An email has been sent to the user to reset their password"));
+			PrimeFaces.current().ajax().update("userForm");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -82,12 +82,12 @@ public class LoginController implements Serializable {
 					if (compare != null && compare.equals(user.getPassword())) {
 						//grab user information including avatar if it exists
 						//set user preferences before redirecting
-						preferences.setUsername(user.getUsername());
+						preferences.username = user.getUsername();
 						//convert picture to bytes
 //                        preferences.stream = new ByteArrayOutputStream();
 //                        preferences.stream.write(user.getPicture().getBytes("UTF-8"));
-						preferences.setCalling(user.getCalling());
-						preferences.setUserGuid(user.getGuid());
+						preferences.calling = user.getCalling();
+						preferences.userGuid = user.getGuid();
 						return "/main/dashboard.xhtml?faces-redirect=true";
 					}
 				}

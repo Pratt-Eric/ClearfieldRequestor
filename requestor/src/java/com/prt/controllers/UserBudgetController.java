@@ -78,7 +78,7 @@ public class UserBudgetController implements Serializable {
 	void init() {
 		try {
 			Gson gson = new Gson();
-			budgets = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/select/all/user", gson.toJson(preferences.getUserGuid())), new TypeToken<ArrayList<Budget>>() {
+			budgets = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/select/all/user", gson.toJson(preferences.userGuid)), new TypeToken<ArrayList<Budget>>() {
 			}.getType());
 			System.out.println("Test");
 		} catch (Exception e) {

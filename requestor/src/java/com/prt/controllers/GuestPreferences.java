@@ -25,51 +25,12 @@ public class GuestPreferences implements Serializable {
 
 	private String logo = "logo-olympia-white";
 
-	private String username;
-	private String calling;
-	private String userGuid;
-	private StreamedContent picture;
+	public String username;
+	public String calling;
+	public String userGuid;
 	public ByteArrayOutputStream stream = new ByteArrayOutputStream();
 	public String imgExt = "";
 	public Budget selectedBudget = null;
-
-	public String getUserGuid() {
-		return userGuid;
-	}
-
-	public void setUserGuid(String userGuid) {
-		this.userGuid = userGuid;
-	}
-
-	public StreamedContent getPicture() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
-			return new DefaultStreamedContent();
-		} else if (stream.size() > 0) {
-			return new DefaultStreamedContent(new ByteArrayInputStream(stream.toByteArray()), "image/" + imgExt.toLowerCase());
-		}
-		return null;
-	}
-
-	public void setPicture(StreamedContent picture) {
-		this.picture = picture;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getCalling() {
-		return calling;
-	}
-
-	public void setCalling(String calling) {
-		this.calling = calling;
-	}
 
 	public String getTheme() {
 		return theme;
@@ -106,5 +67,10 @@ public class GuestPreferences implements Serializable {
 
 	public String getLogo() {
 		return this.logo;
+	}
+
+	public String isLoggedInForwardHome() {
+
+		return null;
 	}
 }
