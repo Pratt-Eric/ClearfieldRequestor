@@ -7,8 +7,9 @@ package com.prt.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.prt.models.Budget;
 import com.prt.models.Calendar;
+import com.prt.models.Group;
+import com.prt.models.User;
 import com.prt.utils.RestUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -82,6 +83,14 @@ public class CalendarsController implements Serializable {
 			Gson gson = new Gson();
 			calendars = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/select/all", null), new TypeToken<ArrayList<Calendar>>() {
 			}.getType());
+			for (Calendar calendar : calendars) {
+				for (User user : calendar.getUsers()) {
+					user.setUsername(user.getUsername() + (user.isEditCalendar() ? " (Editor)" : ""));
+				}
+				for (Group group : calendar.getGroups()) {
+					group.setName(group.getName() + (group.isEditCalendar() ? " (Editor)" : ""));
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

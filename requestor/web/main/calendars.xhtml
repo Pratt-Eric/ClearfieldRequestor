@@ -24,13 +24,13 @@
 								<p:column headerText="Calendar Description">
 									<p:outputLabel value="#{calendar.desc}"/>
 								</p:column>
-								<p:column headerText="Linked Users">
+								<p:column headerText="Assigned Users">
 									<ui:repeat value="#{calendar.users}" var="user">
 										<p:outputLabel value="#{user.username}"/>
 										<br/>
 									</ui:repeat>
 								</p:column>
-								<p:column headerText="Linked Groups">
+								<p:column headerText="Assigned Groups">
 									<ui:repeat value="#{calendar.groups}" var="group">
 										<p:outputLabel value="#{group.name}"/>
 										<br/>

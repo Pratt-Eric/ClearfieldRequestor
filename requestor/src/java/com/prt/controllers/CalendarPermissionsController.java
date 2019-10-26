@@ -176,7 +176,7 @@ public class CalendarPermissionsController implements Serializable {
 				break;
 			}
 		}
-		editBudgetPermissions();
+		editCalendarPermissions();
 	}
 
 	public void removeGroup() {
@@ -186,10 +186,10 @@ public class CalendarPermissionsController implements Serializable {
 				break;
 			}
 		}
-		editBudgetPermissions();
+		editCalendarPermissions();
 	}
 
-	public void editBudgetPermissions() {
+	public void editCalendarPermissions() {
 		try {
 			Gson gson = new Gson();
 			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/edit", gson.toJson(calendar)), String.class);
@@ -245,7 +245,7 @@ public class CalendarPermissionsController implements Serializable {
 					}
 				}
 			}
-			editBudgetPermissions();
+			editCalendarPermissions();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
