@@ -15,67 +15,67 @@ import java.util.UUID;
  */
 public class Activity implements Serializable {
 
-    private String guid;
-    private String name;
-    private String desc;
-    private ArrayList<Budget> budgets = new ArrayList<>();
-    private ArrayList<Calendar> calendars = new ArrayList<>();
-    private ArrayList<User> userAssociations = new ArrayList<>();
-    private ArrayList<Group> groupAssociations = new ArrayList<>();
+	private String guid;
+	private String name;
+	private String desc;
+	private Budget budget;
+	private ArrayList<Calendar> calendars = new ArrayList<>();
+	private ArrayList<User> users = new ArrayList<>();
+	private ArrayList<Group> groups = new ArrayList<>();
 
-    public String getGuid() {
-        return guid;
-    }
+	public String getGuid() {
+		return guid;
+	}
 
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getDesc() {
-        return desc;
-    }
+	public String getDesc() {
+		return desc;
+	}
 
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
 
-    public ArrayList<Budget> getBudgets() {
-        return budgets;
-    }
+	public Budget getBudget() {
+		return budget;
+	}
 
-    public void setBudgets(ArrayList<Budget> budgets) {
-        this.budgets = budgets;
-    }
+	public void setBudget(Budget budget) {
+		this.budget = budget;
+	}
 
-    public ArrayList<Calendar> getCalendars() {
-        return calendars;
-    }
+	public ArrayList<Calendar> getCalendars() {
+		return calendars;
+	}
 
-    public void setCalendars(ArrayList<Calendar> calendars) {
-        this.calendars = calendars;
-    }
+	public void setCalendars(ArrayList<Calendar> calendars) {
+		this.calendars = calendars;
+	}
 
-    public ArrayList<User> getUserAssociations() {
-        return userAssociations;
-    }
+	public ArrayList<User> getUsers() {
+		return users;
+	}
 
-    public void setUserAssociations(ArrayList<User> userAssociations) {
-        this.userAssociations = userAssociations;
-    }
+	public void setUsers(ArrayList<User> users) {
+		this.users = users;
+	}
 
-    public ArrayList<Group> getGroupAssociations() {
-        return groupAssociations;
-    }
+	public ArrayList<Group> getGroups() {
+		return groups;
+	}
 
-    public void setGroupAssociations(ArrayList<Group> groupAssociations) {
-        this.groupAssociations = groupAssociations;
-    }
+	public void setGroups(ArrayList<Group> groups) {
+		this.groups = groups;
+	}
 }

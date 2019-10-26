@@ -6,10 +6,12 @@
 package com.prt;
 
 import com.google.gson.Gson;
+import com.prt.models.Activity;
 import com.prt.models.Budget;
 import com.prt.models.Calendar;
 import com.prt.models.Group;
 import com.prt.models.User;
+import com.prt.requestor.SQLActivityProcess;
 import com.prt.requestor.SQLBudgetProcess;
 import com.prt.requestor.SQLCalendarProcess;
 import com.prt.requestor.SQLGroupProcess;
@@ -341,6 +343,62 @@ public class DataResource {
 		Gson gson = new Gson();
 		try {
 			return gson.toJson(SQLCalendarProcess.deleteExistingCalendar(gson.fromJson(content, Calendar.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
+	@Path("activity/select/all")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectAllActivities(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLActivityProcess.selectAllActivities());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
+	@Path("activity/add")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postAddNewActivity(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLActivityProcess.addNewActivity(gson.fromJson(content, Activity.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
+	@Path("activity/edit")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postEditExistingActivity(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLActivityProcess.editExistingActivity(gson.fromJson(content, Activity.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
+	@Path("activity/delete")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postDeleteExistingActivity(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLActivityProcess.deleteExistingActivity(gson.fromJson(content, Activity.class)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

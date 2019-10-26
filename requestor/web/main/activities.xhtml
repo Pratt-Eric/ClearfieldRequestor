@@ -13,16 +13,133 @@
                 <div class="card">
                     <div class="card-title" style="margin-bottom: 20px;">
                         <h1>Activities</h1>
+						<p:commandButton value="Add Budget" icon="fa fa-plus" actionListener="#{activitiesController.startCreateActivity}" update="activityAddForm" oncomplete="PF('activityAddDlg').show()"/>
                     </div>
                     <div class="card-content card-content-main">
                         <h:form id="activityForm">
 							<p:growl showDetail="true" showSummary="true"/>
-
+							<p:dataTable value="#{activitiesController.activities}" var="activity">
+								<p:column headerText="Activity Name">
+									<p:outputLabel value="#{activity.name}"/>
+								</p:column>
+								<p:column headerText="Activity Description">
+									<p:outputLabel value="#{activity.desc}"/>
+								</p:column>
+								<p:column headerText="Associated Users">
+									<ui:repeat value="#{activity.users}" var="user">
+										<p:outputLabel value="#{user.username}"/>
+										<br/>
+									</ui:repeat>
+								</p:column>
+								<p:column headerText="Associated Groups">
+									<ui:repeat value="#{activity.groups}" var="group">
+										<p:outputLabel value="#{group.name}"/>
+										<br/>
+									</ui:repeat>
+								</p:column>
+								<p:column headerText="Actions" style="text-align: center; width: 10%;">
+									<p:commandLink title="Edit" actionListener="#{activitiesController.updateSelectedActivity(activity)}" update="activityEditForm" oncomplete="PF('activityEditDlg').show()">
+										<i class="fa fa-lg fa-edit"/>
+									</p:commandLink>
+									<p:commandLink title="Add Users and Groups" actionListener="#{activitiesController.updateSelectedActivity(activity)}" update="usersAndGroupsForm" oncomplete="PF('usersAndGroupsDlg').show()">
+										<i class="fa fa-lg fa-group"/>
+									</p:commandLink>
+									<p:commandLink title="Delete" actionListener="#{activitiesController.updateSelectedActivity(activity)}" update="activityDeleteForm" oncomplete="PF('activityDeleteDlg').show()">
+										<i class="fa fa-lg fa-trash"/>
+									</p:commandLink>
+								</p:column>
+							</p:dataTable>
                         </h:form>
                     </div>
                 </div>
             </div>
         </div>
+
+		<p:dialog modal="true" widgetVar="activityAddDlg" header="Add New Activity">
+			<h:form id="activityAddForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<p:outputLabel value="Activity Name:"/>
+					<br/>
+					<p:inputText value="#{activitiesController.newActivity.name}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+					<br/><br/>
+					<p:outputLabel value="Activity Description:"/>
+					<br/>
+					<p:inputText value="#{activitiesController.newActivity.desc}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Add Activity" actionListener="#{activitiesController.addNewActivity}"/>
+					<p:commandButton value="Cancel" title="Cancel Add Activity" style="margin-left: 10px;" oncomplete="PF('activityAddDlg').hide()"/>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" widgetVar="activityEditDlg" header="Edit Existing Activity">
+			<h:form id="activityEditForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<p:outputLabel value="Activity Name:"/>
+					<br/>
+					<p:inputText value="#{activitiesController.selectedActivity.name}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+					<br/><br/>
+					<p:outputLabel value="Activity Description:"/>
+					<br/>
+					<p:inputText value="#{activitiesController.selectedActivity.desc}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Edit Activity" actionListener="#{activitiesController.editExistingActivity}"/>
+					<p:commandButton value="Cancel" title="Cancel Edit Activity" style="margin-left: 10px;" oncomplete="PF('activityEditDlg').hide()"/>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" widgetVar="activityDeleteDlg" header="Delete Existing Activity">
+			<h:form id="activityDeleteForm">
+				<div>
+					<p:outputLabel value="Are you sure you want to remove #{activitiesController.selectedActivity.name} from the system?"/>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Delete Activity" actionListener="#{activitiesController.deleteExistingActivity}"/>
+					<p:commandButton value="Cancel" title="Cancel Delete Activity" style="margin-left: 10px;" oncomplete="PF('activityDeleteDlg').hide()"/>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<h:form id="usersAndGroupsForm" style="width: 300px;">
+			<p:dialog modal="true" widgetVar="usersAndGroupsDlg" header="Assign Users and Groups to #{activitiesController.selectedActivity.name}">
+				<div style="width: 100%;">
+					<p:outputLabel value="Users:"/>
+					<p:selectManyMenu value="#{activitiesController.selectedUsers}" showCheckbox="true" style="width: 100%;">
+						<f:selectItems value="#{activitiesController.users}" var="user" itemLabel="#{user.username}" itemValue="#{user.guid}"/>
+					</p:selectManyMenu>
+					<br/><br/>
+					<p:outputLabel value="Groups:"/>
+					<p:selectManyMenu value="#{activitiesController.selectedGroups}" showCheckbox="true" style="width: 100%;">
+						<f:selectItems value="#{activitiesController.groups}" var="group" itemLabel="#{group.name}" itemValue="#{group.guid}"/>
+					</p:selectManyMenu>
+					<br/><br/>
+					<p:outputLabel value="Calendars:"/>
+					<p:selectManyMenu value="#{activitiesController.selectedCalendars}" showCheckbox="true" style="width: 100%;">
+						<f:selectItems value="#{activitiesController.calendars}" var="calendar" itemLabel="#{calendar.name}" itemValue="#{calendar.guid}"/>
+					</p:selectManyMenu>
+					<br/><br/>
+					<p:outputLabel value="Budget:"/>
+					<p:selectOneMenu value="#{activitiesController.selectedBudget}" style="width: 100%;">
+						<f:selectItems value="#{activitiesController.budgets}" var="budget" itemLabel="#{budget.name}" itemValue="#{budget.guid}"/>
+					</p:selectOneMenu>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Add Users and Groups" actionListener="#{activitiesController.adjustUsersAndGroups}"/>
+					<p:commandButton value="Cancel" title="Cancel Add Users and Groups" style="margin-left: 10px;" oncomplete="PF('usersAndGroupsDlg').hide()"/>
+				</div>
+			</p:dialog>
+		</h:form>
     </ui:define>
 
 </ui:composition>
