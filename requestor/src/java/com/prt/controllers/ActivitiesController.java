@@ -194,7 +194,9 @@ public class ActivitiesController implements Serializable {
 				selectedCalendars.add(calendar.getGuid());
 			}
 		}
-		selectedBudget = selectedActivity.getBudget().getGuid();
+		if (selectedActivity.getBudget() != null) {
+			selectedBudget = selectedActivity.getBudget().getGuid();
+		}
 	}
 
 	public void addNewActivity() {
@@ -223,6 +225,7 @@ public class ActivitiesController implements Serializable {
 				init();
 				PrimeFaces.current().ajax().update("activityForm");
 				PrimeFaces.current().executeScript("PF('activityEditDlg').hide()");
+				PrimeFaces.current().executeScript("PF('usersAndGroupsDlg').hide()");
 			} else {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem modified the existing activity"));
 			}

@@ -46,7 +46,7 @@ public class SQLActivityProcess {
 					+ "LEFT JOIN GROUPS G ON G.GUID = ATA.GROUP_GUID "
 					+ "LEFT JOIN BUDGETS B ON ATA.BUDGET_GUID = B.GUID "
 					+ "LEFT JOIN CALENDARS C ON ATA.CALENDAR_GUID = C.GUID "
-					+ "WHERE ACTIVITY_TYPE_REF_GUID = ?";
+					+ "WHERE ATA.ACTIVITY_TYPE_REF_GUID = ?";
 			Statement select = conn.createStatement();
 			ResultSet set = select.executeQuery(query);
 			while (set.next()) {

@@ -37,6 +37,15 @@
 										<br/>
 									</ui:repeat>
 								</p:column>
+								<p:column headerText="Associated Calendars">
+									<ui:repeat value="#{activity.calendars}" var="calendar">
+										<p:outputLabel value="#{calendar.name}"/>
+										<br/>
+									</ui:repeat>
+								</p:column>
+								<p:column headerText="Associated Budget">
+									<p:outputLabel value="#{activity.budget.name}"/>
+								</p:column>
 								<p:column headerText="Actions" style="text-align: center; width: 10%;">
 									<p:commandLink title="Edit" actionListener="#{activitiesController.updateSelectedActivity(activity)}" update="activityEditForm" oncomplete="PF('activityEditDlg').show()">
 										<i class="fa fa-lg fa-edit"/>
@@ -131,6 +140,7 @@
 					<br/><br/>
 					<p:outputLabel value="Budget:"/>
 					<p:selectOneMenu value="#{activitiesController.selectedBudget}" style="width: 100%;">
+						<f:selectItem itemLabel="Select..."/>
 						<f:selectItems value="#{activitiesController.budgets}" var="budget" itemLabel="#{budget.name}" itemValue="#{budget.guid}"/>
 					</p:selectOneMenu>
 				</div>
