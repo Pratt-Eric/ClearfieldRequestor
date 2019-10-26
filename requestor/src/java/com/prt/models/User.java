@@ -28,6 +28,15 @@ public class User implements Serializable {
 	private boolean admin;
 	private boolean editBudget;
 	private boolean selected;
+	private boolean editCalendar;
+
+	public boolean isEditCalendar() {
+		return editCalendar;
+	}
+
+	public void setEditCalendar(boolean editCalendar) {
+		this.editCalendar = editCalendar;
+	}
 
 	public boolean isSelected() {
 		return selected;

@@ -253,13 +253,8 @@ public class BudgetsController implements Serializable {
 	}
 
 	public String addUsersAndGroupsToBudget(Budget budget) {
-		try {
-			preferences.selectedBudget = budget;
-			return "/main/budgetpermissions.xhtml?faces-redirect=true";
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		preferences.selectedBudget = budget;
+		return "/main/budgetpermissions.xhtml?faces-redirect=true";
 	}
 
 }

@@ -21,6 +21,15 @@ public class Group implements Serializable {
 	private ArrayList<User> users = new ArrayList<>();
 	private boolean editBudget;
 	private boolean selected;
+	private boolean editCalendar;
+
+	public boolean isEditCalendar() {
+		return editCalendar;
+	}
+
+	public void setEditCalendar(boolean editCalendar) {
+		this.editCalendar = editCalendar;
+	}
 
 	public boolean isSelected() {
 		return selected;

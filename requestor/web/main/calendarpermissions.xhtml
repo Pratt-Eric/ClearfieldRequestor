@@ -1,0 +1,124 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Clearfield Requestor - Calendar Permissions</ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">
+                        <h1>Calendar Permissions - (#{calendarPermissionsController.calendar.name})</h1>
+                    </div>
+                    <div class="card-content card-content-main">
+                        <h:form id="calendarForm">
+							<p:growl showDetail="true" showSummary="true"/>
+							<p:panelGrid>
+								<p:row>
+									<p:column style="vertical-align: top;">
+										<p:outputLabel value="Users:"/>
+										<p:commandButton icon="fa fa-plus" style="float: right;" value="Add Users" actionListener="#{calendarPermissionsController.startAddUsers}" oncomplete="PF('addUsersDlg').show()"/>
+										<br/><br/>
+										<p:dataTable value="#{calendarPermissionsController.calendar.users}" var="user">
+											<p:column headerText="Username">
+												<p:outputLabel value="#{user.username}"/>
+											</p:column>
+											<p:column headerText="Edit Budget" style="text-align: center; width: 15%;">
+												<p:selectBooleanCheckbox value="#{user.editBudget}">
+													<p:ajax listener="#{calendarPermissionsController.editBudgetPermissions}"/>
+												</p:selectBooleanCheckbox>
+											</p:column>
+											<p:column headerText="Actions" style="text-align: center; width: 15%;">
+												<p:commandLink title="Delete User" actionListener="#{calendarPermissionsController.selectUser(user)}" oncomplete="PF('deleteUserDlg').show()">
+													<i class="fa fa-lg fa-trash"/>
+												</p:commandLink>
+											</p:column>
+										</p:dataTable>
+									</p:column>
+									<p:column style="vertical-align: top;">
+										<p:outputLabel value="Groups:"/>
+										<p:commandButton icon="fa fa-plus" style="float: right;" value="Add Groups" actionListener="#{calendarPermissionsController.startAddGroups}" oncomplete="PF('addGroupsDlg').show()"/>
+										<br/><br/>
+										<p:dataTable value="#{calendarPermissionsController.calendar.groups}" var="group">
+											<p:column headerText="Group Name">
+												<p:outputLabel value="#{group.name}"/>
+											</p:column>
+											<p:column headerText="Edit Budget" style="text-align: center; width: 15%;">
+												<p:selectBooleanCheckbox value="#{group.editBudget}">
+													<p:ajax listener="#{calendarPermissionsController.editBudgetPermissions}"/>
+												</p:selectBooleanCheckbox>
+											</p:column>
+											<p:column headerText="Actions" style="text-align: center; width: 15%;">
+												<p:commandLink title="Delete Group" actionListener="#{calendarPermissionsController.selectGroup(group)}" oncomplete="PF('deleteGroupDlg').show()">
+													<i class="fa fa-lg fa-trash"/>
+												</p:commandLink>
+											</p:column>
+										</p:dataTable>
+									</p:column>
+								</p:row>
+							</p:panelGrid>
+							<div style="margin-top: 20px; text-align: right;">
+								<p:button value="Back" outcome="/main/calendars.xhtml"/>
+							</div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<p:dialog modal="true" widgetVar="addUsersDlg" header="Add Users To Budget">
+			<h:form id="addUsersForm" style="width: 300px;">
+				<div style="width: 100%">
+                    <p:outputLabel value="Users:"/>
+                    <br/> 
+                    <p:selectManyMenu showCheckbox="true" value="#{calendarPermissionsController.selectedUsers}" style="width: 100%;">
+                        <f:selectItems value="#{calendarPermissionsController.availableUsers}" var="user" itemLabel="#{user.username}" itemValue="#{user.guid}"/>
+                    </p:selectManyMenu>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Add Users" actionListener="#{calendarPermissionsController.addUsersAndGroups}"/>
+					<p:commandButton value="Cancel" style="margin-left: 10px;" oncomplete="PF('addUsersDlg').hide()"/>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" widgetVar="addGroupsDlg" header="Add Groups To Budget">
+			<h:form id="addGroupsForm" style="width: 300px;">
+				<div style="width: 100%">
+                    <p:outputLabel value="Groups:"/>
+                    <br/>
+                    <p:selectManyMenu showCheckbox="true" value="#{calendarPermissionsController.selectedGroups}" style="width: 100%;">
+                        <f:selectItems value="#{calendarPermissionsController.availableGroups}" var="group" itemLabel="#{group.name}" itemValue="#{group.guid}"/>
+                    </p:selectManyMenu>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Add Groups" actionListener="#{calendarPermissionsController.addUsersAndGroups}"/>
+					<p:commandButton value="Cancel" style="margin-left: 10px;" oncomplete="PF('addGroupsDlg').hide()"/>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" widgetVar="deleteUserDlg" header="Remove User From Budget">
+			<h:form id="deleteUserForm">
+				<p:outputLabel value="Are you sure you want to remove #{calendarPermissionsController.selectedUser.username} from #{calendarPermissionsController.calendar.name}?"/>
+				<br/><br/>
+				<p:commandButton value="Remove User" actionListener="#{calendarPermissionsController.removeUser}"/>
+				<p:commandButton value="Cancel" style="margin-left: 10px;" oncomplete="PF('deleteUserDlg').hide()"/>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" widgetVar="deleteGroupDlg" header="Remove Group From Budget">
+			<h:form id="deleteGroupForm">
+				<p:outputLabel value="Are you sure you want to remove #{calendarPermissionsController.selectedGroup.name} from #{calendarPermissionsController.calendar.name}?"/>
+				<br/><br/>
+				<p:commandButton value="Remove Group" actionListener="#{calendarPermissionsController.removeGroup}"/>
+				<p:commandButton value="Cancel" style="margin-left: 10px;" oncomplete="PF('deleteGroupDlg').hide()"/>
+			</h:form>
+		</p:dialog>
+    </ui:define>
+
+</ui:composition>

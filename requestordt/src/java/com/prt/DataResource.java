@@ -7,9 +7,11 @@ package com.prt;
 
 import com.google.gson.Gson;
 import com.prt.models.Budget;
+import com.prt.models.Calendar;
 import com.prt.models.Group;
 import com.prt.models.User;
 import com.prt.requestor.SQLBudgetProcess;
+import com.prt.requestor.SQLCalendarProcess;
 import com.prt.requestor.SQLGroupProcess;
 import com.prt.requestor.SQLProcess;
 import com.prt.requestor.SQLUserProcess;
@@ -283,6 +285,62 @@ public class DataResource {
 		Gson gson = new Gson();
 		try {
 			return gson.toJson(SQLBudgetProcess.removeExistingBudget(gson.fromJson(content, Budget.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
+	@Path("calendar/select/all")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectAllCalendars(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLCalendarProcess.selectAllCalendars());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
+	@Path("calendar/add")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postAddNewCalendar(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLCalendarProcess.addNewCalendar(gson.fromJson(content, Calendar.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
+	@Path("calendar/edit")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postEditExistingCalendar(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLCalendarProcess.editExistingCalendar(gson.fromJson(content, Calendar.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
+	@Path("calendar/remove")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postRemoveExistingCalendar(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLCalendarProcess.deleteExistingCalendar(gson.fromJson(content, Calendar.class)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

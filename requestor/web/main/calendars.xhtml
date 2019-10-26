@@ -11,10 +11,104 @@
         <div class="ui-g">
             <div class="ui-g-12">
                 <div class="card">
-                    Content goes here
+                    <div class="card-title" style="margin-bottom: 20px;">
+                        <h1>Calendars</h1>
+						<p:commandButton value="Add Calendar" icon="fa fa-plus" actionListener="#{calendarsController.prepareAddNewCalendar}" oncomplete="PF('calendarAddDlg').show()"/>
+                    </div>
+                    <div class="card-content card-content-main">
+                        <h:form id="calendarForm">
+							<p:dataTable value="#{calendarsController.calendars}" var="calendar">
+								<p:column headerText="Calendar Name">
+									<p:outputLabel value="#{calendar.name}"/>
+								</p:column>
+								<p:column headerText="Calendar Description">
+									<p:outputLabel value="#{calendar.desc}"/>
+								</p:column>
+								<p:column headerText="Linked Users">
+									<ui:repeat value="#{calendar.users}" var="user">
+										<p:outputLabel value="#{user.username}"/>
+										<br/>
+									</ui:repeat>
+								</p:column>
+								<p:column headerText="Linked Groups">
+									<ui:repeat value="#{calendar.groups}" var="group">
+										<p:outputLabel value="#{group.name}"/>
+										<br/>
+									</ui:repeat>
+								</p:column>
+								<p:column headerText="Actions" style="text-align: center; width: 10%;">
+									<p:commandLink title="Edit" actionListener="#{calendarsController.updateSelectedCalendar(calendar)}" update="calendarEditForm" oncomplete="PF('calendarEditDlg').show()">
+										<i class="fa fa-lg fa-edit"/>
+									</p:commandLink>
+									<p:commandLink title="stupid" action="#{calendarsController.prepareAddUsersAndGroups(calendar)}">
+										<i class="fa fa-lg fa-group"/>
+									</p:commandLink>
+									<p:commandLink title="Delete" actionListener="#{calendarsController.updateSelectedCalendar(calendar)}" update="calendarDeleteForm" oncomplete="PF('calendarDeleteDlg').show()">
+										<i class="fa fa-lg fa-trash"/>
+									</p:commandLink>
+								</p:column>
+							</p:dataTable>
+                        </h:form>
+                    </div>
                 </div>
             </div>
         </div>
+
+		<p:dialog modal="true" widgetVar="calendarAddDlg" header="Add New Calendar">
+			<h:form id="calendarAddForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<p:outputLabel value="Name:"/>
+					<br/>
+					<p:inputText value="#{calendarsController.newCalendar.name}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+					<br/><br/>
+					<p:outputLabel value="Description:"/>
+					<br/>
+					<p:inputText value="#{calendarsController.newCalendar.desc}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Add Calendar" actionListener="#{calendarsController.addNewCalendar}"/>
+					<p:commandButton value="Cancel" title="Cancel Add Calendar" style="margin-left: 10px;" oncomplete="PF('calendarAddDlg').hide()"/>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" widgetVar="calendarEditDlg" header="Edit Existing Calendar">
+			<h:form id="calendarEditForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<p:outputLabel value="Name"/>
+					<br/>
+					<p:inputText value="#{calendarsController.selectedCalendar.name}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+					<br/><br/>
+					<p:outputLabel value="Description"/>
+					<br/>
+					<p:inputText value="#{calendarsController.selectedCalendar.desc}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Edit Calendar" actionListener="#{calendarsController.editExistingCalendar}"/>
+					<p:commandButton value="Cancel" title="Cancel Edit Calendar" style="margin-left: 10px;" oncomplete="PF('calendarEditDlg').hide()"/>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" widgetVar="calendarDeleteDlg" header="Delete Existing Calendar">
+			<h:form id="calendarDeleteForm">
+				<div>
+					<p:outputLabel value="Are you sure you want to delete #{calendarsController.selectedCalendar.name} from the system?"/>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Delete Calendar" actionListener="#{calendarsController.deleteExistingCalendar}"/>
+					<p:commandButton value="Cancel" title="Cancel Delete Calendar" style="margin-left: 10px;" oncomplete="PF('calendarDeleteDlg').hide()"/>
+				</div>
+			</h:form>
+		</p:dialog>
     </ui:define>
 
 </ui:composition>

@@ -6,7 +6,7 @@
 package com.prt.models;
 
 import java.io.Serializable;
-import java.util.UUID;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,31 +14,58 @@ import java.util.UUID;
  */
 public class Calendar implements Serializable {
 
-    private String uuid;
-    private String name;
-    private String desc;
+	private String guid;
+	private String name;
+	private String desc;
+	private ArrayList<User> users = new ArrayList<>();
+	private ArrayList<Group> groups = new ArrayList<>();
+	private boolean editable;
 
-    public String getUuid() {
-        return uuid;
-    }
+	public String getGuid() {
+		return guid;
+	}
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public ArrayList<User> getUsers() {
+		return users;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setUsers(ArrayList<User> users) {
+		this.users = users;
+	}
 
-    public String getDesc() {
-        return desc;
-    }
+	public ArrayList<Group> getGroups() {
+		return groups;
+	}
 
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
+	public void setGroups(ArrayList<Group> groups) {
+		this.groups = groups;
+	}
+
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
 }

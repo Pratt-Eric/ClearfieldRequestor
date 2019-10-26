@@ -1,15 +1,11 @@
 package com.prt.controllers;
 
 import com.prt.models.Budget;
-import java.io.ByteArrayInputStream;
+import com.prt.models.Calendar;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 @ManagedBean
 @SessionScoped
@@ -31,6 +27,7 @@ public class GuestPreferences implements Serializable {
 	public ByteArrayOutputStream stream = new ByteArrayOutputStream();
 	public String imgExt = "";
 	public Budget selectedBudget = null;
+	public Calendar selectedCalendar = null;
 
 	public String getTheme() {
 		return theme;
