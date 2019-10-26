@@ -16,7 +16,8 @@
                     </div>
                     <div class="card-content card-content-main">
                         <h:form id="budgetForm">
-							<p:dataTable value="#{userBudgetController.budgets}" var="budget">
+							<p:growl id="growl" showDetail="true" showSummary="true"/>
+							<p:treeTable value="#{userBudgetController.budgets}" var="budget">
 								<p:column headerText="Budget Name">
 									<p:outputLabel value="#{budget.name}"/>
 								</p:column>
@@ -28,12 +29,10 @@
 								</p:column>
 								<p:column headerText="Remaining Funds" style="text-align: center;">
 									<p:outputLabel value="$"/>
-									<p:inputNumber readonly="true" value="#{budget.remaining}" decimalPlaces="2"/>
+									<p:inputNumber readonly="#{not budget.editable}" value="#{budget.remaining}" decimalPlaces="2"/>
+									<p:commandButton value="Update" title="Update budget" actionListener="#{userBudgetController.editBudget(budget)}" update="budgetForm" style="margin-left: 5px;"/>
 								</p:column>
-								<p:column headerText="Actions" style="text-align: center; width: 15%;">
-									<p:commandLink title="Edit Remaining Funds" actionListener="#{userBudgetController.updateSelectedBudget(budget)}" update="editBudgetForm" oncomplete="PF('editBudgetDlg').show()">
-										<i class="fa fa-lg fa-edit"/>
-									</p:commandLink>
+								<p:column headerText="Actions" style="text-align: center; width: 10%;">
 									<p:commandLink title="Add Funds to Budget" actionListener="#{userBudgetController.updateSelectedBudget(budget)}" update="addForm" oncomplete="PF('addDlg').show()">
 										<i class="fa fa-lg fa-plus"/>
 									</p:commandLink>
@@ -41,7 +40,7 @@
 										<i class="fa fa-lg fa-minus"/>
 									</p:commandLink>
 								</p:column>
-							</p:dataTable>
+							</p:treeTable>
                         </h:form>
                     </div>
                 </div>

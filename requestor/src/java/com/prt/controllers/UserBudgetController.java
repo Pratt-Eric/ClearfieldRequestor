@@ -18,6 +18,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.PrimeFaces;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 
 /**
  *
@@ -29,10 +31,18 @@ public class UserBudgetController implements Serializable {
 
 	@ManagedProperty("#{guestPreferences}")
 	private GuestPreferences preferences;
-	private ArrayList<Budget> budgets = new ArrayList<>();
 	private Budget selectedBudget;
 	private String selectedBudgetGuid;
 	private double amountToAdjust = 0;
+	private TreeNode budgets;
+
+	public TreeNode getBudgets() {
+		return budgets;
+	}
+
+	public void setBudgets(TreeNode budgets) {
+		this.budgets = budgets;
+	}
 
 	public Budget getSelectedBudget() {
 		return selectedBudget;
@@ -58,14 +68,6 @@ public class UserBudgetController implements Serializable {
 		this.amountToAdjust = amountToAdjust;
 	}
 
-	public ArrayList<Budget> getBudgets() {
-		return budgets;
-	}
-
-	public void setBudgets(ArrayList<Budget> budgets) {
-		this.budgets = budgets;
-	}
-
 	public GuestPreferences getPreferences() {
 		return preferences;
 	}
@@ -76,19 +78,64 @@ public class UserBudgetController implements Serializable {
 
 	@PostConstruct
 	void init() {
+		budgets = new DefaultTreeNode(null);
+		budgets.setExpanded(true);
 		try {
 			Gson gson = new Gson();
-			budgets = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/select/all/user", gson.toJson(preferences.userGuid)), new TypeToken<ArrayList<Budget>>() {
+			ArrayList<Budget> budgetList = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/select/all/user", gson.toJson(preferences.userGuid)), new TypeToken<ArrayList<Budget>>() {
 			}.getType());
-			System.out.println("Test");
+			assignBudgetHierarchy(budgetList);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	public void assignBudgetHierarchy(ArrayList<Budget> budgetList) {
+		//first find all that don't have a parent
+		for (Budget budget : budgetList) {
+			if (budget.getParentGuid() == null) {
+				TreeNode newNode = new DefaultTreeNode(budget, budgets);
+				newNode.setExpanded(true);
+			}
+		}
+
+		//now loop through those that have a parent, find the parent and assign it to the parent accordingly
+		for (Budget budget : budgetList) {
+			if (budget.getParent() != null) {
+				TreeNode node = findNode(budgets, budget.getParent());
+				TreeNode newNode = new DefaultTreeNode(budget, node);
+				newNode.setExpanded(true);
+			}
+		}
+
+	}
+
+	public TreeNode findNode(TreeNode root, Budget toFind) {
+		TreeNode result = null;
+		for (TreeNode child : root.getChildren()) {
+			Budget budget = (Budget) child.getData();
+			if (budget.getGuid().equals(toFind.getGuid())) {
+				result = child;
+				break;
+			} else {
+				TreeNode found = findNode(child, toFind);
+				if (found != null) {
+					result = found;
+					break;
+				}
+			}
+		}
+		return result;
+	}
+
 	public void updateSelectedBudget(Budget budget) {
 		selectedBudget = budget;
 		amountToAdjust = 0;
+	}
+
+	public void editBudget(Budget budget) {
+		selectedBudget = budget;
+		editBudget();
 	}
 
 	public void editBudget() {

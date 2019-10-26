@@ -117,10 +117,20 @@ public class BudgetsController implements Serializable {
 	@PostConstruct
 	void init() {
 		budgets = new DefaultTreeNode(null);
+		budgets.setExpanded(true);
 		Gson gson = new Gson();
 		try {
 			ArrayList<Budget> budgetList = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/select/all", null), new TypeToken<ArrayList<Budget>>() {
 			}.getType());
+			//modify the username and group name to reflect editor or not
+			for (Budget budget : budgetList) {
+				for (User user : budget.getUsers()) {
+					user.setUsername(user.getUsername() + (user.isEditBudget() ? " (Editor)" : ""));
+				}
+				for (Group group : budget.getGroups()) {
+					group.setName(group.getName() + (group.isEditBudget() ? " (Editor)" : ""));
+				}
+			}
 			groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/group/select/all", null), new TypeToken<ArrayList<Group>>() {
 			}.getType());
 			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/all", null), new TypeToken<ArrayList<User>>() {
@@ -137,6 +147,7 @@ public class BudgetsController implements Serializable {
 		for (Budget budget : budgetList) {
 			if (budget.getParentGuid() == null) {
 				TreeNode newNode = new DefaultTreeNode(budget, budgets);
+				newNode.setExpanded(true);
 			}
 		}
 
@@ -145,6 +156,7 @@ public class BudgetsController implements Serializable {
 			if (budget.getParent() != null) {
 				TreeNode node = findNode(budgets, budget.getParent());
 				TreeNode newNode = new DefaultTreeNode(budget, node);
+				newNode.setExpanded(true);
 			}
 		}
 
