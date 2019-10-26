@@ -99,4 +99,11 @@ public class LoginController implements Serializable {
 		}
 		return null;
 	}
+
+	public String logout() {
+		preferences.username = null;
+		preferences.calling = null;
+		preferences.userGuid = null;
+		return "/logout.xhtml?faces-redirect=true";
+	}
 }
