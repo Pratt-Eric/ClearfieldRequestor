@@ -84,18 +84,20 @@ public class SQLBudgetProcess {
 					+ "TBL.PARENT, "
 					+ "TBL.REMAINING, "
 					+ "TBL.PARENT_NAME, "
-					+ "CASE WHEN BPX.EDITABLE IS NOT NULL THEN BPX.EDITABLE ELSE TBL.EDITABLE END EDITABLE "
+					+ "CASE WHEN BPX.EDITABLE IS NOT NULL THEN BPX.EDITABLE ELSE TBL.EDITABLE END EDITABLE, "
+					+ "TBL.CREATED "
 					+ "FROM "
-					+ "		(SELECT DISTINCT B.GUID, B.NAME, B.\"DESC\", B.PARENT, B.REMAINING, B2.NAME PARENT_NAME, BPX.EDITABLE, BPX.USER_GUID, BPX.GROUP_GUID "
+					+ "		(SELECT DISTINCT B.GUID, B.NAME, B.\"DESC\", B.PARENT, B.REMAINING, B2.NAME PARENT_NAME, BPX.EDITABLE, BPX.USER_GUID, BPX.GROUP_GUID, B.CREATED "
 					+ "		 FROM BUDGETS B  "
-					+ "         JOIN BUDGET_PERMISSIONS_XREF BPX ON BPX.BUDGET_GUID = B.GUID AND BPX.EDITABLE = 1 "
+					+ "         LEFT JOIN BUDGET_PERMISSIONS_XREF BPX ON BPX.BUDGET_GUID = B.GUID AND BPX.EDITABLE = 1 "
 					+ "         LEFT JOIN BUDGETS B2 ON B.PARENT = B2.GUID"
-					+ "			ORDER BY B.CREATED) TBL "
+					+ "			ORDER BY B.CREATED DESC) TBL "
 					+ "LEFT JOIN BUDGET_PERMISSIONS_XREF BPX ON TBL.GUID = BPX.BUDGET_GUID AND BPX.BUDGET_GUID NOT IN "
 					+ "                            (SELECT B.GUID FROM BUDGETS B JOIN BUDGET_PERMISSIONS_XREF BPX ON B.GUID = BPX.BUDGET_GUID AND BPX.EDITABLE = 1) "
 					+ "WHERE (BPX.USER_GUID = ? OR TBL.USER_GUID = ?) "
 					+ "OR (BPX.GROUP_GUID IN (SELECT UGX.GROUP_GUID FROM USER_GROUP_XREF UGX WHERE UGX.USER_GUID = ?) "
-					+ "OR TBL.GROUP_GUID IN (SELECT UGX.GROUP_GUID FROM USER_GROUP_XREF UGX WHERE UGX.USER_GUID = ?))";
+					+ "OR TBL.GROUP_GUID IN (SELECT UGX.GROUP_GUID FROM USER_GROUP_XREF UGX WHERE UGX.USER_GUID = ?)) "
+					+ "ORDER BY TBL.CREATED";
 
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, userGuid);
@@ -211,7 +213,7 @@ public class SQLBudgetProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "INSERT INTO BUDGETS (NAME, \"DESC\", PARENT) VALUES (?, ?, ?)";
+			String query = "INSERT INTO BUDGETS (NAME, \"DESC\", PARENT, CREATED) VALUES (?, ?, ?, SYSTIMESTAMP)";
 
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, budget.getName());
@@ -244,9 +246,17 @@ public class SQLBudgetProcess {
 
 			//before saving the budget, we must verify the budget and sibling budgets don't exceed the parent's budget
 			if (budget.getParentGuid() != null && !budget.getParentGuid().isEmpty()) {
-				double availableAmt = returnAvailableBudgetAmount(conn, budget.getParentGuid());
+				double availableAmt = returnAvailableBudgetAmount(conn, budget.getGuid());
+				if (availableAmt == -999999999) {
+					return false;
+				}
 				if (budget.getRemaining() > availableAmt && availableAmt > -1) {
 					budget.setRemaining(availableAmt);
+				} else if (budget.getRemaining() > availableAmt) {
+					budget.setRemaining(budget.getRemaining() + availableAmt);
+					if (budget.getRemaining() < 0) {
+						budget.setRemaining(0);
+					}
 				}
 			}
 
@@ -259,7 +269,7 @@ public class SQLBudgetProcess {
 			stmt.close();
 
 			//any children need to be adjusted if their amount exceeds the maximum of the parent
-			adjustChildBudgets(conn, budget.getGuid(), budget.getRemaining());
+			adjustChildBudgets(conn, budget.getGuid());
 
 			conn.commit();
 			return true;
@@ -277,117 +287,93 @@ public class SQLBudgetProcess {
 		return false;
 	}
 
-	public static double returnAvailableBudgetAmount(Connection conn, String parentGuid) {
+	public static double returnAvailableBudgetAmount(Connection conn, String guid) {
 		try {
-			//first get the root parent
-			//grab the total remaining for the parent
-			//then I can recurse through the children subtracting from the root amount for each child we get to and return the remainder at the end
-			double available = -1;
-			String rootParent = getRootParentGuid(conn, parentGuid);
-			String query = "SELECT REMAINING FROM BUDGETS WHERE GUID = ?";
+			//Get amount of immediate parent and subtract all sibling amounts from it
+			double available = 0;
+			String query = "SELECT REMAINING FROM BUDGETS WHERE GUID = (SELECT PARENT FROM BUDGETS WHERE GUID = ?)";
 			PreparedStatement stmt = conn.prepareStatement(query);
-			stmt.setString(1, rootParent);
+			stmt.setString(1, guid);
 			ResultSet set = stmt.executeQuery();
 			while (set.next()) {
 				available = Double.parseDouble(set.getString("REMAINING"));
 			}
 			set.close();
 			stmt.close();
-			if (available > -1) {
-				//recurse through children and subtract from available for each child found
-				available -= returnAvailableBudgetAmount(conn, parentGuid, available);
+			if (available > 0) {
+				//grab all siblings and subtract from the available amount
+				query = "SELECT REMAINING FROM BUDGETS WHERE PARENT = (SELECT PARENT FROM BUDGETS WHERE GUID = ?) AND GUID != ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, guid);
+				stmt.setString(2, guid);
+				set = stmt.executeQuery();
+				while (set.next()) {
+					available -= Double.parseDouble(set.getString("REMAINING"));
+				}
+				set.close();
+				stmt.close();
+				return available < 0 ? 0 : available;
 			}
-			return available;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return -999999999;
 		}
-		return -1;
+
+		return 0;
 	}
 
-	public static double returnAvailableBudgetAmount(Connection conn, String guid, double available) {
+	public static boolean adjustChildBudgets(Connection conn, String guid) {
 		try {
-			//get all children of guid and subtract their remaining amounts from "available"
-			//then recurse for each child found
+			//grab all the children of the current budget
+			//for each child return the available budget amount
+			//if the budget exceeds the available amount, adjust it accordingly
 			Map<String, Double> children = new HashMap<>();
-			String query = "SELECT GUID, REMAINING FROM BUDGETS WHERE PARENT = ?";
+			ArrayList<String> sorted = new ArrayList<>();
+			String query = "SELECT GUID, REMAINING, CREATED FROM BUDGETS WHERE PARENT = ? ORDER BY CREATED";
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, guid);
 			ResultSet set = stmt.executeQuery();
 			while (set.next()) {
+				sorted.add(set.getString("GUID"));
 				children.put(set.getString("GUID"), Double.parseDouble(set.getString("REMAINING")));
-				available -= Double.parseDouble(set.getString("REMAINING"));
 			}
 			set.close();
 			stmt.close();
 
-			Iterator<String> list = children.keySet().iterator();
-			while (list.hasNext()) {
-				String child = list.next();
-				available -= returnAvailableBudgetAmount(conn, child, children.get(child));
+			query = "UPDATE BUDGETS SET REMAINING = ? WHERE GUID = ?";
+
+			for (String child : sorted) {
+				double available = returnAvailableBudgetAmount(conn, child);
+				if (available == -999999999) {
+					return false;
+				}
+				if (available < children.get(child) && available > -1) {
+					//update the child with the new amount
+					stmt = conn.prepareStatement(query);
+					stmt.setString(1, String.valueOf(available));
+					stmt.setString(2, child);
+					stmt.executeUpdate();
+					stmt.close();
+				} else if (available < children.get(child)) {
+					if (children.get(child) + available < 0) {
+						available = 0;
+					} else {
+						available = children.get(child) + available;
+					}
+					stmt = conn.prepareStatement(query);
+					stmt.setString(1, String.valueOf(available));
+					stmt.setString(2, child);
+					stmt.executeUpdate();
+					stmt.close();
+				}
+				adjustChildBudgets(conn, child);
 			}
 
-			return available;
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return -1;
-	}
-
-	public static String getRootParentGuid(Connection conn, String parentGuid) {
-		try {
-			String newParent = null;
-			String parent = "SELECT GUID FROM BUDGETS WHERE PARENT = ?";
-			PreparedStatement stmt = conn.prepareStatement(parent);
-			stmt.setString(1, parentGuid);
-			ResultSet set = stmt.executeQuery();
-			while (set.next()) {
-				newParent = set.getString("GUID");
-			}
-			set.close();
-			stmt.close();
-			if (newParent != null && !newParent.isEmpty()) {
-				String root = getRootParentGuid(conn, newParent);
-				if (root != null) {
-					return root;
-				}
-			}
-			return newParent;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static void adjustChildBudgets(Connection conn, String parentGuid, double max) {
-		try {
-			//select the budget based on parent guid
-			//if the remaining amount is above the max, then we need to adjust it to the max
-			String select = "SELECT GUID, REMAINING FROM BUDGETS WHERE PARENT = ?";
-			String update = "UPDATE BUDGETS SET REMAINING = ? WHERE GUID = ?";
-			PreparedStatement selectStmt = conn.prepareStatement(select);
-			selectStmt.setString(1, parentGuid);
-			ResultSet set = selectStmt.executeQuery();
-			while (set.next()) {
-				String guid = set.getString("GUID");
-				double amt = Double.parseDouble(set.getString("REMAINING"));
-				if (amt > max) {
-					amt = max;
-					PreparedStatement updateStmt = conn.prepareStatement(update);
-					updateStmt.setString(1, String.valueOf(max));
-					updateStmt.setString(2, parentGuid);
-					updateStmt.executeUpdate();
-					updateStmt.close();
-				}
-				if (guid != null && !guid.isEmpty()) {
-					adjustChildBudgets(conn, guid, max - amt);
-				}
-			}
-			set.close();
-			selectStmt.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		return false;
 	}
 
 	public static boolean editExistingBudget(Budget budget) throws SQLException {
@@ -452,6 +438,7 @@ public class SQLBudgetProcess {
 		Connection conn = null;
 		try {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
 
 			String query1 = "DELETE FROM BUDGET_PERMISSIONS_XREF WHERE BUDGET_GUID = ?";
 			String query2 = "DELETE FROM BUDGETS WHERE GUID = ?";
@@ -509,7 +496,6 @@ public class SQLBudgetProcess {
 				removeChildren(conn, budget);
 			}
 
-			conn.commit();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

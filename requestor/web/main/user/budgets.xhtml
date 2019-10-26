@@ -30,13 +30,13 @@
 								<p:column headerText="Remaining Funds" style="text-align: center;">
 									<p:outputLabel value="$"/>
 									<p:inputNumber readonly="#{not budget.editable}" value="#{budget.remaining}" decimalPlaces="2"/>
-									<p:commandButton value="Update" title="Update budget" actionListener="#{userBudgetController.editBudget(budget)}" update="budgetForm" style="margin-left: 5px;"/>
+									<p:commandButton rendered="#{budget.editable}" value="Update" title="Update budget" actionListener="#{userBudgetController.editBudget(budget)}" update="budgetForm" style="margin-left: 5px;"/>
 								</p:column>
 								<p:column headerText="Actions" style="text-align: center; width: 10%;">
-									<p:commandLink title="Add Funds to Budget" actionListener="#{userBudgetController.updateSelectedBudget(budget)}" update="addForm" oncomplete="PF('addDlg').show()">
+									<p:commandLink rendered="#{budget.editable}" title="Add Funds to Budget" actionListener="#{userBudgetController.updateSelectedBudget(budget)}" update="addForm" oncomplete="PF('addDlg').show()">
 										<i class="fa fa-lg fa-plus"/>
 									</p:commandLink>
-									<p:commandLink title="Subtract Funds from Budget" actionListener="#{userBudgetController.updateSelectedBudget(budget)}" update="minusForm" oncomplete="PF('minusDlg').show()">
+									<p:commandLink rendered="#{budget.editable}" title="Subtract Funds from Budget" actionListener="#{userBudgetController.updateSelectedBudget(budget)}" update="minusForm" oncomplete="PF('minusDlg').show()">
 										<i class="fa fa-lg fa-minus"/>
 									</p:commandLink>
 								</p:column>

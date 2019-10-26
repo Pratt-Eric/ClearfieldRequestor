@@ -144,6 +144,7 @@ public class UserBudgetController implements Serializable {
 			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/edit/user", gson.toJson(selectedBudget)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", selectedBudget.getName() + " was successfully modified"));
+				init();
 				PrimeFaces.current().ajax().update("budgetForm");
 				PrimeFaces.current().executeScript("PF('editBudgetDlg').hide()");
 				PrimeFaces.current().executeScript("PF('addDlg').hide()");
