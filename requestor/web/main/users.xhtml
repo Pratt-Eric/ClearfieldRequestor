@@ -42,13 +42,13 @@
                                     </p:selectBooleanCheckbox>
                                 </p:column>
                                 <p:column headerText="Actions" style="text-align: center; width: 10%;">
-                                    <p:commandLink title="Edit" actionListener="#{usersController.prepareEdit(user)}" update="editUserForm" oncomplete="PF('editUserDlg').show()">
+                                    <p:commandLink title="Edit" actionListener="#{usersController.updateSelectedUser(user)}" update="editUserForm" oncomplete="PF('editUserDlg').show()">
                                         <i class="fa fa-lg fa-edit"/>
                                     </p:commandLink>
-                                    <p:commandLink title="Delete" actionListener="#{usersController.prepareEdit(user)}" update="deleteUserForm" oncomplete="PF('deleteUserDlg').show()">
+                                    <p:commandLink title="Delete" actionListener="#{usersController.updateSelectedUser(user)}" update="deleteUserForm" oncomplete="PF('deleteUserDlg').show()">
                                         <i class="fa fa-lg fa-trash"/>
                                     </p:commandLink>
-                                    <p:commandLink title="Reset Password" actionListener="#{usersController.sendPasswordReset(user)}">
+                                    <p:commandLink title="Reset Password" actionListener="#{usersController.updateSelectedUser(user)}" update="sendEmailForm" oncomplete="PF('sendEmailDlg').show()">
                                         <i class="fa fa-lg fa-envelope-o"/>
                                     </p:commandLink>
                                 </p:column>
@@ -182,6 +182,18 @@
 				<br/><br/>
 				<p:commandButton value="Email" title="Email temporary password to user" actionListener="#{usersController.emailPassword}"/>
 				<p:commandButton value="Close" oncomplete="PF('tempPasswordDlg').hide()" style="margin-left: 10px;"/>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" header="Send Password Reset" widgetVar="sendEmailDlg">
+			<h:form id="sendEmailForm">
+				<div>
+					<p:outputLabel value="Are you sure you want to send a password reset to #{usersController.selectedUser.username}?"/>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Send Email" title="Send Password Reset Email" actionListener="#{usersController.sendPasswordReset}"/>
+					<p:commandButton value="Cancel" title="Cancel Send Password Reset Email" oncomplete="PF('sendEmailDlg').hide()" style="margin-left: 10px;"/>
+				</div>
 			</h:form>
 		</p:dialog>
 

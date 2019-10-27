@@ -8,18 +8,24 @@ package com.prt.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.prt.models.User;
+import com.prt.utils.EmailUtils;
 import com.prt.utils.EncryptionHelper;
 import com.prt.utils.RestUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Random;
+import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.primefaces.PrimeFaces;
 
@@ -103,7 +109,7 @@ public class UsersController implements Serializable {
 		newUser = new User(preferences.userGuid);
 	}
 
-	public void prepareEdit(User selected) {
+	public void updateSelectedUser(User selected) {
 		selectedUser = selected;
 	}
 
@@ -183,12 +189,20 @@ public class UsersController implements Serializable {
 		}
 	}
 
-	public void sendPasswordReset(User user) {
+	public void sendPasswordReset() {
 		try {
-			//do the things to email a password reset link to the user
+			if (selectedUser.getEmail() != null && !selectedUser.getEmail().isEmpty()) {
+				String message = "Hello " + selectedUser.getFirstname() + ",\n\nWe were informed that you need to reset your password. You may do so by following the link below.\n\n{link here}";
+				boolean success = EmailUtils.sendEmail(selectedUser.getEmail(), "Password Reset", message);
+				if (success) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Email Sent", "An email has been sent to the user to reset their password"));
+				} else {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem sending an email to the recipient"));
+				}
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There is no email registered with the user to send an email"));
+			}
 
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Email Sent", "An email has been sent to the user to reset their password"));
-			PrimeFaces.current().ajax().update("userForm");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -198,7 +212,13 @@ public class UsersController implements Serializable {
 		try {
 			//email password to registered email
 			if (newUser.getEmail() != null && !newUser.getEmail().isEmpty()) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Email Sent", "Email successfully sent"));
+				String message = "Hello " + newUser.getFirstname() + ",\n\nA new account has been created for you on Clearfield Requestor.\n\nYour temporary password is:\n" + tempPass + "\n\nYou may log in and change your password immediately.\n\nThank you,\nThe Clearfield Requestor Team";
+				boolean success = EmailUtils.sendEmail(newUser.getEmail(), "Temporary Password", message);
+				if (success) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Email Sent", "Email successfully sent"));
+				} else {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem sending an email to the recipient"));
+				}
 			} else {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There is no email registered with the user to send an email"));
 			}
