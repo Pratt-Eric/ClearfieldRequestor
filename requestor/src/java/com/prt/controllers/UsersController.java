@@ -8,15 +8,19 @@ package com.prt.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.prt.models.User;
+import com.prt.utils.EncryptionHelper;
 import com.prt.utils.RestUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.primefaces.PrimeFaces;
 
 /**
@@ -33,6 +37,15 @@ public class UsersController implements Serializable {
 	private User newUser;
 	private String selectedUserGuid;
 	private User selectedUser;
+	private String tempPass;
+
+	public String getTempPass() {
+		return tempPass;
+	}
+
+	public void setTempPass(String tempPass) {
+		this.tempPass = tempPass;
+	}
 
 	public GuestPreferences getPreferences() {
 		return preferences;
@@ -99,6 +112,16 @@ public class UsersController implements Serializable {
 			if (newUser.getUsername().contains(" ")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Username cannot have any white space in it"));
 			} else {
+				//put together password on this side so it can be emailed
+				String newPassword = RandomStringUtils.random(8, true, true);
+
+				byte[] salt = EncryptionHelper.generateSalt();
+				String saltStr = new String(Base64.getEncoder().encode(salt), "UTF-8");
+				String password = EncryptionHelper.encrypt(newPassword, salt);
+				newUser.setPassword(password);
+				newUser.setSalt(saltStr);
+				tempPass = newPassword;
+
 				Gson gson = new Gson();
 				String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/add", gson.toJson(newUser)), String.class);
 				if (result != null && result.equalsIgnoreCase("true")) {
@@ -106,6 +129,8 @@ public class UsersController implements Serializable {
 					PrimeFaces.current().executeScript("PF('addUserDlg').hide()");
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully added"));
 					PrimeFaces.current().ajax().update("userForm");
+					PrimeFaces.current().ajax().update("tempPasswordForm");
+					PrimeFaces.current().executeScript("PF('tempPasswordDlg').show()");
 				} else {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem adding the new user"));
 				}
@@ -161,7 +186,22 @@ public class UsersController implements Serializable {
 	public void sendPasswordReset(User user) {
 		try {
 			//do the things to email a password reset link to the user
+
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Email Sent", "An email has been sent to the user to reset their password"));
+			PrimeFaces.current().ajax().update("userForm");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void emailPassword() {
+		try {
+			//email password to registered email
+			if (newUser.getEmail() != null && !newUser.getEmail().isEmpty()) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Email Sent", "Email successfully sent"));
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There is no email registered with the user to send an email"));
+			}
 			PrimeFaces.current().ajax().update("userForm");
 		} catch (Exception e) {
 			e.printStackTrace();

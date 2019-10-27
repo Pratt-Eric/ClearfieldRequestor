@@ -19,10 +19,10 @@
                         <h:form id="activityForm">
 							<p:growl showDetail="true" showSummary="true"/>
 							<p:dataTable value="#{activitiesController.activities}" var="activity">
-								<p:column headerText="Activity Name">
+								<p:column headerText="Activity Name" filterBy="#{activity.name}" filterMatchMode="contains" sortBy="#{activity.name}">
 									<p:outputLabel value="#{activity.name}"/>
 								</p:column>
-								<p:column headerText="Activity Description">
+								<p:column headerText="Activity Description" filterBy="#{activity.desc}" filterMatchMode="contains" sortBy="#{activity.desc}">
 									<p:outputLabel value="#{activity.desc}"/>
 								</p:column>
 								<p:column headerText="Associated Users">

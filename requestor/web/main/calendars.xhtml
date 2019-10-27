@@ -18,10 +18,10 @@
                     <div class="card-content card-content-main">
                         <h:form id="calendarForm">
 							<p:dataTable value="#{calendarsController.calendars}" var="calendar">
-								<p:column headerText="Calendar Name">
+								<p:column headerText="Calendar Name" filterBy="#{calendar.name}" filterMatchMode="contains" sortBy="#{calendar.name}">
 									<p:outputLabel value="#{calendar.name}"/>
 								</p:column>
-								<p:column headerText="Calendar Description">
+								<p:column headerText="Calendar Description" filterBy="#{calendar.desc}" filterMatchMode="contains" sortBy="#{calendar.desc}">
 									<p:outputLabel value="#{calendar.desc}"/>
 								</p:column>
 								<p:column headerText="Assigned Users">

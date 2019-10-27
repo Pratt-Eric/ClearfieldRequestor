@@ -19,10 +19,10 @@
                         <h:form id="budgetForm">
                             <p:growl showDetail="true" showSummary="true"/>
                             <p:treeTable value="#{budgetsController.budgets}" var="budget">
-                                <p:column headerText="Budget Name">
+                                <p:column headerText="Budget Name" filterBy="#{budget.name}" filterMatchMode="contains" sortBy="#{budget.name}">
                                     <p:outputLabel value="#{budget.name}"/>
                                 </p:column>
-                                <p:column headerText="Budget Description">
+                                <p:column headerText="Budget Description" filterBy="#{budget.desc}" filterMatchMode="contains" sortBy="#{budget.desc}">
                                     <p:outputLabel value="#{budget.desc}"/>
                                 </p:column>
                                 <p:column headerText="Assigned Users">

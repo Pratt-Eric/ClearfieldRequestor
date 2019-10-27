@@ -32,7 +32,7 @@ public class SQLBudgetProcess {
 
 			ArrayList<Budget> budgets = new ArrayList<>();
 
-			String query = "SELECT B.GUID, B.NAME, B.\"DESC\", B.PARENT FROM BUDGETS B";
+			String query = "SELECT B.GUID, B.NAME, B.\"DESC\", B.PARENT, B.REMAINING FROM BUDGETS B";
 			Statement stmt = conn.createStatement();
 			ResultSet set = stmt.executeQuery(query);
 			while (set.next()) {
@@ -41,6 +41,7 @@ public class SQLBudgetProcess {
 				budget.setName(set.getString("NAME"));
 				budget.setDesc(set.getString("DESC"));
 				budget.setParentGuid(set.getString("PARENT"));
+				budget.setRemaining(Double.parseDouble(set.getString("REMAINING")));
 				//add users and groups to budget result set
 				assignUsersAndGroups(conn, budget);
 
@@ -139,7 +140,7 @@ public class SQLBudgetProcess {
 
 	private static void assignParents(Connection conn, Budget budget) {
 		try {
-			String query = "SELECT B.NAME, B.\"DESC\", B.PARENT FROM BUDGETS B WHERE B.GUID = ?";
+			String query = "SELECT B.NAME, B.\"DESC\", B.PARENT, B.REMAINING FROM BUDGETS B WHERE B.GUID = ?";
 
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, budget.getParentGuid());
@@ -150,6 +151,7 @@ public class SQLBudgetProcess {
 				parent.setName(set.getString("NAME"));
 				parent.setDesc(set.getString("DESC"));
 				parent.setParentGuid(set.getString("PARENT"));
+				parent.setRemaining(Double.parseDouble(set.getString("REMAINING")));
 				assignUsersAndGroups(conn, parent);
 
 				if (parent.getParentGuid() != null && !parent.getParentGuid().isEmpty()) {

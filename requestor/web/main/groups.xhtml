@@ -19,10 +19,10 @@
                         <h:form id="groupForm">
                             <p:growl showDetail="true" showSummary="true"/>
                             <p:dataTable value="#{groupsController.groups}" var="group">
-                                <p:column headerText="Group Name">
+                                <p:column headerText="Group Name" filterBy="#{group.name}" filterMatchMode="contains" sortBy="#{group.name}">
                                     <p:outputLabel value="#{group.name}"/>
                                 </p:column>
-                                <p:column headerText="Group Description">
+                                <p:column headerText="Group Description" filterBy="#{group.desc}" filterMatchMode="contains" sortBy="#{group.desc}">
                                     <p:outputLabel value="#{group.desc}"/>
                                 </p:column>
                                 <p:column headerText="Associated Users">

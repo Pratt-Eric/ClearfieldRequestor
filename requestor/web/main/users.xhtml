@@ -173,6 +173,18 @@
                 </div>
             </h:form>
         </p:dialog>
+
+		<p:dialog modal="true" header="Temporary Password" widgetVar="tempPasswordDlg">
+			<h:form id="tempPasswordForm">
+				<p:outputLabel value="The temporary password for #{usersController.newUser.username} is:"/>
+				<br/>
+				<p:inputText style="width: 400px;" value="#{usersController.tempPass}" readonly="true"/>
+				<br/><br/>
+				<p:commandButton value="Email" title="Email temporary password to user" actionListener="#{usersController.emailPassword}"/>
+				<p:commandButton value="Close" oncomplete="PF('tempPasswordDlg').hide()" style="margin-left: 10px;"/>
+			</h:form>
+		</p:dialog>
+
     </ui:define>
 
 </ui:composition>

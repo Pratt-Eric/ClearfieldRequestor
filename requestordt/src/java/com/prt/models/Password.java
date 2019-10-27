@@ -18,6 +18,7 @@ public class Password implements Serializable {
 	private String password;
 	private String repeatPassword;
 	private String salt;
+	private String oldPassword;
 
 	public Password() {
 
@@ -27,6 +28,14 @@ public class Password implements Serializable {
 		this.guid = guid;
 		this.password = password;
 		this.salt = salt;
+	}
+
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
 	}
 
 	public String getRepeatPassword() {

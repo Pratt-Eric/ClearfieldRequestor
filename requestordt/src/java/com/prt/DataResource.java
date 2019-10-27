@@ -155,6 +155,20 @@ public class DataResource {
 		return gson.toJson(false);
 	}
 
+	@Path("user/password/update")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postUpdateUserPassword(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLUserProcess.updateUserPassword(gson.fromJson(content, User.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
 	@Path("group/select")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

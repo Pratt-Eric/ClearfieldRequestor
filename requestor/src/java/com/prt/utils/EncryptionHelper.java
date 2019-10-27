@@ -1,6 +1,7 @@
 package com.prt.utils;
 
 import java.util.Base64;
+import java.util.Random;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -15,6 +16,13 @@ import javax.crypto.spec.PBEKeySpec;
  * @author P-ratt
  */
 public class EncryptionHelper {
+
+	public static byte[] generateSalt() throws Exception {
+		byte[] salt = new byte[16];
+		Random random = new Random();
+		random.nextBytes(salt);
+		return salt;
+	}
 
 	public static String encrypt(String password, byte[] salt) {
 		try {

@@ -8,9 +8,11 @@ package com.prt.controllers;
 import com.google.gson.Gson;
 import com.prt.models.Password;
 import com.prt.models.User;
+import com.prt.utils.EncryptionHelper;
 import com.prt.utils.RestUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Base64;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -72,7 +74,7 @@ public class ProfileController implements Serializable {
 
 	public void updatePassword() {
 		try {
-			String regex = "((?=.*[a-z])(?=.*d)(?=.*[@#$%])(?=.*[A-Z]).{8,24})";
+			String regex = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=()])(?=\\S+$).{8,}";
 			//check both passwords to make sure they match
 			ArrayList<String> errors = new ArrayList<>();
 			if (!newPassword.getPassword().equals(newPassword.getRepeatPassword())) {
@@ -84,8 +86,10 @@ public class ProfileController implements Serializable {
 			}
 
 			if (errors.isEmpty()) {
+				byte[] salt = Base64.getDecoder().decode(currUser.getSalt().getBytes("UTF-8"));
+				String password = EncryptionHelper.encrypt(newPassword.getPassword(), salt);
 				Gson gson = new Gson();
-				currUser.setPassword(newPassword.getPassword());
+				currUser.setPassword(password);
 				String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/password/update", gson.toJson(currUser)), String.class);
 				if (result != null && result.equalsIgnoreCase("true")) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Your password was successfully updated"));
@@ -93,10 +97,12 @@ public class ProfileController implements Serializable {
 				} else {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem updating your password"));
 				}
+				PrimeFaces.current().ajax().update("profileForm");
 			} else {
 				for (String error : errors) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", error));
 				}
+				PrimeFaces.current().ajax().update("profileForm");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -36,6 +36,42 @@
 									<p:ajax/>
 								</p:inputText>
 								<br/><br/>
+								<p:outputLabel value="Email:"/>
+								<br/>
+								<p:inputText value="#{profileController.currUser.email}" style="margin-left: 40px;">
+									<p:ajax/>
+								</p:inputText>
+								<br/><br/>
+								<p:outputLabel value="Street Address1:"/>
+								<br/>
+								<p:inputText value="#{profileController.currUser.address1}" style="margin-left: 40px; width: 500px;">
+									<p:ajax/>
+								</p:inputText>
+								<br/><br/>
+								<p:outputLabel value="Street Address2:"/>
+								<br/>
+								<p:inputText value="#{profileController.currUser.address2}" style="margin-left: 40px; width: 500px;">
+									<p:ajax/>
+								</p:inputText>
+								<br/><br/>
+								<p:outputLabel value="City:"/>
+								<br/>
+								<p:inputText value="#{profileController.currUser.city}" style="margin-left: 40px;">
+									<p:ajax/>
+								</p:inputText>
+								<br/><br/>
+								<p:outputLabel value="State:"/>
+								<br/>
+								<p:inputText value="#{profileController.currUser.state}" style="margin-left: 40px;">
+									<p:ajax/>
+								</p:inputText>
+								<br/><br/>
+								<p:outputLabel value="Zip Code:"/>
+								<br/>
+								<p:inputText value="#{profileController.currUser.zip}" style="margin-left: 40px;">
+									<p:ajax/>
+								</p:inputText>
+								<br/><br/>
 								<p:outputLabel value="Calling:"/>
 								<br/>
 								<p:outputLabel value="#{profileController.currUser.calling}" style="margin-left: 40px;"/>
@@ -78,7 +114,7 @@
 									<span>At least one number</span>
 								</li>
 								<li>
-									<span>At least one special character</span>
+									<span>At least one special character [ <i><b>!@#$%^&amp;*+=()</b></i> ]</span>
 								</li>
 								<li>
 									<span>Between 8 and 24 characters long</span>
@@ -86,6 +122,12 @@
 							</ul>
 						</div>
 					</div>
+					<br/><br/>
+					<p:outputLabel value="Old Password"/>
+					<br/>
+					<p:password value="#{profileController.newPassword.oldPassword}">
+						<p:ajax/>
+					</p:password>
 					<br/><br/>
 					<p:outputLabel value="New Password"/>
 					<br/>

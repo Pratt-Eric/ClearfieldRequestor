@@ -33,7 +33,8 @@ public class SQLGroupProcess {
 					+ "G.NAME, "
 					+ "G.\"DESC\", "
 					+ "G.ADMINISTRATOR "
-					+ "FROM GROUPS G ";
+					+ "FROM GROUPS G "
+					+ "ORDER BY G.CREATED";
 
 			Statement stmt = conn.createStatement();
 			ResultSet set = stmt.executeQuery(query);
@@ -82,7 +83,7 @@ public class SQLGroupProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "INSERT INTO GROUPS (NAME, \"DESC\", ADMINISTRATOR) VALUES (?, ?, ?)";
+			String query = "INSERT INTO GROUPS (NAME, \"DESC\", ADMINISTRATOR, CREATED) VALUES (?, ?, ?, SYSTIMESTAMP)";
 
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, group.getName());
@@ -163,9 +164,32 @@ public class SQLGroupProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "DELETE FROM GROUPS WHERE GUID = ?";
-
+			String query = "DELETE FROM USER_GROUP_XREF WHERE GROUP_GUID = ?";
 			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, group.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			query = "DELETE FROM ACTIVITY_TYPE_ASSOCIATIONS WHERE GROUP_GUID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, group.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			query = "DELETE FROM BUDGET_PERMISSIONS_XREF WHERE GROUP_GUID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, group.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			query = "DELETE FROM CALENDAR_PERMISSIONS_XREF WHERE GROUP_GUID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, group.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			query = "DELETE FROM GROUPS WHERE GUID = ?";
+			stmt = conn.prepareStatement(query);
 			stmt.setString(1, group.getGuid());
 			stmt.executeUpdate();
 			stmt.close();

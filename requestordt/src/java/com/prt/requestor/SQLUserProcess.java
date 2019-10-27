@@ -44,7 +44,12 @@ public class SQLUserProcess {
 						+ "P.SALT, "
 						+ "PROF.CALLING, "
 						+ "U.CREATED_BY, "
-						+ "U.ADMINISTRATOR "
+						+ "U.ADMINISTRATOR, "
+						+ "PROF.ADDRESS1, "
+						+ "PROF.ADDRESS2, "
+						+ "PROF.CITY, "
+						+ "PROF.STATE, "
+						+ "PROF.ZIP "
 						+ "FROM USERS U "
 						+ "JOIN PASSWORDS P ON U.PASSWORD_GUID = P.GUID "
 						+ "JOIN PROFILE PROF ON U.GUID = PROF.USER_GUID "
@@ -64,6 +69,11 @@ public class SQLUserProcess {
 					user.setSalt(set.getString("SALT"));
 					user.setCalling(set.getString("CALLING"));
 					user.setAdmin(set.getString("ADMINISTRATOR").equals("1"));
+					user.setAddress1(set.getString("ADDRESS1"));
+					user.setAddress2(set.getString("ADDRESS2"));
+					user.setCity(set.getString("CITY"));
+					user.setState(set.getString("STATE"));
+					user.setZip(set.getString("ZIP"));
 				}
 				set.close();
 				stmt.close();
@@ -101,7 +111,12 @@ public class SQLUserProcess {
 						+ "P.SALT, "
 						+ "PROF.CALLING, "
 						+ "U.CREATED_BY, "
-						+ "U.ADMINISTRATOR "
+						+ "U.ADMINISTRATOR, "
+						+ "PROF.ADDRESS1, "
+						+ "PROF.ADDRESS2, "
+						+ "PROF.CITY, "
+						+ "PROF.STATE, "
+						+ "PROF.ZIP "
 						+ "FROM USERS U "
 						+ "JOIN PASSWORDS P ON U.PASSWORD_GUID = P.GUID "
 						+ "JOIN PROFILE PROF ON U.GUID = PROF.USER_GUID "
@@ -123,6 +138,11 @@ public class SQLUserProcess {
 					user.setSalt(set.getString("SALT"));
 					user.setCalling(set.getString("CALLING"));
 					user.setAdmin(set.getString("ADMINISTRATOR").equals("1"));
+					user.setAddress1(set.getString("ADDRESS1"));
+					user.setAddress2(set.getString("ADDRESS2"));
+					user.setCity(set.getString("CITY"));
+					user.setState(set.getString("STATE"));
+					user.setZip(set.getString("ZIP"));
 
 					PreparedStatement stmt2 = conn.prepareStatement(groupQuery);
 					stmt2.setString(1, userGuid);
@@ -168,7 +188,12 @@ public class SQLUserProcess {
 					+ "U.EMAIL, "
 					+ "P.CALLING, "
 					+ "U.CREATED_BY, "
-					+ "U.ADMINISTRATOR "
+					+ "U.ADMINISTRATOR, "
+					+ "P.ADDRESS1, "
+					+ "P.ADDRESS2, "
+					+ "P.CITY, "
+					+ "P.STATE, "
+					+ "P.ZIP "
 					+ "FROM USERS U "
 					+ "JOIN PROFILE P ON U.GUID = P.USER_GUID ";
 
@@ -185,6 +210,11 @@ public class SQLUserProcess {
 				user.setCalling(set.getString("CALLING"));
 				user.setCreatedBy(set.getString("CREATED_BY"));
 				user.setAdmin(set.getString("ADMINISTRATOR").equals("1"));
+				user.setAddress1(set.getString("ADDRESS1"));
+				user.setAddress2(set.getString("ADDRESS2"));
+				user.setCity(set.getString("CITY"));
+				user.setState(set.getString("STATE"));
+				user.setZip(set.getString("ZIP"));
 				users.add(user);
 			}
 			set.close();
@@ -208,20 +238,11 @@ public class SQLUserProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			//generate random password to create user account with
-			byte[] newPassBytes = new byte[8];
-			new Random().nextBytes(newPassBytes);
-			String newPassword = new String(newPassBytes, "UTF-8");
-
-			byte[] salt = EncryptionHelper.generateSalt();
-			String saltStr = new String(Base64.getEncoder().encode(salt), "UTF-8");
-			String password = EncryptionHelper.encrypt(newPassword, salt);
-
 			String newPass = "{call INSERT INTO PASSWORDS (PASSWORD, SALT) VALUES (?, ?) RETURNING GUID INTO ?}";
 
 			CallableStatement passStmt = conn.prepareCall(newPass);
-			passStmt.setString(1, password);
-			passStmt.setString(2, saltStr);
+			passStmt.setString(1, user.getPassword());
+			passStmt.setString(2, user.getSalt());
 			passStmt.registerOutParameter(3, Types.VARCHAR);
 			passStmt.executeUpdate();
 			String newPassGuid = passStmt.getString(3);
@@ -284,11 +305,16 @@ public class SQLUserProcess {
 			stmt.executeUpdate();
 			stmt.close();
 
-			query = "UPDATE PROFILE SET CALLING = ? WHERE USER_GUID = ?";
+			query = "UPDATE PROFILE SET CALLING = ?, ADDRESS1 = ?, ADDRESS2 = ?, CITY = ?, STATE = ?, ZIP = ? WHERE USER_GUID = ?";
 
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, user.getCalling());
-			stmt.setString(2, user.getGuid());
+			stmt.setString(2, user.getAddress1());
+			stmt.setString(3, user.getAddress2());
+			stmt.setString(4, user.getCity());
+			stmt.setString(5, user.getState());
+			stmt.setString(6, user.getZip());
+			stmt.setString(7, user.getGuid());
 			stmt.executeUpdate();
 			stmt.close();
 
@@ -314,10 +340,75 @@ public class SQLUserProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "DELETE FROM USERS WHERE GUID = ?";
-
+			String query = "DELETE FROM PASSWORDS WHERE GUID = (SELECT PASSWORD_GUID FROM USERS WHERE GUID = ?)";
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, user.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			query = "DELETE FROM ACTIVITY_TYPE_ASSOCIATIONS WHERE USER_GUID = ? ";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, user.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			query = "DELETE FROM BUDGET_PERMISSIONS_XREF WHERE USER_GUID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, user.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			query = "DELETE FROM CALENDAR_PERMISSIONS_XREF WHERE USER_GUID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, user.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			query = "DELETE FROM USER_GROUP_XREF WHERE USER_GUID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, user.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			query = "DELETE FROM PROFILE WHERE USER_GUID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, user.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			query = "DELETE FROM USERS WHERE GUID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, user.getGuid());
+			stmt.executeUpdate();
+			stmt.close();
+
+			conn.commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return false;
+	}
+
+	public static boolean updateUserPassword(User user) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			String query = "UPDATE PASSWORDS SET PASSWORD = ?, SALT = ? WHERE GUID = (SELECT PASSWORD_GUID FROM USERS WHERE GUID = ?)";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, user.getPassword());
+			stmt.setString(2, user.getSalt());
+			stmt.setString(3, user.getGuid());
 			stmt.executeUpdate();
 			stmt.close();
 
