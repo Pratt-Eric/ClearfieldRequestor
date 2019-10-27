@@ -5,6 +5,7 @@
  */
 package com.prt.requestor;
 
+import com.prt.models.Group;
 import com.prt.models.User;
 import com.prt.utils.DBConnection;
 import com.prt.utils.EncryptionHelper;
@@ -48,6 +49,7 @@ public class SQLUserProcess {
 						+ "JOIN PASSWORDS P ON U.PASSWORD_GUID = P.GUID "
 						+ "JOIN PROFILE PROF ON U.GUID = PROF.USER_GUID "
 						+ "WHERE U.USERNAME = ?";
+
 				PreparedStatement stmt = conn.prepareStatement(query);
 				stmt.setString(1, username);
 				ResultSet set = stmt.executeQuery();
@@ -62,6 +64,77 @@ public class SQLUserProcess {
 					user.setSalt(set.getString("SALT"));
 					user.setCalling(set.getString("CALLING"));
 					user.setAdmin(set.getString("ADMINISTRATOR").equals("1"));
+				}
+				set.close();
+				stmt.close();
+				return user;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return null;
+	}
+
+	public static User selectUserByGuid(String userGuid) throws SQLException {
+		Connection conn = null;
+		try {
+			if (userGuid != null) {
+
+				conn = DBConnection.getInstance().getDataSource().getConnection();
+				conn.setAutoCommit(false);
+
+				String query = "SELECT "
+						+ "U.GUID, "
+						+ "U.USERNAME, "
+						+ "U.FIRSTNAME, "
+						+ "U.LASTNAME, "
+						+ "U.EMAIL, "
+						+ "P.PASSWORD, "
+						+ "P.SALT, "
+						+ "PROF.CALLING, "
+						+ "U.CREATED_BY, "
+						+ "U.ADMINISTRATOR "
+						+ "FROM USERS U "
+						+ "JOIN PASSWORDS P ON U.PASSWORD_GUID = P.GUID "
+						+ "JOIN PROFILE PROF ON U.GUID = PROF.USER_GUID "
+						+ "WHERE U.GUID = ?";
+
+				String groupQuery = "SELECT G.GUID, G.NAME FROM USER_GROUP_XREF UGX JOIN GROUPS G ON UGX.GROUP_GUID = G.GUID WHERE UGX.USER_GUID = ?";
+
+				PreparedStatement stmt = conn.prepareStatement(query);
+				stmt.setString(1, userGuid);
+				ResultSet set = stmt.executeQuery();
+				User user = new User();
+				while (set.next()) {
+					user.setGuid(set.getString("GUID"));
+					user.setUsername(set.getString("USERNAME"));
+					user.setFirstname(set.getString("FIRSTNAME"));
+					user.setLastname(set.getString("LASTNAME"));
+					user.setEmail(set.getString("EMAIL"));
+					user.setPassword(set.getString("PASSWORD"));
+					user.setSalt(set.getString("SALT"));
+					user.setCalling(set.getString("CALLING"));
+					user.setAdmin(set.getString("ADMINISTRATOR").equals("1"));
+
+					PreparedStatement stmt2 = conn.prepareStatement(groupQuery);
+					stmt2.setString(1, userGuid);
+					ResultSet set2 = stmt2.executeQuery();
+					while (set2.next()) {
+						Group group = new Group();
+						group.setGuid(set2.getString("GUID"));
+						group.setName(set2.getString("NAME"));
+						user.getGroups().add(group);
+					}
+					set2.close();
+					stmt2.close();
 				}
 				set.close();
 				stmt.close();

@@ -84,6 +84,21 @@ public class DataResource {
 		return null;
 	}
 
+	@Path("user/select/byguid")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectUserByGuid(String supplied) {
+		try {
+			Gson gson = new Gson();
+			String guid = gson.fromJson(supplied, String.class);
+			return gson.toJson(SQLUserProcess.selectUserByGuid(guid));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Path("user/select/all")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

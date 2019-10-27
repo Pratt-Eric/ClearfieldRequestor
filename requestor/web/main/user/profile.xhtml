@@ -1,0 +1,110 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Clearfield Requestor - Profile</ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">
+						<h:form id="headerForm">
+							<h1>Profile - #{profileController.currUser.firstname} #{profileController.currUser.lastname}</h1>
+						</h:form>
+                    </div>
+                    <div class="card-content card-content-main">
+                        <h:form id="profileForm">
+							<p:growl showDetail="true" showSummary="true"/>
+							<div>
+								<p:outputLabel value="Username:"/>
+								<br/>
+								<p:outputLabel value="#{profileController.currUser.username}" style="margin-left: 40px;"/>
+								<br/><br/>
+								<p:outputLabel value="First Name:"/>
+								<br/>
+								<p:inputText value="#{profileController.currUser.firstname}" style="margin-left: 40px;">
+									<p:ajax/>
+								</p:inputText>
+								<br/><br/>
+								<p:outputLabel value="Last Name:"/>
+								<br/>
+								<p:inputText value="#{profileController.currUser.lastname}" style="margin-left: 40px;">
+									<p:ajax/>
+								</p:inputText>
+								<br/><br/>
+								<p:outputLabel value="Calling:"/>
+								<br/>
+								<p:outputLabel value="#{profileController.currUser.calling}" style="margin-left: 40px;"/>
+								<br/><br/>
+								<h:panelGroup rendered="#{profileController.currUser.groups.size() gt 0}">
+									<p:outputLabel value="Assigned Groups:"/>
+									<br/>
+									<div style="margin-left: 40px;">
+										<ui:repeat value="#{profileController.currUser.groups}" var="group">
+											<p:outputLabel value="#{group.name}"/>
+											<br/>
+										</ui:repeat>
+									</div>
+									<br/><br/>
+								</h:panelGroup>
+								<p:commandButton value="Update Profile" actionListener="#{profileController.editUser}"/>
+								<p:commandButton value="Change Password" actionListener="#{profileController.preparePasswordChange}" update="passwordChangeForm" oncomplete="PF('passwordChangeDlg').show()" style="margin-left: 10px;"/>
+							</div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<p:dialog modal="true" widgetVar="passwordChangeDlg" header="Change Password">
+			<h:form id="passwordChangeForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<div style="border: 1px solid black; background-color: #d5e6e1;">
+						<p:outputLabel value="Password must include each of the following:"/>
+						<br/>
+						<div style="font-size: 8pt;">
+							<ul>
+								<li>
+									<span>At least one upper case letter</span>
+								</li>
+								<li>
+									<span>At least one lower case letter</span>
+								</li>
+								<li>
+									<span>At least one number</span>
+								</li>
+								<li>
+									<span>At least one special character</span>
+								</li>
+								<li>
+									<span>Between 8 and 24 characters long</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<br/><br/>
+					<p:outputLabel value="New Password"/>
+					<br/>
+					<p:password value="#{profileController.newPassword.password}">
+						<p:ajax/>
+					</p:password>
+					<br/><br/>
+					<p:outputLabel value="Repeat New Password"/>
+					<br/>
+					<p:password value="#{profileController.newPassword.repeatPassword}">
+						<p:ajax/>
+					</p:password>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Change Password" actionListener="#{profileController.updatePassword}"/>
+					<p:commandButton value="Cancel" title="Cancel Change Password" style="margin-left: 10px;" oncomplete="PF('passwordChangeDlg').hide()"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

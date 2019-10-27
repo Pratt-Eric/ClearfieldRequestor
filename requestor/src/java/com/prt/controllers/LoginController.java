@@ -83,11 +83,10 @@ public class LoginController implements Serializable {
 						//grab user information including avatar if it exists
 						//set user preferences before redirecting
 						preferences.username = user.getUsername();
-						//convert picture to bytes
-//                        preferences.stream = new ByteArrayOutputStream();
-//                        preferences.stream.write(user.getPicture().getBytes("UTF-8"));
 						preferences.calling = user.getCalling();
 						preferences.userGuid = user.getGuid();
+						preferences.firstname = user.getFirstname();
+						preferences.lastname = user.getLastname();
 						return "/main/dashboard.xhtml?faces-redirect=true";
 					}
 				}
@@ -105,5 +104,9 @@ public class LoginController implements Serializable {
 		preferences.calling = null;
 		preferences.userGuid = null;
 		return "/logout.xhtml?faces-redirect=true";
+	}
+
+	public String navigate(String location) {
+		return "/main/user/" + location + "?faces-redirect=true";
 	}
 }

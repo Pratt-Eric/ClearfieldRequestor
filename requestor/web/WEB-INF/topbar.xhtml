@@ -1,32 +1,47 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+				xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
     <div class="layout-topbar">
-        <h:link outcome="/main/dashboard" styleClass="layout-topbar-logo">
+        <h:link outcome="/dashboard" styleClass="layout-topbar-logo">
             <p:graphicImage name="images/#{guestPreferences.logo}.png" library="olympia-layout" />
         </h:link>
 
-        <a class="layout-menu-button" href="/main/dashboard.xhtml">
+        <a class="layout-menu-button" href="#">
             <i class="fa fa-bars" />
         </a>
 
+        <a href="#" class="layout-topbar-user">
+            <p:graphicImage name="images/usercircle.png" library="olympia-layout" />
+        </a>
+        <ul class="layout-topbar-usermenu">
+            <li class="layout-topbar-usermenu-header">
+                <div class="layout-topbar-usermenu-info">
+                    <div class="layout-topbar-usermenu-name"><h:form id="topbarPopupNameForm">#{guestPreferences.firstname} #{guestPreferences.lastname}</h:form></div>
+                    <div class="layout-topbar-usermenu-role"><h:form id="topbarPopupCallingForm">#{guestPreferences.calling}</h:form></div>
+                </div>
+            </li>
+            <li>
+				<p:commandLink action="#{loginController.navigate('profile.xhtml')}">
+					<i class="fa fa-user" />
+					<span>Profile</span>
+				</p:commandLink>
+            </li>
+            <li>
+				<p:commandLink action="#{loginController.logout}">
+					<i class="fa fa-sign-out"/>
+					<span>Logout</span>
+				</p:commandLink>
+            </li>
+        </ul>
+
         <ul class="layout-topbar-icons">
             <li>
-                <p:commandButton value="Create Request" icon="fa fa-plus"/>
+				<div style="margin-top: 20px;">
+					<h:form id="topbarNameForm">
+						<p:outputLabel style="color: #a6a6a6;" value="#{guestPreferences.firstname} #{guestPreferences.lastname}"/>
+					</h:form>
+				</div>
             </li>
-            <li>
-                <a href="#" class="layout-topbar-icon-green">
-                    <i class="fa fa-calendar" />
-                </a>
-            </li>
-            <li>
-                <a href="#" class="layout-topbar-icon-green">
-                    <i class="fa fa-user" />
-                </a>
-            </li>
-			<li>
-				<p:commandLink value="Logout" action="#{loginController.logout}"/>
-			</li>
         </ul>
     </div>
 

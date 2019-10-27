@@ -22,12 +22,46 @@ public class GuestPreferences implements Serializable {
 	private String logo = "logo-olympia-white";
 
 	public String username;
+	public String firstname;
+	public String lastname;
 	public String calling;
 	public String userGuid;
 	public ByteArrayOutputStream stream = new ByteArrayOutputStream();
 	public String imgExt = "";
 	public Budget selectedBudget = null;
 	public Calendar selectedCalendar = null;
+
+	public String getFirstname() {
+		return firstname;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getCalling() {
+		return calling;
+	}
+
+	public void setCalling(String calling) {
+		this.calling = calling;
+	}
 
 	public String getTheme() {
 		return theme;

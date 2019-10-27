@@ -6,6 +6,7 @@
 package com.prt.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -29,6 +30,15 @@ public class User implements Serializable {
 	private boolean editBudget;
 	private boolean selected;
 	private boolean editCalendar;
+	private ArrayList<Group> groups = new ArrayList<>();
+
+	public ArrayList<Group> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(ArrayList<Group> groups) {
+		this.groups = groups;
+	}
 
 	public boolean isEditCalendar() {
 		return editCalendar;

@@ -14,41 +14,50 @@ import java.util.UUID;
  */
 public class Password implements Serializable {
 
-    private String guid;
-    private String password;
-    private String salt;
+	private String guid;
+	private String password;
+	private String repeatPassword;
+	private String salt;
 
-    public Password() {
+	public Password() {
 
-    }
+	}
 
-    public Password(String guid, String password, String salt) {
-        this.guid = guid;
-        this.password = password;
-        this.salt = salt;
-    }
+	public Password(String guid, String password, String salt) {
+		this.guid = guid;
+		this.password = password;
+		this.salt = salt;
+	}
 
-    public String getGuid() {
-        return guid;
-    }
+	public String getRepeatPassword() {
+		return repeatPassword;
+	}
 
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
+	public void setRepeatPassword(String repeatPassword) {
+		this.repeatPassword = repeatPassword;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getGuid() {
+		return guid;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
 
-    public String getSalt() {
-        return salt;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
 }
