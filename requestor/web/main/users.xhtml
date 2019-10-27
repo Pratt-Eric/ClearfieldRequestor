@@ -36,7 +36,7 @@
                                 <p:column headerText="Calling" filterBy="#{user.calling}" sortBy="#{user.calling}" filterMatchMode="contains">
                                     <p:outputLabel value="#{user.calling}"/>
                                 </p:column>
-                                <p:column headerText="Administrator">
+                                <p:column headerText="Administrator" style="text-align: center; width: 10%;">
                                     <p:selectBooleanCheckbox value="#{user.admin}">
                                         <p:ajax listener="#{usersController.editUser(user)}"/>
                                     </p:selectBooleanCheckbox>

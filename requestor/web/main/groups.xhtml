@@ -31,7 +31,7 @@
                                         <br/>
                                     </ui:repeat>
                                 </p:column>
-                                <p:column headerText="Administrator">
+                                <p:column headerText="Administrator" style="text-align: center; width: 10%;">
                                     <p:selectBooleanCheckbox value="#{group.admin}">
                                         <p:ajax listener="#{groupsController.editGroup(group)}"/>
                                     </p:selectBooleanCheckbox>
