@@ -2,6 +2,7 @@ package com.prt.controllers;
 
 import com.prt.models.Budget;
 import com.prt.models.Calendar;
+import com.prt.models.Dashboard;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
@@ -30,6 +31,7 @@ public class GuestPreferences implements Serializable {
 	public String imgExt = "";
 	public Budget selectedBudget = null;
 	public Calendar selectedCalendar = null;
+	public Dashboard selectedDashboard = null;
 
 	public String getFirstname() {
 		return firstname;

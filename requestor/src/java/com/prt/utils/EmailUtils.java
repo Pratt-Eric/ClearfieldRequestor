@@ -20,11 +20,14 @@ public class EmailUtils {
 
 	public static boolean sendEmail(String to, String subject, String body) {
 		try {
-			Properties properties = System.getProperties();
-			properties.setProperty("mail.smtp.host", "localhost");
+			Properties properties = new Properties();
+			properties.put("mail.smtp.auth", false);
+			properties.put("main.smtp.starttls.enable", false);
+			properties.put("mail.smtp.port", 25);
+			properties.put("mail.smtp.host", "RequestorServer");
 			Session session = Session.getDefaultInstance(properties);
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("clearfieldrequestor@noreply.com"));
+			message.setFrom(new InternetAddress("Administrator@prt.clearfieldrequestor.com"));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			message.setSubject(subject);
 			message.setText(body);

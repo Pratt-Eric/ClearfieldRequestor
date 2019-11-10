@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Clearfield Requestor - Dashboard</ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">
+                        <h1>Dashboard Setup</h1>
+						<p:commandButton value="Add Dashboard" icon="fa fa-plus" actionListener="#{dashboardSetupController.startAddComponents}" update="addItemsForm" oncomplete="PF('addItemsDlg').show()" style="margin-bottom: 20px;"/>
+                    </div>
+                    <div class="card-content card-content-main">
+                        <h:form id="dashboardForm">
+							<p:growl showDetail="true" showSummary="true"/>
+							<p:dataTable value="#{dashboardSetupController.items}" var="item">
+								<p:column headerText="Component Name">
+									<p:outputLabel value="#{item.name}"/>
+								</p:column>
+								<p:column headerText="Component Description">
+									<p:outputLabel value="#{item.desc}"/>
+								</p:column>
+								<p:column headerText="Component Type">
+									<p:outputLabel value="#{item.type}"/>
+								</p:column>
+								<p:column headerText="Actions">
+									<p:commandLink title="Move Up" actionListener="#{dashboardSetupController.move(-1)}">
+										<i class="fa fa-lg fa-chevron-up"/>
+									</p:commandLink>
+									<p:commandLink title="Move Down" actionListener="#{dashboardSetupController.move(1)}">
+										<i class="fa fa-lg fa-chevron-down"/>
+									</p:commandLink>
+									<p:commandLink title="Delete" actionListener="#{dashboardSetupController.delete(item)}">
+										<i class="fa fa-lg fa-chevron-up"/>
+									</p:commandLink>
+								</p:column>
+							</p:dataTable>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<p:dialog modal="true" header="Add Items to Dashboard" widgetVar="addItemsDlg">
+			<h:form id="addItemsForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<p:outputLabel value="Calendars:"/>
+					<br/>
+					<p:selectManyMenu showCheckbox="true" value="#{dashboardSetupController.selectedCalendars}">
+						<p:ajax/>
+						<f:selectItems value="#{dashboardSetupController.calendars}" var="calendar" itemLabel="#{calendar.name}" itemValue="#{calendar.guid}"/>
+					</p:selectManyMenu>
+					<br/><br/>
+					<p:outputLabel value="Budgets:"/>
+					<br/>
+					<p:selectManyMenu showCheckbox="true" value="#{dashboardSetupController.selectedBudgets}">
+						<p:ajax/>
+						<f:selectItems value="#{dashboardSetupController.budgets}" var="budget" itemLabel="#{budget.name}" itemValue="#{budget.guid}"/>
+					</p:selectManyMenu>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Add" title="Add Items to Dashboard" actionListener="#{dashboardSetupController.editDashboard}"/>
+					<p:commandButton value="Cancel" title="Cancel Add Items" style="margin-left: 10px;" oncomplete="PF('addItemsDlg').hide()"/>
+				</div>
+			</h:form>
+		</p:dialog>
+    </ui:define>
+
+</ui:composition>

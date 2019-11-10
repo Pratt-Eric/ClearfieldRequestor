@@ -15,49 +15,67 @@ import java.util.UUID;
  */
 public class Dashboard implements Serializable {
 
-    private String guid;
-    private String name;
-    private String desc;
-    private ArrayList<Calendar> calendars = new ArrayList<>();
-    private ArrayList<Budget> budgets = new ArrayList<>();
+	private String guid;
+	private String name;
+	private String desc;
+	private ArrayList<User> users = new ArrayList<>();
+	private ArrayList<Group> groups = new ArrayList<>();
+	private ArrayList<Calendar> calendars = new ArrayList<>();
+	private ArrayList<Budget> budgets = new ArrayList<>();
 
-    public String getGuid() {
-        return guid;
-    }
+	public ArrayList<User> getUsers() {
+		return users;
+	}
 
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
+	public void setUsers(ArrayList<User> users) {
+		this.users = users;
+	}
 
-    public ArrayList<Calendar> getCalendars() {
-        return calendars;
-    }
+	public ArrayList<Group> getGroups() {
+		return groups;
+	}
 
-    public void setCalendars(ArrayList<Calendar> calendars) {
-        this.calendars = calendars;
-    }
+	public void setGroups(ArrayList<Group> groups) {
+		this.groups = groups;
+	}
 
-    public ArrayList<Budget> getBudgets() {
-        return budgets;
-    }
+	public String getGuid() {
+		return guid;
+	}
 
-    public void setBudgets(ArrayList<Budget> budgets) {
-        this.budgets = budgets;
-    }
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public ArrayList<Calendar> getCalendars() {
+		return calendars;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setCalendars(ArrayList<Calendar> calendars) {
+		this.calendars = calendars;
+	}
 
-    public String getDesc() {
-        return desc;
-    }
+	public ArrayList<Budget> getBudgets() {
+		return budgets;
+	}
 
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
+	public void setBudgets(ArrayList<Budget> budgets) {
+		this.budgets = budgets;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
 }

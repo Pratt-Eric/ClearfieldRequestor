@@ -1,0 +1,30 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Clearfield Requestor - Dashboard</ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">
+                        <h1>Dashboard</h1>
+                    </div>
+                    <div class="card-content card-content-main">
+                        <h:form id="dashboardForm">
+							<p:growl showDetail="true" showSummary="true"/>
+							This will have the user's chosen default dashboard
+							<br/>
+							The user will be able to include as many dashboards as they want according to what is made accessible to them by the admin. Then they can choose a default to show on log in.
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

@@ -59,7 +59,7 @@ public class SQLProcess {
 				String newPasswordGuid = newPass.getString(3);
 				newPass.close();
 
-				query = "{call INSERT INTO USERS (USERNAME, FIRSTNAME, PASSWORD_GUID) VALUES (?, ?, ?) RETURNING GUID INTO ?}";
+				query = "{call INSERT INTO USERS (USERNAME, FIRSTNAME, PASSWORD_GUID, ADMINISTRATOR) VALUES (?, ?, ?, 1) RETURNING GUID INTO ?}";
 				CallableStatement newUser = conn.prepareCall(query);
 				newUser.setString(1, "admin");
 				newUser.setString(2, "admin");

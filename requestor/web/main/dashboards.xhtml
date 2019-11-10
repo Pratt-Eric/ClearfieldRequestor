@@ -1,0 +1,152 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Clearfield Requestor - Dashboards</ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">
+                        <h1>Dashboards</h1>
+						<p:commandButton value="Add Dashboard" icon="fa fa-plus" actionListener="#{dashboardsController.startAddDashboard}" update="addDashboardForm" oncomplete="PF('addDashboardDlg').show()" style="margin-bottom: 20px;"/>
+                    </div>
+                    <div class="card-content card-content-main">
+                        <h:form id="dashboardsForm">
+							<p:growl showDetail="true" showSummary="true"/>
+							<p:dataTable value="#{dashboardsController.dashboards}" var="dashboard">
+								<p:column headerText="Dashboard Name">
+									<p:outputLabel value="#{dashboard.name}"/>
+								</p:column>
+								<p:column headerText="Dashboard Description">
+									<p:outputLabel value="#{dashboard.desc}"/>
+								</p:column>
+								<p:column headerText="Associated Users">
+									<ui:repeat value="#{dashboard.users}" var="user">
+										<p:outputLabel value="#{user.username}"/>
+										<br/>
+									</ui:repeat>
+								</p:column>
+								<p:column headerText="Associated Groups">
+									<ui:repeat value="#{dashboard.groups}" var="group">
+										<p:outputLabel value="#{group.name}"/>
+										<br/>
+									</ui:repeat>
+								</p:column>
+								<p:column headerText="Calendars">
+									<ui:repeat value="#{dashboard.calendars}" var="calendar">
+										<p:outputLabel value="#{calendar.name}"/>
+										<br/>
+									</ui:repeat>
+								</p:column>
+								<p:column headerText="Calendars">
+									<ui:repeat value="#{dashboard.budgets}" var="budget">
+										<p:outputLabel value="#{budget.name}"/>
+										<br/>
+									</ui:repeat>
+								</p:column>
+								<p:column headerText="Actions">
+									<p:commandLink title="Edit Dashboard" actionListener="#{dashboardsController.updateSelectedDashboard(dashboard)}" update="editDashboardForm" oncomplete="PF('editDashboardDlg').show()">
+										<i class="fa fa-lg fa-edit"/>
+									</p:commandLink>
+									<p:commandLink title="Customize Dashboard" action="#{dashboardsController.customize}">
+										<i class="fa fa-lg fa-th"/>
+									</p:commandLink>
+									<p:commandLink title="Delete Dashboard" actionListener="#{dashboardsController.updateSelectedDashboard(dashboard)}" update="deleteDashboardForm" oncomplete="PF('deleteDashboardDlg').show()">
+										<i class="fa fa-lg fa-trash"/>
+									</p:commandLink>
+								</p:column>
+							</p:dataTable>
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<p:dialog modal="true" header="Add Dashboard" widgetVar="addDashboardDlg">
+			<h:form id="addDashboardForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<p:outputLabel value="Dashboard Name:"/>
+					<br/>
+					<p:inputText value="#{dashboardsController.newDashboard.name}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+					<br/><br/>
+					<p:outputLabel value="Dashboard Description:"/>
+					<br/>
+					<p:inputText value="#{dashboardsController.newDashboard.desc}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+					<br/><br/>
+					<p:outputLabel value="Associated Users:"/>
+					<br/>
+					<p:selectManyMenu showCheckbox="true" value="#{dashboardsController.selectedUsers}" style="width: 100%;">
+						<p:ajax/>
+						<f:selectItems value="#{dashboardsController.users}" var="user" itemLabel="#{user.username}" itemValue="#{user.guid}"/>
+					</p:selectManyMenu>
+					<br/><br/>
+					<p:outputLabel value="Associated Groups:"/>
+					<br/>
+					<p:selectManyMenu showCheckbox="true" value="#{dashboardsController.selectedGroups}" style="width: 100%;">
+						<p:ajax/>
+						<f:selectItems value="#{dashboardsController.groups}" var="group" itemLabel="#{group.name}" itemValue="#{group.guid}"/>
+					</p:selectManyMenu>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Add" actionListener="#{dashboardsController.editDashboard}"/>
+					<p:commandButton value="Cancel" title="Cancel Add" oncomplete="PF('addDashboardDlg').hide()" style="margin-left: 10px;"/>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" header="Edit Dashboard" widgetVar="editDashboardDlg">
+			<h:form id="editDashboardForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<p:outputLabel value="Dashboard Name:"/>
+					<br/>
+					<p:inputText value="#{dashboardsController.selectedDashboard.name}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+					<br/><br/>
+					<p:outputLabel value="Dashboard Description:"/>
+					<br/>
+					<p:inputText value="#{dashboardsController.selectedDashboard.desc}" style="width: 100%;">
+						<p:ajax/>
+					</p:inputText>
+					<br/><br/>
+					<p:outputLabel value="Associated Users:"/>
+					<br/>
+					<p:selectManyMenu showCheckbox="true" value="#{dashboardsController.selectedUsers}" style="width: 100%;">
+						<p:ajax/>
+						<f:selectItems value="#{dashboardsController.users}" var="user" itemLabel="#{user.username}" itemValue="#{user.guid}"/>
+					</p:selectManyMenu>
+					<br/><br/>
+					<p:outputLabel value="Associated Groups:"/>
+					<br/>
+					<p:selectManyMenu showCheckbox="true" value="#{dashboardsController.selectedGroups}" style="width: 100%;">
+						<p:ajax/>
+						<f:selectItems value="#{dashboardsController.groups}" var="group" itemLabel="#{group.name}" itemValue="#{group.guid}"/>
+					</p:selectManyMenu>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Edit" actionListener="#{dashboardsController.editDashboard}"/>
+					<p:commandButton value="Cancel" title="Cancel Edit" oncomplete="PF('editDashboardDlg').hide()" style="margin-left: 10px;"/>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" header="Add Dashboard" widgetVar="deleteDashboardDlg">
+			<h:form id="deleteDashboardForm">
+				<p:outputLabel value="Are you sure you want to delete #{dashboardsController.selectedDashboard.name} from the system?"/>
+				<br/><br/>
+				<p:commandButton value="Delete" actionListener="#{dashboardsController.deleteDashboard}"/>
+				<p:commandButton value="Cancel" title="Cancel Delete" oncomplete="PF('deleteDashboardDlg').hide()" style="margin-left: 10px;"/>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

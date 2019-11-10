@@ -9,11 +9,13 @@ import com.google.gson.Gson;
 import com.prt.models.Activity;
 import com.prt.models.Budget;
 import com.prt.models.Calendar;
+import com.prt.models.Dashboard;
 import com.prt.models.Group;
 import com.prt.models.User;
 import com.prt.requestor.SQLActivityProcess;
 import com.prt.requestor.SQLBudgetProcess;
 import com.prt.requestor.SQLCalendarProcess;
+import com.prt.requestor.SQLDashboardProcess;
 import com.prt.requestor.SQLGroupProcess;
 import com.prt.requestor.SQLProcess;
 import com.prt.requestor.SQLUserProcess;
@@ -432,6 +434,62 @@ public class DataResource {
 			e.printStackTrace();
 		}
 		return gson.toJson(false);
+	}
+
+	@Path("dashboard/select/all")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectAllDashboards(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.selectAllDashboards());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Path("dashboard/add")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postAddNewDashboard(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.addNewDashboard(gson.fromJson(content, Dashboard.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Path("dashboard/edit")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postEditExistingDashboard(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.editExistingDashboard(gson.fromJson(content, Dashboard.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Path("dashboard/delete")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postDeleteExistingDashboard(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.deleteExistingDashboard(gson.fromJson(content, Dashboard.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**

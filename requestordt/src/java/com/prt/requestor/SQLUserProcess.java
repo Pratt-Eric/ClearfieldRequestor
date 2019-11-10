@@ -53,7 +53,7 @@ public class SQLUserProcess {
 						+ "FROM USERS U "
 						+ "JOIN PASSWORDS P ON U.PASSWORD_GUID = P.GUID "
 						+ "JOIN PROFILE PROF ON U.GUID = PROF.USER_GUID "
-						+ "WHERE U.USERNAME = ?";
+						+ "WHERE LOWER(U.USERNAME) = LOWER(?)";
 
 				PreparedStatement stmt = conn.prepareStatement(query);
 				stmt.setString(1, username);

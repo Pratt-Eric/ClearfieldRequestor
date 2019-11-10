@@ -134,12 +134,12 @@ public class UsersController implements Serializable {
 					init();
 					PrimeFaces.current().executeScript("PF('addUserDlg').hide()");
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully added"));
-					PrimeFaces.current().ajax().update("userForm");
 					PrimeFaces.current().ajax().update("tempPasswordForm");
 					PrimeFaces.current().executeScript("PF('tempPasswordDlg').show()");
 				} else {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem adding the new user"));
 				}
+				PrimeFaces.current().ajax().update("userForm");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -162,10 +162,10 @@ public class UsersController implements Serializable {
 					init();
 					PrimeFaces.current().executeScript("PF('editUserDlg').hide()");
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully modified"));
-					PrimeFaces.current().ajax().update("userForm");
 				} else {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem modifying the existing user"));
 				}
+				PrimeFaces.current().ajax().update("userForm");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -180,10 +180,10 @@ public class UsersController implements Serializable {
 				init();
 				PrimeFaces.current().executeScript("PF('deleteUserDlg').hide()");
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "User was successfully removed"));
-				PrimeFaces.current().ajax().update("userForm");
 			} else {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem removing the existing user"));
 			}
+			PrimeFaces.current().ajax().update("userForm");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -202,7 +202,7 @@ public class UsersController implements Serializable {
 			} else {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There is no email registered with the user to send an email"));
 			}
-
+			PrimeFaces.current().ajax().update("userForm");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
