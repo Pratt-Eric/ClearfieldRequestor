@@ -7,7 +7,6 @@ package com.prt.models;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  *
@@ -15,58 +14,58 @@ import java.util.UUID;
  */
 public class Event implements Serializable {
 
-    private String guid;
-    private String title;
-    private String summary;
-    private Date start;
-    private Date end;
-    private String activity_type_guid;
+	private String guid;
+	private String title;
+	private String summary;
+	private Date start;
+	private Date end;
+	private Activity activity;
 
-    public String getTitle() {
-        return title;
-    }
+	public Activity getActivity() {
+		return activity;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public void setActivity(Activity activity) {
+		this.activity = activity;
+	}
 
-    public String getSummary() {
-        return summary;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public Date getStart() {
-        return start;
-    }
+	public String getSummary() {
+		return summary;
+	}
 
-    public void setStart(Date start) {
-        this.start = start;
-    }
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
 
-    public Date getEnd() {
-        return end;
-    }
+	public Date getStart() {
+		return start;
+	}
 
-    public void setEnd(Date end) {
-        this.end = end;
-    }
+	public void setStart(Date start) {
+		this.start = start;
+	}
 
-    public String getGuid() {
-        return guid;
-    }
+	public Date getEnd() {
+		return end;
+	}
 
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
+	public void setEnd(Date end) {
+		this.end = end;
+	}
 
-    public String getActivity_type_guid() {
-        return activity_type_guid;
-    }
+	public String getGuid() {
+		return guid;
+	}
 
-    public void setActivity_type_guid(String activity_type_guid) {
-        this.activity_type_guid = activity_type_guid;
-    }
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
 }

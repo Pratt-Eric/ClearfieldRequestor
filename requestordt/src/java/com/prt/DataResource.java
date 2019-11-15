@@ -506,6 +506,76 @@ public class DataResource {
 		return null;
 	}
 
+	@Path("dashboard/user/select/all")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectUserDashboards(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.selectUserDashboards(gson.fromJson(content, String.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Path("dashboard/user/select")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectUserDashboard(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.selectUserDashboard(gson.fromJson(content, String[].class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Path("dashboard/user/add")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postAddUserDashboards(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.addUserDashboards(gson.fromJson(content, String[][].class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Path("dashboard/user/edit")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postEditUserDashboard(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.editUserDashboard(gson.fromJson(content, String[].class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Path("dashboard/user/available")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectAvailableUserDashboards(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.selectAvailableUserDashboards(gson.fromJson(content, String.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	/**
 	 * Retrieves representation of an instance of com.prt.DataResource
 	 *

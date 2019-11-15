@@ -19,9 +19,18 @@ public class Calendar implements Serializable {
 	private String desc;
 	private ArrayList<User> users = new ArrayList<>();
 	private ArrayList<Group> groups = new ArrayList<>();
+	private ArrayList<Event> events = new ArrayList<>();
 	private boolean editable;
 	private int index;
 	private String xrefGuid;
+
+	public ArrayList<Event> getEvents() {
+		return events;
+	}
+
+	public void setEvents(ArrayList<Event> events) {
+		this.events = events;
+	}
 
 	public String getXrefGuid() {
 		return xrefGuid;

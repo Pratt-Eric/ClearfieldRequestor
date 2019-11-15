@@ -17,11 +17,29 @@ public class Dashboard implements Serializable {
 	private String guid;
 	private String name;
 	private String desc;
+	private boolean defaultDashboard;
+	private String xrefGuid;
 	private ArrayList<User> users = new ArrayList<>();
 	private ArrayList<Group> groups = new ArrayList<>();
 	private ArrayList<Calendar> calendars = new ArrayList<>();
 	private ArrayList<Budget> budgets = new ArrayList<>();
 	private ArrayList<Item> items = new ArrayList<>();
+
+	public String getXrefGuid() {
+		return xrefGuid;
+	}
+
+	public void setXrefGuid(String xrefGuid) {
+		this.xrefGuid = xrefGuid;
+	}
+
+	public boolean isDefaultDashboard() {
+		return defaultDashboard;
+	}
+
+	public void setDefaultDashboard(boolean defaultDashboard) {
+		this.defaultDashboard = defaultDashboard;
+	}
 
 	public ArrayList<Item> getItems() {
 		return items;

@@ -5,13 +5,16 @@
  */
 package com.prt.requestor;
 
+import com.prt.models.Activity;
 import com.prt.models.Budget;
 import com.prt.models.Calendar;
 import com.prt.models.Dashboard;
+import com.prt.models.Event;
 import com.prt.models.Group;
 import com.prt.models.Item;
 import com.prt.models.User;
 import com.prt.utils.DBConnection;
+import com.prt.utils.DateUtils;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -410,5 +413,328 @@ public class SQLDashboardProcess {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public static ArrayList<Dashboard> selectUserDashboards(String userGuid) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			ArrayList<Dashboard> dashboards = new ArrayList<>();
+
+			String query = "SELECT "
+					+ "D.GUID, "
+					+ "D.NAME, "
+					+ "D.\"DESC\", "
+					+ "UDX.GUID XREF_GUID, "
+					+ "UDX.\"DEFAULT\" "
+					+ "FROM USER_DASHBOARD_XREF UDX "
+					+ "JOIN DASHBOARDS D ON UDX.DASHBOARD_GUID = D.GUID "
+					+ "WHERE UDX.USER_GUID = ? OR UDX.GROUP_GUID IN (SELECT GROUP_GUID FROM USER_GROUP_XREF WHERE USER_GUID = ?)";
+			String calsAndBuds = "SELECT "
+					+ "C.GUID CAL_GUID, "
+					+ "C.NAME CAL_NAME, "
+					+ "B.GUID BUD_GUID, "
+					+ "B.NAME BUD_NAME "
+					+ "FROM DASHBOARD_ITEM_XREF DIX "
+					+ "LEFT JOIN CALENDAR_PERMISSIONS_XREF CPX ON DIX.CALENDAR_GUID = CPX.CALENDAR_GUID AND (CPX.USER_GUID = ? OR CPX.GROUP_GUID IN (SELECT GROUP_GUID FROM USER_GROUP_XREF WHERE USER_GUID = ?)) "
+					+ "LEFT JOIN CALENDARS C ON CPX.CALENDAR_GUID = C.GUID "
+					+ "LEFT JOIN BUDGET_PERMISSIONS_XREF BPX ON DIX.BUDGET_GUID = BPX.BUDGET_GUID AND (BPX.USER_GUID = ? OR CPX.GROUP_GUID IN (SELECT GROUP_GUID FROM USER_GROUP_XREF WHERE USER_GUID = ?)) "
+					+ "LEFT JOIN BUDGETS B ON BPX.BUDGET_GUID = B.GUID "
+					+ "WHERE DIX.DASHBOARD_GUID = ?";
+
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, userGuid);
+			stmt.setString(2, userGuid);
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				Dashboard dashboard = new Dashboard();
+
+				dashboard.setGuid(set.getString("GUID"));
+				dashboard.setName(set.getString("NAME"));
+				dashboard.setDesc(set.getString("DESC"));
+				dashboard.setXrefGuid(set.getString("XREF_GUID"));
+				dashboard.setDefaultDashboard(set.getString("DEFAULT").equals("1"));
+
+				PreparedStatement stmt2 = conn.prepareStatement(calsAndBuds);
+				stmt2.setString(1, userGuid);
+				stmt2.setString(2, userGuid);
+				stmt2.setString(3, userGuid);
+				stmt2.setString(4, userGuid);
+				stmt2.setString(5, dashboard.getGuid());
+				ResultSet set2 = stmt2.executeQuery();
+				while (set2.next()) {
+					String calGuid = set2.getString("CAL_GUID");
+					String budGuid = set2.getString("BUD_GUID");
+					if (calGuid != null && !calGuid.isEmpty()) {
+						Calendar calendar = new Calendar();
+						calendar.setGuid(calGuid);
+						calendar.setName(set2.getString("CAL_NAME"));
+						dashboard.getCalendars().add(calendar);
+					} else if (budGuid != null && !budGuid.isEmpty()) {
+						Budget budget = new Budget();
+						budget.setGuid(budGuid);
+						budget.setName(set2.getString("BUD_NAME"));
+						dashboard.getBudgets().add(budget);
+					}
+				}
+				set2.close();
+				stmt2.close();
+
+				dashboards.add(dashboard);
+			}
+			set.close();
+			stmt.close();
+
+			return dashboards;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return null;
+	}
+
+	public static Dashboard selectUserDashboard(String[] params) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			String xrefGuid = params[0];
+			String userGuid = params[1];
+			String query = ""
+					+ "SELECT "
+					+ "D.GUID, "
+					+ "D.NAME, "
+					+ "D.\"DESC\" "
+					+ "FROM USER_DASHBOARD_XREF UDX "
+					+ "JOIN DASHBOARDS D ON UDX.DASHBOARD_GUID = D.GUID "
+					+ "WHERE UDX.GUID = ?";
+			String cals = ""
+					+ "SELECT "
+					+ "C.GUID, "
+					+ "C.NAME, "
+					+ "C.\"DESC\", "
+					+ "FROM DASHBOARD_ITEM_XREF DIX "
+					+ "LEFT JOIN CALENDAR_PERMISSIONS_XREF CPX ON DIX.CALENDAR_GUID = CPX.CALENDAR_GUID AND (CPX.USER_GUID = ? OR CPX.GROUP_GUID IN (SELECT GROUP_GUID FROM USER_GROUP_XREF WHERE USER_GUID = ?)) "
+					+ "LEFT JOIN CALENDARS C ON CPX.CALENDAR_GUID = C.GUID "
+					+ "WHERE DIX.DASHBOARD_GUID = ?";
+			String activities = ""
+					+ "SELECT "
+					+ "CE.TITLE, "
+					+ "CE.SUMMARY, "
+					+ "CE.\"START\", "
+					+ "CE.\"END\", "
+					+ "ATR.NAME, "
+					+ "ATR.DESC "
+					+ "FROM ACTIVITY_TYPE_ASSOCIATIONS ATA "
+					+ "LEFT JOIN ACTIVITY_TYPE_REF ATR ON ATA.ACTIVITY_TYPE_REF_GUID = ATR.GUID "
+					+ "LEFT JOIN CALENDAR_EVENTS CE ON ATR.GUID = CE.ACTIVITY_TYPE_REF_GUID "
+					+ "WHERE ATA.CALENDAR_GUID = ?";
+			String buds = ""
+					+ "SELECT "
+					+ "B.NAME, "
+					+ "B.\"DESC\", "
+					+ "B.REMAINING "
+					+ "FROM DASHBOARD_ITEM_XREF DIX "
+					+ "LEFT JOIN BUDGET_PERMISSIONS_XREF BPX ON DIX.BUDGET_GUID = BPX.BUDGET_GUID AND (BPX.USER_GUID = ? OR BPX.GROUP_GUID IN (SELECT GROUP_GUID FROM USER_GROUP_XREF WHERE USER_GUID = ?)) "
+					+ "LEFT JOIN BUDGETS B ON BPX.BUDGET_GUID = B.GUID "
+					+ "WHERE DIX.DASHBOARD_GUID = ?";
+
+			Dashboard dashboard = new Dashboard();
+
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, xrefGuid);
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				dashboard.setGuid(set.getString("GUID"));
+				dashboard.setName(set.getString("NAME"));
+				dashboard.setDesc(set.getString("DESC"));
+			}
+			set.close();
+			stmt.close();
+
+			stmt = conn.prepareStatement(cals);
+			stmt.setString(1, userGuid);
+			stmt.setString(2, userGuid);
+			stmt.setString(3, dashboard.getGuid());
+			set = stmt.executeQuery();
+			while (set.next()) {
+				Calendar calendar = new Calendar();
+				calendar.setGuid(set.getString("GUID"));
+				calendar.setName(set.getString("NAME"));
+				calendar.setDesc(set.getString("DESC"));
+				dashboard.getCalendars().add(calendar);
+			}
+			set.close();
+			stmt.close();
+
+			stmt = conn.prepareStatement(buds);
+			stmt.setString(1, userGuid);
+			stmt.setString(2, userGuid);
+			stmt.setString(3, dashboard.getGuid());
+			set = stmt.executeQuery();
+			while (set.next()) {
+				Budget budget = new Budget();
+				budget.setGuid(set.getString("GUID"));
+				budget.setName(set.getString("NAME"));
+				budget.setDesc(set.getString("DESC"));
+				dashboard.getBudgets().add(budget);
+			}
+			set.close();
+			stmt.close();
+
+			for (Calendar calendar : dashboard.getCalendars()) {
+				stmt = conn.prepareStatement(activities);
+				stmt.setString(1, calendar.getGuid());
+				set = stmt.executeQuery();
+				while (set.next()) {
+					Event event = new Event();
+					event.setTitle(set.getString("TITLE"));
+					event.setSummary(set.getString("SUMMARY"));
+					event.setStart(DateUtils.parseDate(set.getString("START")));
+					event.setEnd(DateUtils.parseDate(set.getString("END")));
+					Activity activity = new Activity();
+					activity.setName(set.getString("NAME"));
+					activity.setDesc(set.getString("DESC"));
+					event.setActivity(activity);
+					calendar.getEvents().add(event);
+				}
+				set.close();
+				stmt.close();
+			}
+
+			return dashboard;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return null;
+	}
+
+	public static boolean addUserDashboards(String[][] params) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			String query = "INSERT INTO USER_DASHBOARD_XREF (USER_GUID, DASHBOARD_GUID) VALUES (?, ?)";
+
+			PreparedStatement stmt = conn.prepareStatement(query);
+			for (String[] param : params) {
+				stmt.setString(1, param[0]);
+				stmt.setString(2, param[1]);
+				stmt.addBatch();
+			}
+			stmt.executeBatch();
+			stmt.close();
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return false;
+	}
+
+	public static boolean editUserDashboard(String[] params) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			String query = "UPDATE USER_DASHBOARD_XREF SET DEFAULT = 0 WHERE USER_GUID = ?";
+			String update = "UPDATE USER_DASHBOARD_XREF SET DEFAULT = 1 WHERE GUID = ?";
+
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, params[0]);
+			stmt.executeUpdate();
+			stmt.close();
+
+			stmt = conn.prepareStatement(update);
+			stmt.setString(1, params[1]);
+			stmt.executeUpdate();
+			stmt.close();
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return false;
+	}
+
+	public static ArrayList<Dashboard> selectAvailableUserDashboards(String userGuid) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			ArrayList<Dashboard> dashboards = new ArrayList<>();
+
+			String query = "SELECT "
+					+ "D.GUID "
+					+ "D.NAME, "
+					+ "D.\"DESC\" "
+					+ "FROM DASHBOARDS D "
+					+ "JOIN DASHBOARD_PERMISSIONS_XREF DPX ON D.GUID = DPX.DASHBOARD_GUID "
+					+ "WHERE DPX.USER_GUID = ? OR DPX.GROUP_GUID IN (SELECT GROUP_GUID FROM USER_GROUP_XREF WHERE USER_GUID = ?)";
+
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, userGuid);
+			stmt.setString(2, userGuid);
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				Dashboard dashboard = new Dashboard();
+				dashboard.setGuid(set.getString("GUID"));
+				dashboard.setName(set.getString("NAME"));
+				dashboard.setDesc(set.getString("DESC"));
+				dashboards.add(dashboard);
+			}
+			set.close();
+			stmt.close();
+
+			return dashboards;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return null;
 	}
 }

@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Clearfield Requestor - Dashboards</ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">
+                        <h1>Dashboard Setup</h1>
+						<p:commandButton value="Add Dashboard" icon="fa fa-plus" style="margin-bottom: 20px;" actionListener="#{userDashboardSetupController.prepareAddDashboards}" update="dashAddForm"/>
+                    </div>
+                    <div class="card-content card-content-main">
+                        <h:form id="dashboardsForm">
+							<p:growl showDetail="true" showSummary="true"/>
+							<p:dataTable value="#{userDashboardSetupController.allUserDashboards}" var="dashboard">
+								<p:column headerText="Dashboard Name">
+									<p:outputLabel value="#{dashboard.name}"/>
+								</p:column>
+								<p:column headerText="Dashboard Description">
+									<p:outputLabel value="#{dashboard.desc}"/>
+								</p:column>
+								<p:column headerText="Calendars">
+									<ui:repeat value="#{dashboard.calendars}" var="calendar">
+										<p:outputLabel value="#{calendar.name}"/>
+										<br/>
+									</ui:repeat>
+								</p:column>
+								<p:column headerText="Budgets">
+									<ui:repeat value="#{dashboard.budgets}" var="budget">
+										<p:outputLabel value="#{budget.name}"/>
+										<br/>
+									</ui:repeat>
+								</p:column>
+								<p:column headerText="Make Default">
+									<p:selectBooleanCheckbox value="#{dashboard.defaultDashboard}" id="makeDefault">
+										<p:ajax listener="#{userDashboardSetupController.makeDefault(dashboard)}"/>
+									</p:selectBooleanCheckbox>
+								</p:column>
+							</p:dataTable>
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<p:dialog modal="true" widgetVar="dashAddDlg" header="Add Dashboards">
+			<h:form id="dashAddForm" style="width: 300px;">
+				<div style="width: 100%;">
+					<p:selectManyMenu showCheckbox="true" value="#{userDashboardSetupController.selectedDashboards}" style="width: 100%;">
+						<p:ajax/>
+						<f:selectItems value="#{userDashboardSetupController.availableDashboardsToAdd}" var="dashboard" itemLabel="#{dashboard.name}" itemValue="#{dashboard.guid}"/>
+					</p:selectManyMenu>
+				</div>
+				<div style="margin-top: 20px;">
+					<p:commandButton value="Add Dashboards" actionListener="#{userDashboardSetupController.addDashboards}"/>
+					<p:commandButton value="Cancel" title="Cancel Add Dashboards" oncomplete="PF('dashAddDlg').hide()" style="margin-left: 10px;"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>
