@@ -24,6 +24,24 @@ public class Budget implements Serializable {
 	private ArrayList<Group> groups = new ArrayList<>();
 	private boolean editable;
 	private String parentName;
+	private int index;
+	private String xrefGuid;
+
+	public String getXrefGuid() {
+		return xrefGuid;
+	}
+
+	public void setXrefGuid(String xrefGuid) {
+		this.xrefGuid = xrefGuid;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
 
 	public String getParentName() {
 		return parentName;

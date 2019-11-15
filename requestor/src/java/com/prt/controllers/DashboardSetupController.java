@@ -14,6 +14,7 @@ import com.prt.models.Item;
 import com.prt.utils.RestUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -34,10 +35,28 @@ public class DashboardSetupController implements Serializable {
 	private GuestPreferences preferences;
 	private ArrayList<Budget> budgets = new ArrayList<>();
 	private ArrayList<Calendar> calendars = new ArrayList<>();
+	private ArrayList<Budget> availBuds = new ArrayList<>();
+	private ArrayList<Calendar> availCals = new ArrayList<>();
 	private ArrayList<String> selectedBudgets = new ArrayList<>();
 	private ArrayList<String> selectedCalendars = new ArrayList<>();
 	private ArrayList<Item> items = new ArrayList<>();
 	private Dashboard dashboard;
+
+	public ArrayList<Budget> getAvailBuds() {
+		return availBuds;
+	}
+
+	public void setAvailBuds(ArrayList<Budget> availBuds) {
+		this.availBuds = availBuds;
+	}
+
+	public ArrayList<Calendar> getAvailCals() {
+		return availCals;
+	}
+
+	public void setAvailCals(ArrayList<Calendar> availCals) {
+		this.availCals = availCals;
+	}
 
 	public ArrayList<Item> getItems() {
 		return items;
@@ -104,58 +123,116 @@ public class DashboardSetupController implements Serializable {
 			}.getType());
 			calendars = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/select/all", null), new TypeToken<ArrayList<Calendar>>() {
 			}.getType());
-
-			for (Calendar calendar : dashboard.getCalendars()) {
-				Item item = new Item();
-				item.setName(calendar.getName());
-				item.setType("Calendar");
-				item.setDesc(calendar.getDesc());
-				items.add(item);
-			}
-			for (Budget budget : dashboard.getBudgets()) {
-				Item item = new Item();
-				item.setName(budget.getName());
-				item.setType("Budget");
-				item.setDesc(budget.getDesc());
-				items.add(item);
-			}
+			loadDashboardItems();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void editDashboard() {
+	private void loadDashboardItems() {
+		items = new ArrayList<>();
+		for (Calendar calendar : dashboard.getCalendars()) {
+			Item item = new Item();
+			item.setGuid(calendar.getXrefGuid());
+			item.setName(calendar.getName());
+			item.setType("Calendar");
+			item.setDesc(calendar.getDesc());
+			item.setIndex(calendar.getIndex());
+			item.setCalendarGuid(calendar.getGuid());
+			items.add(item);
+		}
+		for (Budget budget : dashboard.getBudgets()) {
+			Item item = new Item();
+			item.setGuid(budget.getXrefGuid());
+			item.setName(budget.getName());
+			item.setType("Budget");
+			item.setDesc(budget.getDesc());
+			item.setIndex(budget.getIndex());
+			item.setBudgetGuid(budget.getGuid());
+			items.add(item);
+		}
+
+		Collections.sort(items, (o1, o2) -> {
+			return Integer.compare(o1.getIndex(), o2.getIndex());
+		});
+
+		dashboard.setItems(items);
+	}
+
+	private void reloadDashboardProperties() {
 		try {
-			//this won't work because we need to be able to add new items without affecting the ones that are alraedy added
-			//they also need to be in order when I send the dashboard back to be edited.
-			dashboard.setCalendars(new ArrayList<>());
-			dashboard.setBudgets(new ArrayList<>());
+			Gson gson = new Gson();
+			dashboard = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/select", gson.toJson(dashboard.getGuid())), Dashboard.class);
+			loadDashboardItems();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void addItems() {
+		try {
+			//Add selected cals and buds to existing lists but only if the cal and bud is not already in the list
 			for (String calendar : selectedCalendars) {
-				for (Calendar c : calendars) {
-					if (c.getGuid().equals(calendar)) {
-						if (!dashboard.getCalendars().contains(c)) {
-							dashboard.getCalendars().add(c);
-						}
+				boolean found = false;
+				for (Calendar cal : dashboard.getCalendars()) {
+					if (cal.getGuid().equals(calendar)) {
+						found = true;
 						break;
+					}
+				}
+				if (!found) {
+					for (Calendar cal : availCals) {
+						boolean calFound = false;
+						for (Calendar c : dashboard.getCalendars()) {
+							if (c.getGuid().equals(cal.getGuid())) {
+								calFound = true;
+								break;
+							}
+						}
+						if (cal.getGuid().equals(calendar) && !calFound) {
+							dashboard.getCalendars().add(cal);
+						}
 					}
 				}
 			}
 			for (String budget : selectedBudgets) {
-				for (Budget b : budgets) {
-					if (b.getGuid().equals(budget)) {
-						if (!dashboard.getBudgets().contains(b)) {
-							dashboard.getBudgets().add(b);
-						}
+				boolean found = false;
+				for (Budget bud : dashboard.getBudgets()) {
+					if (bud.getGuid().equals(budget)) {
+						found = true;
 						break;
 					}
 				}
+				if (!found) {
+					for (Budget bud : availBuds) {
+						boolean budFound = false;
+						for (Budget b : dashboard.getBudgets()) {
+							if (b.getGuid().equals(bud.getGuid())) {
+								budFound = true;
+								break;
+							}
+						}
+						if (bud.getGuid().equals(budget) && !budFound) {
+							dashboard.getBudgets().add(bud);
+						}
+					}
+				}
 			}
+			loadDashboardItems();
+			saveDashboard();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void saveDashboard() {
+		try {
 			Gson gson = new Gson();
-			String result = gson.toJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/edit", gson.toJson(dashboard)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/edit", gson.toJson(dashboard)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Dashboard was successfully modified"));
-				init();
-				PrimeFaces.current().executeScript("PF('addItemsForm').hide()");
+				reloadDashboardProperties();
+				PrimeFaces.current().executeScript("PF('addItemsDlg').hide()");
 			} else {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem modifying your dashboard"));
 			}
@@ -165,9 +242,15 @@ public class DashboardSetupController implements Serializable {
 		}
 	}
 
-	public void move(int dir) {
+	public void move(Item item, int dir) {
 		try {
-			Gson gson = new Gson();
+			int currIndex = items.indexOf(item);
+			int newIndex = currIndex + dir;
+			if (newIndex > -1 && newIndex < items.size()) {
+				items.remove(item);
+				items.add(newIndex, item);
+				saveDashboard();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -175,23 +258,41 @@ public class DashboardSetupController implements Serializable {
 
 	public void delete(Item item) {
 		try {
-			Gson gson = new Gson();
+			items.remove(item);
+			saveDashboard();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void startAddComponents() {
-		selectedCalendars = new ArrayList<>();
+		//only add calendars and budgets that aren't already added to the dashboard
 		selectedBudgets = new ArrayList<>();
-		for (Calendar calendar : dashboard.getCalendars()) {
-			if (!selectedCalendars.contains(calendar.getGuid())) {
-				selectedCalendars.add(calendar.getGuid());
+		selectedCalendars = new ArrayList<>();
+		availCals = new ArrayList<>();
+		availBuds = new ArrayList<>();
+		for (Calendar cal : calendars) {
+			boolean found = false;
+			for (Calendar c : dashboard.getCalendars()) {
+				if (c.getGuid().equals(cal.getGuid())) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				availCals.add(cal);
 			}
 		}
-		for (Budget budget : dashboard.getBudgets()) {
-			if (!selectedBudgets.contains(budget.getGuid())) {
-				selectedBudgets.add(budget.getGuid());
+		for (Budget bud : budgets) {
+			boolean found = false;
+			for (Budget b : dashboard.getBudgets()) {
+				if (b.getGuid().equals(bud.getGuid())) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				availBuds.add(bud);
 			}
 		}
 	}

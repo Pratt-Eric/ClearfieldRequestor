@@ -9,6 +9,7 @@ import com.prt.models.Budget;
 import com.prt.models.Calendar;
 import com.prt.models.Dashboard;
 import com.prt.models.Group;
+import com.prt.models.Item;
 import com.prt.models.User;
 import com.prt.utils.DBConnection;
 import java.sql.CallableStatement;
@@ -42,12 +43,16 @@ public class SQLDashboardProcess {
 					+ "FROM DASHBOARD_PERMISSIONS_XREF DPX "
 					+ "LEFT JOIN USERS U ON DPX.USER_GUID = U.GUID "
 					+ "LEFT JOIN GROUPS G ON DPX.GROUP_GUID = G.GUID "
-					+ "WHERE DPXDASHBOARD_GUID = ?";
+					+ "WHERE DPX.DASHBOARD_GUID = ?";
 			String calsAndBudgets = "SELECT "
+					+ "DIX.GUID, "
 					+ "DIX.CALENDAR_GUID, "
 					+ "DIX.BUDGET_GUID, "
 					+ "C.NAME CAL_NAME, "
-					+ "B.NAME BUD_NAME "
+					+ "C.\"DESC\" CAL_DESC, "
+					+ "B.NAME BUD_NAME, "
+					+ "C.\"DESC\" BUD_DESC, "
+					+ "DIX.\"INDEX\" "
 					+ "FROM DASHBOARD_ITEM_XREF DIX "
 					+ "LEFT JOIN CALENDARS C ON DIX.CALENDAR_GUID = C.GUID "
 					+ "LEFT JOIN BUDGETS B ON DIX.BUDGET_GUID = B.GUID "
@@ -90,12 +95,18 @@ public class SQLDashboardProcess {
 					if (calendar != null && !calendar.isEmpty()) {
 						Calendar c = new Calendar();
 						c.setGuid(calendar);
+						c.setXrefGuid(cbSet.getString("GUID"));
 						c.setName(cbSet.getString("CAL_NAME"));
+						c.setDesc(cbSet.getString("CAL_DESC"));
+						c.setIndex(Integer.parseInt(cbSet.getString("INDEX")));
 						dashboard.getCalendars().add(c);
 					} else if (budget != null && !budget.isEmpty()) {
 						Budget b = new Budget();
 						b.setGuid(budget);
+						b.setXrefGuid(cbSet.getString("GUID"));
 						b.setName(cbSet.getString("BUD_NAME"));
+						b.setDesc(cbSet.getString("BUD_DESC"));
+						b.setIndex(Integer.parseInt(cbSet.getString("INDEX")));
 						dashboard.getBudgets().add(b);
 					}
 				}
@@ -120,6 +131,111 @@ public class SQLDashboardProcess {
 			}
 		}
 		return new ArrayList<>();
+	}
+
+	public static Dashboard selectDashboard(String guid) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			Dashboard dashboard = new Dashboard();
+			dashboard.setGuid(guid);
+
+			String query = "SELECT NAME, \"DESC\" FROM DASHBOARDS WHERE GUID = ?";
+			String associations = "SELECT "
+					+ "DPX.USER_GUID, "
+					+ "DPX.GROUP_GUID, "
+					+ "U.USERNAME, "
+					+ "G.NAME "
+					+ "FROM DASHBOARD_PERMISSIONS_XREF DPX "
+					+ "LEFT JOIN USERS U ON DPX.USER_GUID = U.GUID "
+					+ "LEFT JOIN GROUPS G ON DPX.GROUP_GUID = G.GUID "
+					+ "WHERE DPX.DASHBOARD_GUID = ?";
+			String calsAndBudgets = "SELECT "
+					+ "DIX.GUID, "
+					+ "DIX.CALENDAR_GUID, "
+					+ "DIX.BUDGET_GUID, "
+					+ "C.NAME CAL_NAME, "
+					+ "C.\"DESC\" CAL_DESC, "
+					+ "B.NAME BUD_NAME, "
+					+ "B.\"DESC\" BUD_DESC, "
+					+ "DIX.\"INDEX\" "
+					+ "FROM DASHBOARD_ITEM_XREF DIX "
+					+ "LEFT JOIN CALENDARS C ON DIX.CALENDAR_GUID = C.GUID "
+					+ "LEFT JOIN BUDGETS B ON DIX.BUDGET_GUID = B.GUID "
+					+ "WHERE DIX.DASHBOARD_GUID = ?";
+
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, guid);
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				dashboard.setName(set.getString("NAME"));
+				dashboard.setDesc(set.getString("DESC"));
+
+				PreparedStatement ug = conn.prepareStatement(associations);
+				ug.setString(1, dashboard.getGuid());
+				ResultSet ugSet = ug.executeQuery();
+				while (ugSet.next()) {
+					String user = ugSet.getString("USER_GUID");
+					String group = ugSet.getString("GROUP_GUID");
+					if (user != null && !user.isEmpty()) {
+						User u = new User();
+						u.setGuid(user);
+						u.setUsername(ugSet.getString("USERNAME"));
+						dashboard.getUsers().add(u);
+					} else if (group != null && !group.isEmpty()) {
+						Group g = new Group();
+						g.setGuid(group);
+						g.setName(ugSet.getString("NAME"));
+						dashboard.getGroups().add(g);
+					}
+				}
+				ugSet.close();
+				ug.close();
+				PreparedStatement stmt2 = conn.prepareStatement(calsAndBudgets);
+				stmt2.setString(1, dashboard.getGuid());
+				ResultSet set2 = stmt2.executeQuery();
+				while (set2.next()) {
+					String calendar = set2.getString("CALENDAR_GUID");
+					String budget = set2.getString("BUDGET_GUID");
+					if (calendar != null && !calendar.isEmpty()) {
+						Calendar c = new Calendar();
+						c.setGuid(calendar);
+						c.setXrefGuid(set2.getString("GUID"));
+						c.setName(set2.getString("CAL_NAME"));
+						c.setDesc(set2.getString("CAL_DESC"));
+						c.setIndex(Integer.parseInt(set2.getString("INDEX")));
+						dashboard.getCalendars().add(c);
+					} else if (budget != null && !budget.isEmpty()) {
+						Budget b = new Budget();
+						b.setGuid(budget);
+						b.setXrefGuid(set2.getString("GUID"));
+						b.setName(set2.getString("BUD_NAME"));
+						b.setDesc(set2.getString("BUD_DESC"));
+						b.setIndex(Integer.parseInt(set2.getString("INDEX")));
+						dashboard.getBudgets().add(b);
+					}
+				}
+				set2.close();
+				stmt2.close();
+			}
+			set.close();
+			stmt.close();
+
+			return dashboard;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return null;
 	}
 
 	public static boolean addNewDashboard(Dashboard dashboard) throws SQLException {
@@ -184,7 +300,7 @@ public class SQLDashboardProcess {
 				return false;
 			} else {
 				//find any user_dashboard_xref records that a user may not have access to anymore and remove them
-				String remove = "DELETE FROM USER_DASHBOARD_XREF WHERE (DASHBOARD_GUID = ? AND USER_GUID NOT IN (SELECT USER_GUID FROM DASHBOARD_PERMISSIONS_XREF WHERE DASHBOARD_GUID = ? AND USER_GUID IS NOT NULL)) OR (DASHBOARD_GUID = ? AND GROUP_GUID NOT IN (SELECT GROUP_GUID FROM DASHBOARD_PERMISSIONS_XREF WHERE DASHBOARD_GUID = ? AND GROUP_GUID IS NOT NULL)";
+				String remove = "DELETE FROM USER_DASHBOARD_XREF WHERE (DASHBOARD_GUID = ? AND USER_GUID NOT IN (SELECT USER_GUID FROM DASHBOARD_PERMISSIONS_XREF WHERE DASHBOARD_GUID = ? AND USER_GUID IS NOT NULL)) OR (DASHBOARD_GUID = ? AND GROUP_GUID NOT IN (SELECT GROUP_GUID FROM DASHBOARD_PERMISSIONS_XREF WHERE DASHBOARD_GUID = ? AND GROUP_GUID IS NOT NULL))";
 				PreparedStatement delete = conn.prepareStatement(remove);
 				delete.setString(1, dashboard.getGuid());
 				delete.setString(2, dashboard.getGuid());
@@ -258,7 +374,7 @@ public class SQLDashboardProcess {
 	public static boolean addReferences(Connection conn, Dashboard dashboard) {
 		try {
 			String perms = "INSERT INTO DASHBOARD_PERMISSIONS_XREF (USER_GUID, GROUP_GUID, DASHBOARD_GUID) VALUES (?, ?, ?)";
-			String items = "INSERT INTO DASBHOARD_ITEM_XREF (CALENDAR_GUID, BUDGET_GUID, DASHBOARD_GUID, \"INDEX\") VALUES (?, ?, ?, ?)";
+			String items = "INSERT INTO DASHBOARD_ITEM_XREF (CALENDAR_GUID, BUDGET_GUID, DASHBOARD_GUID, \"INDEX\") VALUES (?, ?, ?, ?)";
 			PreparedStatement addPerms = conn.prepareStatement(perms);
 			PreparedStatement addItems = conn.prepareStatement(items);
 
@@ -274,17 +390,11 @@ public class SQLDashboardProcess {
 				addPerms.setString(3, dashboard.getGuid());
 				addPerms.addBatch();
 			}
+
 			int index = 0;
-			for (Calendar calendar : dashboard.getCalendars()) {
-				addItems.setString(1, calendar.getGuid());
-				addItems.setString(2, null);
-				addItems.setString(3, dashboard.getGuid());
-				addItems.setInt(4, index++);
-				addItems.addBatch();
-			}
-			for (Budget budget : dashboard.getBudgets()) {
-				addItems.setString(1, null);
-				addItems.setString(2, budget.getGuid());
+			for (Item item : dashboard.getItems()) {
+				addItems.setString(1, item.getCalendarGuid());
+				addItems.setString(2, item.getBudgetGuid());
 				addItems.setString(3, dashboard.getGuid());
 				addItems.setInt(4, index++);
 				addItems.addBatch();

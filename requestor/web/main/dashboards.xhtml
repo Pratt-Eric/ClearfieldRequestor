@@ -43,7 +43,7 @@
 										<br/>
 									</ui:repeat>
 								</p:column>
-								<p:column headerText="Calendars">
+								<p:column headerText="Budgets">
 									<ui:repeat value="#{dashboard.budgets}" var="budget">
 										<p:outputLabel value="#{budget.name}"/>
 										<br/>
@@ -53,7 +53,7 @@
 									<p:commandLink title="Edit Dashboard" actionListener="#{dashboardsController.updateSelectedDashboard(dashboard)}" update="editDashboardForm" oncomplete="PF('editDashboardDlg').show()">
 										<i class="fa fa-lg fa-edit"/>
 									</p:commandLink>
-									<p:commandLink title="Customize Dashboard" action="#{dashboardsController.customize}">
+									<p:commandLink title="Customize Dashboard" action="#{dashboardsController.customize(dashboard)}">
 										<i class="fa fa-lg fa-th"/>
 									</p:commandLink>
 									<p:commandLink title="Delete Dashboard" actionListener="#{dashboardsController.updateSelectedDashboard(dashboard)}" update="deleteDashboardForm" oncomplete="PF('deleteDashboardDlg').show()">
@@ -97,7 +97,7 @@
 					</p:selectManyMenu>
 				</div>
 				<div style="margin-top: 20px;">
-					<p:commandButton value="Add" actionListener="#{dashboardsController.editDashboard}"/>
+					<p:commandButton value="Add" actionListener="#{dashboardsController.addDashboard}"/>
 					<p:commandButton value="Cancel" title="Cancel Add" oncomplete="PF('addDashboardDlg').hide()" style="margin-left: 10px;"/>
 				</div>
 			</h:form>
@@ -139,7 +139,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog modal="true" header="Add Dashboard" widgetVar="deleteDashboardDlg">
+		<p:dialog modal="true" header="Delete Dashboard" widgetVar="deleteDashboardDlg">
 			<h:form id="deleteDashboardForm">
 				<p:outputLabel value="Are you sure you want to delete #{dashboardsController.selectedDashboard.name} from the system?"/>
 				<br/><br/>

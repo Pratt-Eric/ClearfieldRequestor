@@ -450,6 +450,20 @@ public class DataResource {
 		return null;
 	}
 
+	@Path("dashboard/select")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectDashboard(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.selectDashboard(gson.fromJson(content, String.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Path("dashboard/add")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

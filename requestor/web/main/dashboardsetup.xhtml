@@ -13,12 +13,12 @@
                 <div class="card">
                     <div class="card-title" style="margin-bottom: 20px;">
                         <h1>Dashboard Setup</h1>
-						<p:commandButton value="Add Dashboard" icon="fa fa-plus" actionListener="#{dashboardSetupController.startAddComponents}" update="addItemsForm" oncomplete="PF('addItemsDlg').show()" style="margin-bottom: 20px;"/>
+						<p:commandButton value="Add Item" title="Add Item to Dashboard" icon="fa fa-plus" actionListener="#{dashboardSetupController.startAddComponents}" update="addItemsForm" oncomplete="PF('addItemsDlg').show()" style="margin-bottom: 20px;"/>
                     </div>
                     <div class="card-content card-content-main">
                         <h:form id="dashboardForm">
 							<p:growl showDetail="true" showSummary="true"/>
-							<p:dataTable value="#{dashboardSetupController.items}" var="item">
+							<p:dataTable value="#{dashboardSetupController.dashboard.items}" var="item">
 								<p:column headerText="Component Name">
 									<p:outputLabel value="#{item.name}"/>
 								</p:column>
@@ -29,14 +29,14 @@
 									<p:outputLabel value="#{item.type}"/>
 								</p:column>
 								<p:column headerText="Actions">
-									<p:commandLink title="Move Up" actionListener="#{dashboardSetupController.move(-1)}">
+									<p:commandLink title="Move Up" actionListener="#{dashboardSetupController.move(item, -1)}">
 										<i class="fa fa-lg fa-chevron-up"/>
 									</p:commandLink>
-									<p:commandLink title="Move Down" actionListener="#{dashboardSetupController.move(1)}">
+									<p:commandLink title="Move Down" actionListener="#{dashboardSetupController.move(item, 1)}">
 										<i class="fa fa-lg fa-chevron-down"/>
 									</p:commandLink>
 									<p:commandLink title="Delete" actionListener="#{dashboardSetupController.delete(item)}">
-										<i class="fa fa-lg fa-chevron-up"/>
+										<i class="fa fa-lg fa-trash"/>
 									</p:commandLink>
 								</p:column>
 							</p:dataTable>
@@ -53,18 +53,18 @@
 					<br/>
 					<p:selectManyMenu showCheckbox="true" value="#{dashboardSetupController.selectedCalendars}">
 						<p:ajax/>
-						<f:selectItems value="#{dashboardSetupController.calendars}" var="calendar" itemLabel="#{calendar.name}" itemValue="#{calendar.guid}"/>
+						<f:selectItems value="#{dashboardSetupController.availCals}" var="calendar" itemLabel="#{calendar.name}" itemValue="#{calendar.guid}"/>
 					</p:selectManyMenu>
 					<br/><br/>
 					<p:outputLabel value="Budgets:"/>
 					<br/>
 					<p:selectManyMenu showCheckbox="true" value="#{dashboardSetupController.selectedBudgets}">
 						<p:ajax/>
-						<f:selectItems value="#{dashboardSetupController.budgets}" var="budget" itemLabel="#{budget.name}" itemValue="#{budget.guid}"/>
+						<f:selectItems value="#{dashboardSetupController.availBuds}" var="budget" itemLabel="#{budget.name}" itemValue="#{budget.guid}"/>
 					</p:selectManyMenu>
 				</div>
 				<div style="margin-top: 20px;">
-					<p:commandButton value="Add" title="Add Items to Dashboard" actionListener="#{dashboardSetupController.editDashboard}"/>
+					<p:commandButton value="Add" title="Add Items to Dashboard" actionListener="#{dashboardSetupController.addItems}"/>
 					<p:commandButton value="Cancel" title="Cancel Add Items" style="margin-left: 10px;" oncomplete="PF('addItemsDlg').hide()"/>
 				</div>
 			</h:form>

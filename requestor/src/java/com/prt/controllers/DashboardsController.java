@@ -11,10 +11,12 @@ import com.prt.models.Budget;
 import com.prt.models.Calendar;
 import com.prt.models.Dashboard;
 import com.prt.models.Group;
+import com.prt.models.Item;
 import com.prt.models.User;
 import com.prt.utils.RestUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -145,7 +147,7 @@ public class DashboardsController implements Serializable {
 		try {
 			updateSelectedItems(newDashboard);
 			Gson gson = new Gson();
-			String result = gson.toJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/add", gson.toJson(newDashboard)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/add", gson.toJson(newDashboard)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Dashboard was successfully created"));
 				init();
@@ -163,7 +165,7 @@ public class DashboardsController implements Serializable {
 		try {
 			updateSelectedItems(selectedDashboard);
 			Gson gson = new Gson();
-			String result = gson.toJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/edit", gson.toJson(selectedDashboard)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/edit", gson.toJson(selectedDashboard)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Dashboard was successfully modified"));
 				init();
@@ -180,7 +182,7 @@ public class DashboardsController implements Serializable {
 	public void deleteDashboard() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.toJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/delete", gson.toJson(newDashboard)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/delete", gson.toJson(selectedDashboard)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Dashboard was successfully deleted"));
 				init();
@@ -217,6 +219,37 @@ public class DashboardsController implements Serializable {
 				}
 			}
 		}
+		loadDashboardItems(dashboard);
+	}
+
+	private void loadDashboardItems(Dashboard dashboard) {
+		ArrayList<Item> items = new ArrayList<>();
+		for (Calendar calendar : dashboard.getCalendars()) {
+			Item item = new Item();
+			item.setGuid(calendar.getXrefGuid());
+			item.setName(calendar.getName());
+			item.setType("Calendar");
+			item.setDesc(calendar.getDesc());
+			item.setIndex(calendar.getIndex());
+			item.setCalendarGuid(calendar.getGuid());
+			items.add(item);
+		}
+		for (Budget budget : dashboard.getBudgets()) {
+			Item item = new Item();
+			item.setGuid(budget.getXrefGuid());
+			item.setName(budget.getName());
+			item.setType("Budget");
+			item.setDesc(budget.getDesc());
+			item.setIndex(budget.getIndex());
+			item.setBudgetGuid(budget.getGuid());
+			items.add(item);
+		}
+
+		Collections.sort(items, (o1, o2) -> {
+			return Integer.compare(o1.getIndex(), o2.getIndex());
+		});
+
+		dashboard.setItems(items);
 	}
 
 	public String customize(Dashboard dashboard) {

@@ -3,11 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/utils/EncryptionHelper.java</file>
-            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/models/User.java</file>
-            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/controllers/UsersController.java</file>
-            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/utils/EmailUtils.java</file>
-            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/web/main/users.xhtml</file>
+            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/web/main/dashboards.xhtml</file>
+            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/controllers/DashboardSetupController.java</file>
+            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/controllers/DashboardsController.java</file>
+            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/web/main/dashboardsetup.xhtml</file>
         </group>
     </open-files>
 </project-private>
