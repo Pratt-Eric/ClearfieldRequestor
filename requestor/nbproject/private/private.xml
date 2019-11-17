@@ -3,10 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/web/main/dashboards.xhtml</file>
-            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/controllers/DashboardSetupController.java</file>
-            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/controllers/DashboardsController.java</file>
-            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/web/main/dashboardsetup.xhtml</file>
+            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/web/main/user/dashboard.xhtml</file>
+            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/web/main/user/dashboardsetup.xhtml</file>
+            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/controllers/UserDashboardController.java</file>
+            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/controllers/UserDashboardSetupController.java</file>
         </group>
     </open-files>
 </project-private>

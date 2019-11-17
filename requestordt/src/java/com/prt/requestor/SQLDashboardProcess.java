@@ -304,12 +304,10 @@ public class SQLDashboardProcess {
 				return false;
 			} else {
 				//find any user_dashboard_xref records that a user may not have access to anymore and remove them
-				String remove = "DELETE FROM USER_DASHBOARD_XREF WHERE (DASHBOARD_GUID = ? AND USER_GUID NOT IN (SELECT USER_GUID FROM DASHBOARD_PERMISSIONS_XREF WHERE DASHBOARD_GUID = ? AND USER_GUID IS NOT NULL)) OR (DASHBOARD_GUID = ? AND GROUP_GUID NOT IN (SELECT GROUP_GUID FROM DASHBOARD_PERMISSIONS_XREF WHERE DASHBOARD_GUID = ? AND GROUP_GUID IS NOT NULL))";
+				String remove = "DELETE FROM USER_DASHBOARD_XREF WHERE DASHBOARD_GUID = ? AND USER_GUID NOT IN (SELECT USER_GUID FROM DASHBOARD_PERMISSIONS_XREF WHERE DASHBOARD_GUID = ? AND USER_GUID IS NOT NULL)";
 				PreparedStatement delete = conn.prepareStatement(remove);
 				delete.setString(1, dashboard.getGuid());
 				delete.setString(2, dashboard.getGuid());
-				delete.setString(3, dashboard.getGuid());
-				delete.setString(4, dashboard.getGuid());
 				delete.executeUpdate();
 				delete.close();
 			}

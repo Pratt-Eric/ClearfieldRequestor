@@ -11,9 +11,18 @@
         <div class="ui-g">
             <div class="ui-g-12">
                 <div class="card">
-                    <div class="card-title" style="margin-bottom: 20px;">
+                    <div class="card-title" style="margin-bottom: 20px; width: 100%;">
                         <h1>Dashboard</h1>
 						<p:button value="Customize Dashboards" icon="fa fa-edit" style="margin-bottom: 20px;" outcome="/main/user/dashboardsetup.xhtml"/>
+						<br/>
+						<p:outputLabel value="Current Dashboard:"/>
+						<br/>
+						<h:form>
+							<p:selectOneMenu value="#{userDashboardController.selectedDashboard}" valueChangeListener="#{userDashboardController.selectDashboard}">
+								<p:ajax/>
+								<f:selectItems value="#{userDashboardController.dashboards}" var="dashboard" itemLabel="#{dashboard.name}" itemValue="#{dashboard.guid}"/>
+							</p:selectOneMenu>
+						</h:form>
                     </div>
                     <div class="card-content card-content-main">
                         <h:form id="dashboardForm">

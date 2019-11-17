@@ -6,8 +6,8 @@
 package com.prt.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.prt.models.Budget;
-import com.prt.models.BudgetTransaction;
 import com.prt.models.Calendar;
 import com.prt.models.Dashboard;
 import com.prt.models.Event;
@@ -16,6 +16,7 @@ import com.prt.utils.RestUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -25,7 +26,6 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleModel;
-import org.primefaces.model.chart.LineChartModel;
 
 /**
  *
@@ -38,6 +38,24 @@ public class UserDashboardController implements Serializable {
 	@ManagedProperty("#{guestPreferences}")
 	private GuestPreferences preferences;
 	private Dashboard dashboard;
+	private String selectedDashboard;
+	private ArrayList<Dashboard> dashboards = new ArrayList<>();
+
+	public String getSelectedDashboard() {
+		return selectedDashboard;
+	}
+
+	public void setSelectedDashboard(String selectedDashboard) {
+		this.selectedDashboard = selectedDashboard;
+	}
+
+	public ArrayList<Dashboard> getDashboards() {
+		return dashboards;
+	}
+
+	public void setDashboards(ArrayList<Dashboard> dashboards) {
+		this.dashboards = dashboards;
+	}
 
 	public Dashboard getDashboard() {
 		return dashboard;
@@ -61,8 +79,14 @@ public class UserDashboardController implements Serializable {
 			Gson gson = new Gson();
 			dashboard = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/user/select/default", gson.toJson(preferences.userGuid)), Dashboard.class);
 			if (dashboard != null) {
+				selectedDashboard = dashboard.getGuid();
 				buildDashboard();
 			}
+
+			//get all dashboards
+			dashboards = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/user/select/all", gson.toJson(preferences.userGuid)), new TypeToken<ArrayList<Dashboard>>() {
+			}.getType());
+			System.out.println("ugh");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -71,15 +95,8 @@ public class UserDashboardController implements Serializable {
 	public void selectDashboard(ValueChangeEvent event) {
 		String guid = (String) event.getNewValue();
 		if (guid != null) {
-			Gson gson = new Gson();
-			dashboard = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/user/select", gson.toJson(new String[]{guid, preferences.userGuid})), Dashboard.class);
-
-			if (dashboard != null) {
-				//load up the things before refreshing form
-				buildDashboard();
-			}
-
-			PrimeFaces.current().ajax().update("dashboardForm");
+			selectedDashboard = guid;
+			updateDashboard();
 		}
 	}
 
@@ -95,6 +112,7 @@ public class UserDashboardController implements Serializable {
 				item.setIndex(cal.getIndex());
 				item.setEvents(cal.getEvents());
 				item.setType("Calendar");
+				items.add(item);
 			}
 			for (Budget bud : dashboard.getBudgets()) {
 				Item item = new Item();
@@ -105,6 +123,7 @@ public class UserDashboardController implements Serializable {
 				item.setIndex(bud.getIndex());
 				item.setTransactions(bud.getTransactions());
 				item.setType("Budget");
+				items.add(item);
 			}
 
 			Collections.sort(items, (o1, o2) -> {
@@ -124,9 +143,28 @@ public class UserDashboardController implements Serializable {
 								calendar.addEvent(se);
 							}
 						}
+						item.setCalendar(calendar);
 						break;
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void updateDashboard() {
+		try {
+			for (Dashboard d : dashboards) {
+				if (d.getGuid().equals(selectedDashboard)) {
+					dashboard = d;
+					break;
+				}
+			}
+			if (dashboard != null) {
+				buildDashboard();
+			}
+
+			PrimeFaces.current().ajax().update("dashboardForm");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
