@@ -20,7 +20,21 @@
 							<p:growl showDetail="true" showSummary="true"/>
 							<ui:repeat value="#{userDashboardController.dashboard.items}" var="item">
 								<h:panelGroup rendered="#{item.type eq 'Budget'}">
-
+									<h4>Transactions for #{item.name}</h4>
+									<p:dataTable value="#{item.transactions}" var="transaction">
+										<p:column headerText="Transaction">
+											<p:outputLabel value="#{transaction.name}"/>
+										</p:column>
+										<p:column headerText="Date">
+											<p:outputLabel value="#{transaction.date}"/>
+										</p:column>
+										<p:column headerText="Amount">
+											<p:outputLabel value="#{transaction.type eq 'Adjustment' ? '~' : ''}"/>
+											<p:outputLabel value="#{transaction.type eq 'Reduction' ? '(' : ''}" style="color: red;"/>
+											<p:inputNumber readonly="true" value="#{transaction.amount}" decimalPlaces="2" style="#{transaction.type eq 'Reduction' ? 'color: red;' : ''}"/>
+											<p:outputLabel value="#{transaction.type eq 'Reduction' ? ')' : ''}" style="color: red;"/>
+										</p:column>
+									</p:dataTable>
 								</h:panelGroup>
 								<h:panelGroup rendered="#{item.type eq 'Calendar'}">
 									<p:schedule id="calendar" value="#{item.calendar}" widgetVar="calendarEvents">

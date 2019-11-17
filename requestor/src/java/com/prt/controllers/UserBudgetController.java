@@ -155,7 +155,6 @@ public class UserBudgetController implements Serializable {
 
 	public void editBudget(Budget budget) {
 		selectedBudget = budget;
-
 		addTransaction();
 	}
 

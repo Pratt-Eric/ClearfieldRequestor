@@ -23,4 +23,10 @@ public class DateUtils {
 		}
 		return null;
 	}
+
+	public static Date parseDate(java.sql.Date date) {
+		Date result = new Date();
+
+		return result;
+	}
 }

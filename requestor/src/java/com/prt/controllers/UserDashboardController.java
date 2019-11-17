@@ -7,6 +7,7 @@ package com.prt.controllers;
 
 import com.google.gson.Gson;
 import com.prt.models.Budget;
+import com.prt.models.BudgetTransaction;
 import com.prt.models.Calendar;
 import com.prt.models.Dashboard;
 import com.prt.models.Event;
@@ -24,6 +25,7 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleModel;
+import org.primefaces.model.chart.LineChartModel;
 
 /**
  *
@@ -93,10 +95,11 @@ public class UserDashboardController implements Serializable {
 			for (Budget bud : dashboard.getBudgets()) {
 				Item item = new Item();
 				item.setGuid(bud.getXrefGuid());
-				item.setCalendarGuid(bud.getGuid());
+				item.setBudgetGuid(bud.getGuid());
 				item.setName(bud.getName());
 				item.setDesc(bud.getDesc());
 				item.setIndex(bud.getIndex());
+				item.setTransactions(bud.getTransactions());
 				item.setType("Budget");
 			}
 

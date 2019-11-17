@@ -7,6 +7,7 @@ package com.prt.requestor;
 
 import com.prt.models.Activity;
 import com.prt.models.Budget;
+import com.prt.models.BudgetTransaction;
 import com.prt.models.Calendar;
 import com.prt.models.Dashboard;
 import com.prt.models.Event;
@@ -588,6 +589,22 @@ public class SQLDashboardProcess {
 					+ "LEFT JOIN BUDGET_PERMISSIONS_XREF BPX ON DIX.BUDGET_GUID = BPX.BUDGET_GUID AND (BPX.USER_GUID = ? OR BPX.GROUP_GUID IN (SELECT GROUP_GUID FROM USER_GROUP_XREF WHERE USER_GUID = ?)) "
 					+ "LEFT JOIN BUDGETS B ON BPX.BUDGET_GUID = B.GUID "
 					+ "WHERE DIX.DASHBOARD_GUID = ?";
+			String transactions = ""
+					+ "SELECT "
+					+ "T.GUID, "
+					+ "T.TRANSACTION_NAME, "
+					+ "T.TRANSACTION_DESC, "
+					+ "T.JUSTIFICATION, "
+					+ "T.DATE, "
+					+ "T.PAID_TO, "
+					+ "T.AMOUNT, "
+					+ "T.AUTHORIZED_BY, "
+					+ "T.CHECK_NUMBER, "
+					+ "T.FAST_OFFERING, "
+					+ "BTTR.NAME "
+					+ "FROM BUDGET_TRANSACTIONS T "
+					+ "JOIN BUDGET_TRANSACTION_TYPE_REF BTTR ON T.BUDGET_TRANSACTION_TYPE_REF_GUID = BTTR.GUID "
+					+ "WHERE T.BUDGET_GUID = ?";
 
 			Dashboard dashboard = new Dashboard();
 
@@ -652,6 +669,29 @@ public class SQLDashboardProcess {
 					activity.setDesc(set.getString("DESC"));
 					event.setActivity(activity);
 					calendar.getEvents().add(event);
+				}
+				set.close();
+				stmt.close();
+			}
+
+			for (Budget budget : dashboard.getBudgets()) {
+				stmt = conn.prepareStatement(transactions);
+				stmt.setString(1, budget.getGuid());
+				set = stmt.executeQuery();
+				while (set.next()) {
+					BudgetTransaction t = new BudgetTransaction();
+					t.setGuid(set.getString("GUID"));
+					t.setName(set.getString("TRANSACTION_NAME"));
+					t.setDesc(set.getString("TRANSACTION_DESC"));
+					t.setJustification(set.getString("JUSTIFICATION"));
+					t.setDate(set.getDate("DATE"));
+					t.setPaidTo(set.getString("PAID_TO"));
+					t.setAmount(set.getFloat("AMOUNT"));
+					t.setAuthorizedBy(set.getString("AUTHORIZED_BY"));
+					t.setCheckNumber(set.getString("CHECK_NUMBER"));
+					t.setFastOfferingCode(set.getString("FAST_OFFERING"));
+					t.setType(set.getString("NAME"));
+					budget.getTransactions().add(t);
 				}
 				set.close();
 				stmt.close();

@@ -6,6 +6,7 @@
 package com.prt.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  *
@@ -20,6 +21,24 @@ public class Item implements Serializable {
 	private String type;
 	private String desc;
 	private int index = -1;
+	private ArrayList<Event> events = new ArrayList<>();
+	private ArrayList<BudgetTransaction> transactions = new ArrayList<>();
+
+	public ArrayList<Event> getEvents() {
+		return events;
+	}
+
+	public void setEvents(ArrayList<Event> events) {
+		this.events = events;
+	}
+
+	public ArrayList<BudgetTransaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(ArrayList<BudgetTransaction> transactions) {
+		this.transactions = transactions;
+	}
 
 	public String getCalendarGuid() {
 		return calendarGuid;

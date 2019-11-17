@@ -24,6 +24,15 @@ public class Item implements Serializable {
 	private int index = -1;
 	private ScheduleModel calendar;
 	private ArrayList<Event> events = new ArrayList<>();
+	private ArrayList<BudgetTransaction> transactions = new ArrayList<>();
+
+	public ArrayList<BudgetTransaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(ArrayList<BudgetTransaction> transactions) {
+		this.transactions = transactions;
+	}
 
 	public ArrayList<Event> getEvents() {
 		return events;
