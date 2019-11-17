@@ -19,9 +19,18 @@ public class Activity implements Serializable {
 	private String name;
 	private String desc;
 	private Budget budget;
+	private String requestType;
 	private ArrayList<Calendar> calendars = new ArrayList<>();
 	private ArrayList<User> users = new ArrayList<>();
 	private ArrayList<Group> groups = new ArrayList<>();
+
+	public String getRequestType() {
+		return requestType;
+	}
+
+	public void setRequestType(String requestType) {
+		this.requestType = requestType;
+	}
 
 	public String getGuid() {
 		return guid;

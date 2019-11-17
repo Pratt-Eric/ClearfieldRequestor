@@ -46,6 +46,9 @@
 								<p:column headerText="Associated Budget">
 									<p:outputLabel value="#{activity.budget.name}"/>
 								</p:column>
+								<p:column headerText="Request Type">
+									<p:outputLabel value="#{activity.requestType}"/>
+								</p:column>
 								<p:column headerText="Actions" style="text-align: center; width: 10%;">
 									<p:commandLink title="Edit" actionListener="#{activitiesController.updateSelectedActivity(activity)}" update="activityEditForm" oncomplete="PF('activityEditDlg').show()">
 										<i class="fa fa-lg fa-edit"/>
@@ -78,6 +81,13 @@
 					<p:inputText value="#{activitiesController.newActivity.desc}" style="width: 100%;">
 						<p:ajax/>
 					</p:inputText>
+					<br/><br/>
+					<p:outputLabel value="Activity Type:"/>
+					<p:selectOneMenu value="#{activitiesController.newActivity.requestType}">
+						<p:ajax/>
+						<f:selectItem itemLabel="Select..."/>
+						<f:selectItems value="#{activitiesController.activityTypes}" var="activityType" itemLabel="#{activityType}" itemValue="#{activityType}"/>
+					</p:selectOneMenu>
 				</div>
 				<div style="margin-top: 20px;">
 					<p:commandButton value="Add Activity" actionListener="#{activitiesController.addNewActivity}"/>
@@ -100,6 +110,13 @@
 					<p:inputText value="#{activitiesController.selectedActivity.desc}" style="width: 100%;">
 						<p:ajax/>
 					</p:inputText>
+					<br/><br/>
+					<p:outputLabel value="Activity Type:"/>
+					<p:selectOneMenu value="#{activitiesController.selectedActivity.requestType}">
+						<p:ajax/>
+						<f:selectItem itemLabel="Select..."/>
+						<f:selectItems value="#{activitiesController.activityTypes}" var="activityType" itemLabel="#{activityType}" itemValue="#{activityType}"/>
+					</p:selectOneMenu>
 				</div>
 				<div style="margin-top: 20px;">
 					<p:commandButton value="Edit Activity" actionListener="#{activitiesController.editExistingActivity}"/>

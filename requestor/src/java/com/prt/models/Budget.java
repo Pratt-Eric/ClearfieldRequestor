@@ -26,6 +26,15 @@ public class Budget implements Serializable {
 	private String parentName;
 	private int index;
 	private String xrefGuid;
+	private ArrayList<BudgetTransaction> transactions = new ArrayList<>();
+
+	public ArrayList<BudgetTransaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(ArrayList<BudgetTransaction> transactions) {
+		this.transactions = transactions;
+	}
 
 	public String getXrefGuid() {
 		return xrefGuid;

@@ -8,6 +8,7 @@ package com.prt.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.prt.models.Budget;
+import com.prt.models.BudgetTransaction;
 import com.prt.utils.RestUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,9 +33,27 @@ public class UserBudgetController implements Serializable {
 	@ManagedProperty("#{guestPreferences}")
 	private GuestPreferences preferences;
 	private Budget selectedBudget;
+	private BudgetTransaction newTransaction;
 	private String selectedBudgetGuid;
 	private double amountToAdjust = 0;
 	private TreeNode budgets;
+	private BudgetTransaction selectedTransaction;
+
+	public BudgetTransaction getSelectedTransaction() {
+		return selectedTransaction;
+	}
+
+	public void setSelectedTransaction(BudgetTransaction selectedTransaction) {
+		this.selectedTransaction = selectedTransaction;
+	}
+
+	public BudgetTransaction getNewTransaction() {
+		return newTransaction;
+	}
+
+	public void setNewTransaction(BudgetTransaction newTransaction) {
+		this.newTransaction = newTransaction;
+	}
 
 	public TreeNode getBudgets() {
 		return budgets;
@@ -130,12 +149,38 @@ public class UserBudgetController implements Serializable {
 
 	public void updateSelectedBudget(Budget budget) {
 		selectedBudget = budget;
+		newTransaction = new BudgetTransaction();
 		amountToAdjust = 0;
 	}
 
 	public void editBudget(Budget budget) {
 		selectedBudget = budget;
-		editBudget();
+
+		addTransaction();
+	}
+
+	public void makeManualAdjustment() {
+		selectedBudget.setRemaining(newTransaction.getAmount());
+		newTransaction.setType("Adjustment");
+		newTransaction.setBudget(selectedBudget);
+		addTransaction();
+	}
+
+	public void addTransaction() {
+		//add transaction to budget then edit budget itself
+		try {
+			Gson gson = new Gson();
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/transaction/add", gson.toJson(newTransaction)), String.class);
+			if (result != null && result.equalsIgnoreCase("true")) {
+				editBudget();
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem adding the transaction to the budget"));
+				PrimeFaces.current().ajax().update("budgetForm");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void editBudget() {
@@ -159,6 +204,12 @@ public class UserBudgetController implements Serializable {
 
 	public void adjustFunds(int amt) {
 		selectedBudget.setRemaining(selectedBudget.getRemaining() + (amountToAdjust * amt));
-		editBudget();
+		newTransaction.setType(amt < 0 ? "Reduction" : "Addition");
+		newTransaction.setBudget(selectedBudget);
+		addTransaction();
+	}
+
+	public void updateSelectedTransaction(BudgetTransaction transaction) {
+		selectedTransaction = transaction;
 	}
 }

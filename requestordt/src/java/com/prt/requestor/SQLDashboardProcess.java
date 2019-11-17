@@ -502,6 +502,42 @@ public class SQLDashboardProcess {
 		return null;
 	}
 
+	public static Dashboard selectUserDefaultDashboard(String userGuid) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			String query = "SELECT GUID FROM USER_DASHBOARD_XREF WHERE USER_GUID = ? AND DEFAULT = 1";
+
+			String xrefGuid = null;
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, userGuid);
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				xrefGuid = set.getString("GUID");
+			}
+			set.close();
+			stmt.close();
+
+			if (xrefGuid != null && !xrefGuid.isEmpty()) {
+				String[] params = new String[]{xrefGuid, userGuid};
+				return selectUserDashboard(params);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return null;
+	}
+
 	public static Dashboard selectUserDashboard(String[] params) throws SQLException {
 		Connection conn = null;
 		try {
@@ -523,6 +559,8 @@ public class SQLDashboardProcess {
 					+ "C.GUID, "
 					+ "C.NAME, "
 					+ "C.\"DESC\", "
+					+ "DIX.\"INDEX\", "
+					+ "DIX.GUID "
 					+ "FROM DASHBOARD_ITEM_XREF DIX "
 					+ "LEFT JOIN CALENDAR_PERMISSIONS_XREF CPX ON DIX.CALENDAR_GUID = CPX.CALENDAR_GUID AND (CPX.USER_GUID = ? OR CPX.GROUP_GUID IN (SELECT GROUP_GUID FROM USER_GROUP_XREF WHERE USER_GUID = ?)) "
 					+ "LEFT JOIN CALENDARS C ON CPX.CALENDAR_GUID = C.GUID "
@@ -543,7 +581,9 @@ public class SQLDashboardProcess {
 					+ "SELECT "
 					+ "B.NAME, "
 					+ "B.\"DESC\", "
-					+ "B.REMAINING "
+					+ "B.REMAINING, "
+					+ "DIX.\"INDEX\", "
+					+ "DIX.GUID "
 					+ "FROM DASHBOARD_ITEM_XREF DIX "
 					+ "LEFT JOIN BUDGET_PERMISSIONS_XREF BPX ON DIX.BUDGET_GUID = BPX.BUDGET_GUID AND (BPX.USER_GUID = ? OR BPX.GROUP_GUID IN (SELECT GROUP_GUID FROM USER_GROUP_XREF WHERE USER_GUID = ?)) "
 					+ "LEFT JOIN BUDGETS B ON BPX.BUDGET_GUID = B.GUID "
@@ -572,6 +612,8 @@ public class SQLDashboardProcess {
 				calendar.setGuid(set.getString("GUID"));
 				calendar.setName(set.getString("NAME"));
 				calendar.setDesc(set.getString("DESC"));
+				calendar.setIndex(Integer.parseInt(set.getString("INDEX")));
+				calendar.setXrefGuid(set.getString("GUID"));
 				dashboard.getCalendars().add(calendar);
 			}
 			set.close();
@@ -587,6 +629,9 @@ public class SQLDashboardProcess {
 				budget.setGuid(set.getString("GUID"));
 				budget.setName(set.getString("NAME"));
 				budget.setDesc(set.getString("DESC"));
+				budget.setRemaining(Double.parseDouble(set.getString("REMAINING")));
+				budget.setIndex(Integer.parseInt(set.getString("INDEX")));
+				budget.setXrefGuid(set.getString("GUID"));
 				dashboard.getBudgets().add(budget);
 			}
 			set.close();

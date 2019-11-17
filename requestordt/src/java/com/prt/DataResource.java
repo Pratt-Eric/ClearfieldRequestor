@@ -8,6 +8,7 @@ package com.prt;
 import com.google.gson.Gson;
 import com.prt.models.Activity;
 import com.prt.models.Budget;
+import com.prt.models.BudgetTransaction;
 import com.prt.models.Calendar;
 import com.prt.models.Dashboard;
 import com.prt.models.Group;
@@ -282,6 +283,20 @@ public class DataResource {
 		return gson.toJson(false);
 	}
 
+	@Path("budget/transaction/add")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postAddBudgetTransaction(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLBudgetProcess.addNewTransaction(gson.fromJson(content, BudgetTransaction.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
 	@Path("budget/edit")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -385,6 +400,20 @@ public class DataResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String postSelectAllActivities(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLActivityProcess.selectAllActivities());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gson.toJson(false);
+	}
+
+	@Path("activity/types/select/all")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectAllActivityTypes(String content) {
 		Gson gson = new Gson();
 		try {
 			return gson.toJson(SQLActivityProcess.selectAllActivities());
@@ -528,6 +557,20 @@ public class DataResource {
 		Gson gson = new Gson();
 		try {
 			return gson.toJson(SQLDashboardProcess.selectUserDashboard(gson.fromJson(content, String[].class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Path("dashboard/user/select/default")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectUserDefaultDashboard(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.selectUserDefaultDashboard(gson.fromJson(content, String.class)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

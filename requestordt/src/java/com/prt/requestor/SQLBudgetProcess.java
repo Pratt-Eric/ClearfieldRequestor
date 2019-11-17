@@ -6,6 +6,7 @@
 package com.prt.requestor;
 
 import com.prt.models.Budget;
+import com.prt.models.BudgetTransaction;
 import com.prt.models.Group;
 import com.prt.models.User;
 import com.prt.utils.DBConnection;
@@ -500,6 +501,56 @@ public class SQLBudgetProcess {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public static boolean addNewTransaction(BudgetTransaction transaction) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			String query = "INSERT INTO BUDGET_TRANSACTIONS "
+					+ "(TRANSACTION_NAME, "
+					+ "TRANSACTION_DESC, "
+					+ "JUSTIFICATION, "
+					+ "DATE, "
+					+ "PAID_TO, "
+					+ "AMOUNT, "
+					+ "AUTHORIZED_BY, "
+					+ "CHECK_NUMBER, "
+					+ "FAST_OFFERING, "
+					+ "BUDGET_GUID, "
+					+ "BUDGET_TRANSACTION_TYPE_REF_GUID) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, (SELECT GUID FROM BUDGET_TRANSACTION_TYPE_REF WHERE NAME = ?))";
+
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, transaction.getName());
+			stmt.setString(2, transaction.getDesc());
+			stmt.setString(3, transaction.getJustification());
+			stmt.setDate(4, new java.sql.Date(transaction.getDate().getTime()));
+			stmt.setString(5, transaction.getPaidTo());
+			stmt.setFloat(6, (float) transaction.getAmount());
+			stmt.setString(7, transaction.getAuthorizedBy());
+			stmt.setString(8, transaction.getCheckNumber());
+			stmt.setString(9, transaction.getFastOfferingCode());
+			stmt.setString(10, transaction.getBudget().getGuid());
+			stmt.setString(11, transaction.getType());
+			stmt.executeUpdate();
+			stmt.close();
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
 		}
 		return false;
 	}

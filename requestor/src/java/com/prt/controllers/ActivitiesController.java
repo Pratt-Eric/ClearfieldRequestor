@@ -41,10 +41,19 @@ public class ActivitiesController implements Serializable {
 	private ArrayList<Group> groups = new ArrayList<>();
 	private ArrayList<Budget> budgets = new ArrayList<>();
 	private ArrayList<Calendar> calendars = new ArrayList<>();
+	private ArrayList<String> activityTypes = new ArrayList<>();
 	private ArrayList<String> selectedUsers = new ArrayList<>();
 	private ArrayList<String> selectedGroups = new ArrayList<>();
 	private ArrayList<String> selectedCalendars = new ArrayList<>();
 	private String selectedBudget;
+
+	public ArrayList<String> getActivityTypes() {
+		return activityTypes;
+	}
+
+	public void setActivityTypes(ArrayList<String> activityTypes) {
+		this.activityTypes = activityTypes;
+	}
 
 	public String getSelectedBudget() {
 		return selectedBudget;
@@ -164,6 +173,8 @@ public class ActivitiesController implements Serializable {
 			budgets = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/select/all", null), new TypeToken<ArrayList<Budget>>() {
 			}.getType());
 			calendars = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/select/all", null), new TypeToken<ArrayList<Calendar>>() {
+			}.getType());
+			activityTypes = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/activity/types/select/all", null), new TypeToken<ArrayList<String>>() {
 			}.getType());
 		} catch (Exception e) {
 			e.printStackTrace();

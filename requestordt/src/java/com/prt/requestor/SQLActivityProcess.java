@@ -31,7 +31,7 @@ public class SQLActivityProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "SELECT GUID, NAME, \"DESC\" FROM ACTIVITY_TYPE_REF";
+			String query = "SELECT ATR.GUID, ATR.NAME, ATR.\"DESC\", RTR.NAME REQUEST_NAME FROM ACTIVITY_TYPE_REF ATR JOIN REQUEST_TYPE_REF RTR ON ATR.REQUEST_TYPE_REF_GUID = RTR.GUID";
 			String query2 = "SELECT "
 					+ "ATA.USER_GUID, "
 					+ "ATA.GROUP_GUID, "
@@ -54,6 +54,7 @@ public class SQLActivityProcess {
 				activity.setGuid(set.getString("GUID"));
 				activity.setName(set.getString("NAME"));
 				activity.setDesc(set.getString("DESC"));
+				activity.setRequestType(set.getString("REQUEST_NAME"));
 
 				PreparedStatement stmt = conn.prepareStatement(query2);
 				stmt.setString(1, activity.getGuid());
@@ -107,16 +108,46 @@ public class SQLActivityProcess {
 		return activities;
 	}
 
+	public static ArrayList<String> selectAllActivityTypes() throws SQLException {
+		Connection conn = null;
+		ArrayList<String> results = new ArrayList<>();
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			String query = "SELECT NAME FROM REQUEST_TYPE_REF";
+			Statement stmt = conn.createStatement();
+			ResultSet set = stmt.executeQuery(query);
+			while (set.next()) {
+				results.add(set.getString("NAME"));
+			}
+			set.close();
+			stmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return results;
+	}
+
 	public static boolean addNewActivity(Activity activity) throws SQLException {
 		Connection conn = null;
 		try {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "INSERT INTO ACTIVITY_TYPE_REF (NAME, \"DESC\", CREATED) VALUES (?, ?, SYSTIMESTAMP)";
+			String query = "INSERT INTO ACTIVITY_TYPE_REF (NAME, \"DESC\", CREATED, REQUEST_TYPE_REF_GUID) VALUES (?, ?, SYSTIMESTAMP, (SELECT GUID FROM REQUEST_TYPE_REF WHERE NAME = ?))";
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, activity.getName());
 			stmt.setString(2, activity.getDesc());
+			stmt.setString(3, activity.getRequestType());
 			stmt.executeUpdate();
 			stmt.close();
 
@@ -142,7 +173,7 @@ public class SQLActivityProcess {
 			conn.setAutoCommit(false);
 
 			String deleteRefs = "DELETE FROM ACTIVITY_TYPE_ASSOCIATIONS WHERE ACTIVITY_TYPE_REF_GUID = ?";
-			String update = "UPDATE ACTIVITY_TYPE_REF SET NAME = ?, \"DESC\" = ? WHERE GUID = ?";
+			String update = "UPDATE ACTIVITY_TYPE_REF SET NAME = ?, \"DESC\" = ?, REQUEST_TYPE_REF_GUID = (SELECT GUID FROM REQUEST_TYPE_REF WHERE NAME = ?) WHERE GUID = ?";
 			String insertRefs = "INSERT INTO ACTIVITY_TYPE_ASSOCIATIONS (ACTIVITY_TYPE_REF_GUID, USER_GUID, GROUP_GUID, BUDGET_GUID, CALENDAR_GUID) VALUES (?, ?, ?, ?, ?)";
 
 			PreparedStatement stmt = conn.prepareStatement(deleteRefs);

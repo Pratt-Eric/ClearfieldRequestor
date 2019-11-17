@@ -6,6 +6,8 @@
 package com.prt.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import org.primefaces.model.ScheduleModel;
 
 /**
  *
@@ -20,6 +22,24 @@ public class Item implements Serializable {
 	private String type;
 	private String desc;
 	private int index = -1;
+	private ScheduleModel calendar;
+	private ArrayList<Event> events = new ArrayList<>();
+
+	public ArrayList<Event> getEvents() {
+		return events;
+	}
+
+	public void setEvents(ArrayList<Event> events) {
+		this.events = events;
+	}
+
+	public ScheduleModel getCalendar() {
+		return calendar;
+	}
+
+	public void setCalendar(ScheduleModel calendar) {
+		this.calendar = calendar;
+	}
 
 	public String getCalendarGuid() {
 		return calendarGuid;
