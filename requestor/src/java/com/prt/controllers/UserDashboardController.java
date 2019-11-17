@@ -60,7 +60,9 @@ public class UserDashboardController implements Serializable {
 		try {
 			Gson gson = new Gson();
 			dashboard = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/user/select/default", gson.toJson(preferences.userGuid)), Dashboard.class);
-			buildDashboard();
+			if (dashboard != null) {
+				buildDashboard();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -72,8 +74,10 @@ public class UserDashboardController implements Serializable {
 			Gson gson = new Gson();
 			dashboard = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/user/select", gson.toJson(new String[]{guid, preferences.userGuid})), Dashboard.class);
 
-			//load up the things before refreshing form
-			buildDashboard();
+			if (dashboard != null) {
+				//load up the things before refreshing form
+				buildDashboard();
+			}
 
 			PrimeFaces.current().ajax().update("dashboardForm");
 		}

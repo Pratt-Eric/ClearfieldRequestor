@@ -13,7 +13,7 @@
                 <div class="card">
                     <div class="card-title" style="margin-bottom: 20px;">
                         <h1>Dashboard Setup</h1>
-						<p:commandButton value="Add Dashboard" icon="fa fa-plus" style="margin-bottom: 20px;" actionListener="#{userDashboardSetupController.prepareAddDashboards}" update="dashAddForm"/>
+						<p:commandButton value="Add Dashboard" icon="fa fa-plus" style="margin-bottom: 20px;" actionListener="#{userDashboardSetupController.prepareAddDashboards}" update="dashAddForm" oncomplete="PF('dashAddDlg').show()"/>
                     </div>
                     <div class="card-content card-content-main">
                         <h:form id="dashboardsForm">

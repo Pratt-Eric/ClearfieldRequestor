@@ -432,7 +432,7 @@ public class SQLDashboardProcess {
 					+ "UDX.\"DEFAULT\" "
 					+ "FROM USER_DASHBOARD_XREF UDX "
 					+ "JOIN DASHBOARDS D ON UDX.DASHBOARD_GUID = D.GUID "
-					+ "WHERE UDX.USER_GUID = ? OR UDX.GROUP_GUID IN (SELECT GROUP_GUID FROM USER_GROUP_XREF WHERE USER_GUID = ?)";
+					+ "WHERE UDX.USER_GUID = ?";
 			String calsAndBuds = "SELECT "
 					+ "C.GUID CAL_GUID, "
 					+ "C.NAME CAL_NAME, "
@@ -447,7 +447,6 @@ public class SQLDashboardProcess {
 
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, userGuid);
-			stmt.setString(2, userGuid);
 			ResultSet set = stmt.executeQuery();
 			while (set.next()) {
 				Dashboard dashboard = new Dashboard();
@@ -509,7 +508,7 @@ public class SQLDashboardProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "SELECT GUID FROM USER_DASHBOARD_XREF WHERE USER_GUID = ? AND DEFAULT = 1";
+			String query = "SELECT GUID FROM USER_DASHBOARD_XREF WHERE USER_GUID = ? AND \"DEFAULT\" = 1";
 
 			String xrefGuid = null;
 			PreparedStatement stmt = conn.prepareStatement(query);
@@ -573,7 +572,7 @@ public class SQLDashboardProcess {
 					+ "CE.\"START\", "
 					+ "CE.\"END\", "
 					+ "ATR.NAME, "
-					+ "ATR.DESC "
+					+ "ATR.\"DESC\" "
 					+ "FROM ACTIVITY_TYPE_ASSOCIATIONS ATA "
 					+ "LEFT JOIN ACTIVITY_TYPE_REF ATR ON ATA.ACTIVITY_TYPE_REF_GUID = ATR.GUID "
 					+ "LEFT JOIN CALENDAR_EVENTS CE ON ATR.GUID = CE.ACTIVITY_TYPE_REF_GUID "
@@ -595,7 +594,7 @@ public class SQLDashboardProcess {
 					+ "T.TRANSACTION_NAME, "
 					+ "T.TRANSACTION_DESC, "
 					+ "T.JUSTIFICATION, "
-					+ "T.DATE, "
+					+ "T.\"DATE\", "
 					+ "T.PAID_TO, "
 					+ "T.AMOUNT, "
 					+ "T.AUTHORIZED_BY, "
@@ -646,7 +645,7 @@ public class SQLDashboardProcess {
 				budget.setGuid(set.getString("GUID"));
 				budget.setName(set.getString("NAME"));
 				budget.setDesc(set.getString("DESC"));
-				budget.setRemaining(Double.parseDouble(set.getString("REMAINING")));
+				budget.setRemaining(set.getFloat("REMAINING"));
 				budget.setIndex(Integer.parseInt(set.getString("INDEX")));
 				budget.setXrefGuid(set.getString("GUID"));
 				dashboard.getBudgets().add(budget);
@@ -750,8 +749,8 @@ public class SQLDashboardProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "UPDATE USER_DASHBOARD_XREF SET DEFAULT = 0 WHERE USER_GUID = ?";
-			String update = "UPDATE USER_DASHBOARD_XREF SET DEFAULT = 1 WHERE GUID = ?";
+			String query = "UPDATE USER_DASHBOARD_XREF SET \"DEFAULT\" = 0 WHERE USER_GUID = ?";
+			String update = "UPDATE USER_DASHBOARD_XREF SET \"DEFAULT\" = 1 WHERE GUID = ?";
 
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, params[0]);
@@ -787,7 +786,7 @@ public class SQLDashboardProcess {
 			ArrayList<Dashboard> dashboards = new ArrayList<>();
 
 			String query = "SELECT "
-					+ "D.GUID "
+					+ "D.GUID, "
 					+ "D.NAME, "
 					+ "D.\"DESC\" "
 					+ "FROM DASHBOARDS D "

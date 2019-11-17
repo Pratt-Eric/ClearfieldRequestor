@@ -13,11 +13,14 @@
                 <div class="card">
                     <div class="card-title" style="margin-bottom: 20px;">
                         <h1>Dashboard</h1>
-						<p:button value="Customize Dashboards" icon="fa fa-plus" style="margin-bottom: 20px;" outcome="/user/dashboardsetup.xhtml"/>
+						<p:button value="Customize Dashboards" icon="fa fa-edit" style="margin-bottom: 20px;" outcome="/main/user/dashboardsetup.xhtml"/>
                     </div>
                     <div class="card-content card-content-main">
                         <h:form id="dashboardForm">
 							<p:growl showDetail="true" showSummary="true"/>
+							<h:panelGroup rendered="#{userDashboardController.dashboard eq null}">
+								<p:outputLabel value="No dashboards have been set yet"/>
+							</h:panelGroup>
 							<ui:repeat value="#{userDashboardController.dashboard.items}" var="item">
 								<h:panelGroup rendered="#{item.type eq 'Budget'}">
 									<h4>Transactions for #{item.name}</h4>
@@ -37,9 +40,7 @@
 									</p:dataTable>
 								</h:panelGroup>
 								<h:panelGroup rendered="#{item.type eq 'Calendar'}">
-									<p:schedule id="calendar" value="#{item.calendar}" widgetVar="calendarEvents">
-										<p:ajax/>
-									</p:schedule>
+									<p:schedule id="calendar" value="#{item.calendar}" widgetVar="calendarEvents"/>
 								</h:panelGroup>
 								<br/>
 							</ui:repeat>

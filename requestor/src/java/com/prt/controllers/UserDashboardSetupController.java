@@ -106,8 +106,13 @@ public class UserDashboardSetupController implements Serializable {
 
 	public void addDashboards() {
 		try {
+			String[][] params = new String[selectedDashboards.size()][];
+			for (int i = 0; i < selectedDashboards.size(); i++) {
+				params[i] = new String[]{preferences.userGuid, selectedDashboards.get(i)};
+			}
+
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/user/add", gson.toJson(allUserDashboards)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/user/add", gson.toJson(params)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Dashboards were successfully added"));
 				init();

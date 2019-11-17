@@ -57,7 +57,7 @@
 	<welcome-file-list>
 		<welcome-file>requestor/login.xhtml</welcome-file>
 	</welcome-file-list>
-	<error-page>
+	<!--	<error-page>
 		<error-code>401</error-code>
 		<location>/error.xhtml</location>
 	</error-page>
@@ -76,5 +76,5 @@
 	<error-page>
 		<error-code>404</error-code>
 		<location>/404.xhtml</location>
-	</error-page>
+	</error-page>-->
 </web-app>
