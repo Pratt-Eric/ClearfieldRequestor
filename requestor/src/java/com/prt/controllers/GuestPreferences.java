@@ -27,11 +27,20 @@ public class GuestPreferences implements Serializable {
 	public String lastname;
 	public String calling;
 	public String userGuid;
+	public boolean admin;
 	public ByteArrayOutputStream stream = new ByteArrayOutputStream();
 	public String imgExt = "";
 	public Budget selectedBudget = null;
 	public Calendar selectedCalendar = null;
 	public Dashboard selectedDashboard = null;
+
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
 
 	public String getFirstname() {
 		return firstname;

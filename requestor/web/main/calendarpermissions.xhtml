@@ -27,7 +27,7 @@
 											<p:column headerText="Username">
 												<p:outputLabel value="#{user.username}"/>
 											</p:column>
-											<p:column headerText="Edit Budget" style="text-align: center; width: 15%;">
+											<p:column headerText="Edit Calendar" style="text-align: center; width: 15%;">
 												<p:selectBooleanCheckbox value="#{user.editCalendar}">
 													<p:ajax listener="#{calendarPermissionsController.editCalendarPermissions}"/>
 												</p:selectBooleanCheckbox>
@@ -47,7 +47,7 @@
 											<p:column headerText="Group Name">
 												<p:outputLabel value="#{group.name}"/>
 											</p:column>
-											<p:column headerText="Edit Budget" style="text-align: center; width: 15%;">
+											<p:column headerText="Edit Calendar" style="text-align: center; width: 15%;">
 												<p:selectBooleanCheckbox value="#{group.editCalendar}">
 													<p:ajax listener="#{calendarPermissionsController.editCalendarPermissions}"/>
 												</p:selectBooleanCheckbox>

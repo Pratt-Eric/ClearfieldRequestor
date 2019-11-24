@@ -10,7 +10,7 @@
             <div class="nano-content menu-scroll-content">
                 <h:form id="menuform">
                     <po:menu>
-                        <p:submenu id="om_home" label="ADMIN SETTINGS" icon="fa fa-cogs">
+                        <p:submenu id="om_home" label="ADMIN SETTINGS" icon="fa fa-cogs" rendered="#{guestPreferences.admin}">
                             <p:menuitem id="activityTypes" value="Activity Types" icon="fa fa-picture-o" outcome="/main/activities.xhtml"/>
                             <p:menuitem id="dashboards" value="Dashboards" icon="fa fa-dashboard" outcome="/main/dashboards.xhtml"/>
                             <p:menuitem id="budgets" value="Budgets" icon="fa fa-dollar" outcome="/main/budgets.xhtml"/>

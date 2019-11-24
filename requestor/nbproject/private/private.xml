@@ -7,6 +7,9 @@
             <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/web/main/user/dashboardsetup.xhtml</file>
             <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/controllers/UserDashboardController.java</file>
             <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/controllers/UserDashboardSetupController.java</file>
+            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/web/WEB-INF/menu.xhtml</file>
+            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/controllers/LoginController.java</file>
+            <file>file:/A:/Classes/Senior%20Interum/ClearfieldRequestor/requestor/src/java/com/prt/controllers/GuestPreferences.java</file>
         </group>
     </open-files>
 </project-private>

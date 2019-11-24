@@ -87,6 +87,7 @@ public class LoginController implements Serializable {
 						preferences.userGuid = user.getGuid();
 						preferences.firstname = user.getFirstname();
 						preferences.lastname = user.getLastname();
+						preferences.admin = user.isAdmin();
 						return "/main/user/dashboard.xhtml?faces-redirect=true";
 					}
 				}

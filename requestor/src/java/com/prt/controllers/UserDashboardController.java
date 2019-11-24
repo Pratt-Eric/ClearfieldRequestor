@@ -16,7 +16,6 @@ import com.prt.utils.RestUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -86,7 +85,7 @@ public class UserDashboardController implements Serializable {
 			//get all dashboards
 			dashboards = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/user/select/all", gson.toJson(preferences.userGuid)), new TypeToken<ArrayList<Dashboard>>() {
 			}.getType());
-			System.out.println("ugh");
+			selectedDashboard = dashboard.getXrefGuid();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -95,8 +94,13 @@ public class UserDashboardController implements Serializable {
 	public void selectDashboard(ValueChangeEvent event) {
 		String guid = (String) event.getNewValue();
 		if (guid != null) {
-			selectedDashboard = guid;
-			updateDashboard();
+			Gson gson = new Gson();
+			dashboard = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/user/select", gson.toJson(new String[]{guid, preferences.userGuid})), Dashboard.class);
+
+			if (dashboard != null) {
+				//load up the things before refreshing form
+				buildDashboard();
+			}
 		}
 	}
 
