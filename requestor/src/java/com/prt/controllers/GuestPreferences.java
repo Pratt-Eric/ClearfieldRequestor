@@ -8,6 +8,7 @@ import com.prt.models.User;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import org.primefaces.model.menu.DefaultMenuModel;
@@ -41,6 +42,17 @@ public class GuestPreferences implements Serializable {
 	public MenuModel menu = new DefaultMenuModel();
 	public ArrayList<Activity> activities = new ArrayList<>();
 	public ArrayList<User> users = new ArrayList<>();
+	public ArrayList<String> adminScreens = new ArrayList<>(Arrays.asList(new String[]{
+		"activities.xhtml",
+		"budgetPermissions.xhtml",
+		"budgets.xhtml",
+		"calendarpermissions.xhtml",
+		"calendars.xhtml",
+		"dashboards.xhtml",
+		"dashboardsetup.xhtml",
+		"groups.xhtml",
+		"users.xhtml"
+	}));
 
 	public ArrayList<User> getUsers() {
 		return users;

@@ -42,6 +42,14 @@ public class LoginFilter implements Filter {
 		if (preferences == null || preferences.userGuid == null || preferences.userGuid.isEmpty()) {
 			servletResponse.sendRedirect("http://localhost:8080/requestor/login.xhtml");
 		} else {
+			//first check if the user is allowed to go to the page. If not, then redirect
+//			if (!preferences.isAdmin() && preferences.adminScreens.contains(servletRequest.getRequestURI().replace("/requestor/main/", ""))) {
+//				servletResponse.sendRedirect("http://localhost:8080/requestor/access.xhtml");
+//			}
+			if (!preferences.isAdmin() && !servletRequest.getRequestURI().replace("/requestor/main/", "").contains("user/")) {
+				servletResponse.sendRedirect("http://localhost:8080/requestor/access.xhtml");
+			}
+
 			fc.doFilter(sr, sr1);
 		}
 	}
