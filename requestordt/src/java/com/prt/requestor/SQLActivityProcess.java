@@ -31,7 +31,7 @@ public class SQLActivityProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "SELECT ATR.GUID, ATR.NAME, ATR.\"DESC\", RTR.NAME REQUEST_NAME FROM ACTIVITY_TYPE_REF ATR JOIN REQUEST_TYPE_REF RTR ON ATR.REQUEST_TYPE_REF_GUID = RTR.GUID";
+			String query = "SELECT ATR.GUID, ATR.NAME, ATR.\"DESC\" FROM ACTIVITY_TYPE_REF ATR";
 			String query2 = "SELECT "
 					+ "ATA.USER_GUID, "
 					+ "ATA.GROUP_GUID, "
@@ -54,7 +54,6 @@ public class SQLActivityProcess {
 				activity.setGuid(set.getString("GUID"));
 				activity.setName(set.getString("NAME"));
 				activity.setDesc(set.getString("DESC"));
-				activity.setRequestType(set.getString("REQUEST_NAME"));
 
 				PreparedStatement stmt = conn.prepareStatement(query2);
 				stmt.setString(1, activity.getGuid());
@@ -143,11 +142,10 @@ public class SQLActivityProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "INSERT INTO ACTIVITY_TYPE_REF (NAME, \"DESC\", CREATED, REQUEST_TYPE_REF_GUID) VALUES (?, ?, SYSTIMESTAMP, (SELECT GUID FROM REQUEST_TYPE_REF WHERE NAME = ?))";
+			String query = "INSERT INTO ACTIVITY_TYPE_REF (NAME, \"DESC\", CREATED) VALUES (?, ?, SYSTIMESTAMP)";
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, activity.getName());
 			stmt.setString(2, activity.getDesc());
-			stmt.setString(3, activity.getRequestType());
 			stmt.executeUpdate();
 			stmt.close();
 

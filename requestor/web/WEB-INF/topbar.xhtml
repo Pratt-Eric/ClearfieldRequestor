@@ -35,6 +35,12 @@
         </ul>
 
         <ul class="layout-topbar-icons">
+			<li>
+				<h:form id="requestForm">
+					<p:commandButton id="requestButton" icon="fa fa-plus" value="Request"/>
+					<p:menu overlay="true" trigger="requestButton" my="left top" at="left bottom" model="#{guestPreferences.menu}"/>
+				</h:form>
+			</li>
             <li>
 				<div style="margin-top: 20px;">
 					<h:form id="topbarNameForm">

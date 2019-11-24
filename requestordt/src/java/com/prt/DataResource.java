@@ -409,20 +409,6 @@ public class DataResource {
 		return gson.toJson(false);
 	}
 
-	@Path("activity/types/select/all")
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public String postSelectAllActivityTypes(String content) {
-		Gson gson = new Gson();
-		try {
-			return gson.toJson(SQLActivityProcess.selectAllActivities());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return gson.toJson(false);
-	}
-
 	@Path("activity/add")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -613,6 +599,20 @@ public class DataResource {
 		Gson gson = new Gson();
 		try {
 			return gson.toJson(SQLDashboardProcess.selectAvailableUserDashboards(gson.fromJson(content, String.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Path("types/request")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectRequestTypes(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLProcess.selectRequestTypes());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -174,8 +174,6 @@ public class ActivitiesController implements Serializable {
 			}.getType());
 			calendars = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/select/all", null), new TypeToken<ArrayList<Calendar>>() {
 			}.getType());
-			activityTypes = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/activity/types/select/all", null), new TypeToken<ArrayList<String>>() {
-			}.getType());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

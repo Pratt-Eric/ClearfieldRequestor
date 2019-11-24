@@ -52,4 +52,138 @@
         <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="olympia-layout" />
     </h:body>
 
+	<p:dialog modal="true" widgetVar="requestActivityDlg" header="Request Activity" position="top">
+		<h:form id="requestActivityForm" style="width: 800px;">
+			<div style="width: 100%;">
+				<p:outputLabel value="Activity:"/>
+				<br/>
+				<p:selectOneMenu value="#{templateController.selectedActivity}">
+					<f:selectItem itemLabel="Select..."/>
+					<f:selectItems value="#{guestPreferences.activities}" var="activity" itemLabel="#{activity.name}" itemValue="#{activity.guid}"/>
+				</p:selectOneMenu>
+				<br/><br/>
+				<p:outputLabel value="Title:"/>
+				<br/>
+				<p:inputText value="#{templateController.event.title}" style="width: 400px;">
+					<p:ajax/>
+				</p:inputText>
+				<br/><br/>
+				<p:outputLabel value="Summary:"/>
+				<br/>
+				<p:inputTextarea value="#{templateController.event.summary}" style="width: 100%;">
+					<p:ajax/>
+				</p:inputTextarea>
+				<br/><br/>
+				<p:outputLabel value="Start Time:"/>
+				<br/>
+				<p:calendar value="#{templateController.event.start}" pattern="MM/dd/yyyy HH:mm:ss"/>
+				<br/><br/>
+				<p:outputLabel value="End Time:"/>
+				<br/>
+				<p:calendar value="#{templateController.event.end}" pattern="MM/dd/yyyy HH:mm:ss"/>
+				<br/><br/>
+				<p:outputLabel value="Estimated Budget Amount:"/>
+				<br/>
+				<p:inputNumber decimalPlaces="2" value="#{templateController.budget}">
+					<p:ajax/>
+				</p:inputNumber>
+			</div>
+			<div style="margin-top: 20px;">
+				<p:commandButton value="Submit" title="Submit Activity Request"/>
+				<p:commandButton value="Cancel" oncomplete="PF('requestActivityDlg').hide()" style="margin-left: 10px;"/>
+			</div>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog modal="true" widgetVar="requestReimbursementDlg" header="Reimbursement Request">
+		<h:form id="requestReimbursementForm" style="width: 400px;">
+			<div>
+				<p:outputLabel value="Amount: (Minus Sales Tax)"/>
+				<br/>
+				<p:inputNumber decimalPlaces="2" value="#{templateController.reimbursementAmt}">
+					<p:ajax listener="#{templateController.calculateReimbursementTotal}"/>
+				</p:inputNumber>
+				<br/><br/>
+				<p:outputLabel value="Tax:"/>
+				<br/>
+				<p:inputNumber decimalPlaces="2" value="#{templateController.tax}">
+					<p:ajax listener="#{templateController.calculateReimbursementTotal}"/>
+				</p:inputNumber>
+				<br/>
+				<p:outputLabel value="Total: #{templateController.total}"/>
+				<Br/><br/>
+				<p:selectBooleanCheckbox id="wardAccount" value="#{templateController.chargedToWardAccount}"/>
+				<p:outputLabel value="Charged To Ward Account" for="wardAccount" style="margin-left: 10px;"/>
+				<br/>
+				<p:outputLabel value="Description:"/>
+				<br/>
+				<p:inputTextarea value="#{templateController.wardAccount}" style="width: 400px;">
+					<p:ajax/>
+				</p:inputTextarea>
+				<br/><br/>
+				<p:outputLabel value="Organization:"/>
+				<br/>
+				<p:selectOneMenu value="#{templateController.org}">
+					<p:ajax update="requestReimbursementForm"/>
+					<f:selectItem itemLabel="Select..."/>
+					<f:selectItem itemLabel="Ward Administration" itemValue="Ward Administration"/>
+					<f:selectItem itemLabel="Relief Society" itemValue="Relief Society"/>
+					<f:selectItem itemLabel="Elders Quorum" itemValue="Elders Quorum"/>
+					<f:selectItem itemLabel="Activities Committee" itemValue="Activities Committee"/>
+					<f:selectItem itemLabel="Sunday School" itemValue="Sunday School"/>
+					<f:selectItem itemLabel="Fast Offering" itemValue="Fast Offering"/>
+					<f:selectItem itemLabel="Other" itemValue="Other"/>
+					<f:selectItem itemLabel="Council Expense" itemValue="Council Expense"/>
+				</p:selectOneMenu>
+				<h:panelGroup rendered="#{templateController.org eq 'Other' or templateController.org eq 'Council Expense'}">
+					<br/>
+					<p:outputLabel value="Details: "/>
+					<p:inputText value="#{templateController.orgName}">
+						<p:ajax/>
+					</p:inputText>
+				</h:panelGroup>
+				<br/><br/>
+				<p:outputLabel value="Organization Leader:"/>
+				<br/>
+				<p:selectOneMenu value="#{templateController.orgLeader}">
+					<p:ajax/>
+					<f:selectItem itemLabel="Select..."/>
+					<f:selectItems value="#{guestPreferences.users}" var="user" itemLabel="#{user.firstname} #{user.lastname}" itemValue="#{user.guid}"/>
+				</p:selectOneMenu>
+			</div>
+			<div style="margin-top: 20px;">
+				<p:commandButton value="Submit" title="Submit Reimbursement Request"/>
+				<p:commandButton value="Cancel" oncomplete="PF('requestReimbursementDlg').hide()" style="margin-left: 10px;"/>
+			</div>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog modal="true" widgetVar="requestExpenseDlg" header="Expense Request">
+		<h:form id="requestExpenseForm" style="width: 400px;">
+			<div>
+				<p:outputLabel value="Expense:"/>
+				<br/>
+				<p:inputText value="#{templateController.expense}" style="width: 300px;">
+					<p:ajax/>
+				</p:inputText>
+				<br/><br/>
+				<p:outputLabel value="Expense Details:"/>
+				<br/>
+				<p:inputTextarea value="#{templateController.expenseDetails}" style="width: 100%;">
+					<p:ajax/>
+				</p:inputTextarea>
+				<br/><br/>
+				<p:outputLabel value="Expense Cost:"/>
+				<br/>
+				<p:inputNumber value="#{templateController.amt}" decimalPlaces="2">
+					<p:ajax/>
+				</p:inputNumber>
+			</div>
+			<div style="margin-top: 20px;">
+				<p:commandButton value="Submit" title="Submit Expense Request"/>
+				<p:commandButton value="Cancel" oncomplete="PF('requestExpenseDlg').hide()" style="margin-left: 10px;"/>
+			</div>
+		</h:form>
+	</p:dialog>
+
 </html>

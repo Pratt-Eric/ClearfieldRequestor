@@ -81,13 +81,6 @@
 					<p:inputText value="#{activitiesController.newActivity.desc}" style="width: 100%;">
 						<p:ajax/>
 					</p:inputText>
-					<br/><br/>
-					<p:outputLabel value="Activity Type:"/>
-					<p:selectOneMenu value="#{activitiesController.newActivity.requestType}">
-						<p:ajax/>
-						<f:selectItem itemLabel="Select..."/>
-						<f:selectItems value="#{activitiesController.activityTypes}" var="activityType" itemLabel="#{activityType}" itemValue="#{activityType}"/>
-					</p:selectOneMenu>
 				</div>
 				<div style="margin-top: 20px;">
 					<p:commandButton value="Add Activity" actionListener="#{activitiesController.addNewActivity}"/>
@@ -110,13 +103,6 @@
 					<p:inputText value="#{activitiesController.selectedActivity.desc}" style="width: 100%;">
 						<p:ajax/>
 					</p:inputText>
-					<br/><br/>
-					<p:outputLabel value="Activity Type:"/>
-					<p:selectOneMenu value="#{activitiesController.selectedActivity.requestType}">
-						<p:ajax/>
-						<f:selectItem itemLabel="Select..."/>
-						<f:selectItems value="#{activitiesController.activityTypes}" var="activityType" itemLabel="#{activityType}" itemValue="#{activityType}"/>
-					</p:selectOneMenu>
 				</div>
 				<div style="margin-top: 20px;">
 					<p:commandButton value="Edit Activity" actionListener="#{activitiesController.editExistingActivity}"/>

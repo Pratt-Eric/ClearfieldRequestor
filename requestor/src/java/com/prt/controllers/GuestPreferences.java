@@ -1,12 +1,17 @@
 package com.prt.controllers;
 
+import com.prt.models.Activity;
 import com.prt.models.Budget;
 import com.prt.models.Calendar;
 import com.prt.models.Dashboard;
+import com.prt.models.User;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.MenuModel;
 
 @ManagedBean
 @SessionScoped
@@ -33,6 +38,33 @@ public class GuestPreferences implements Serializable {
 	public Budget selectedBudget = null;
 	public Calendar selectedCalendar = null;
 	public Dashboard selectedDashboard = null;
+	public MenuModel menu = new DefaultMenuModel();
+	public ArrayList<Activity> activities = new ArrayList<>();
+	public ArrayList<User> users = new ArrayList<>();
+
+	public ArrayList<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(ArrayList<User> users) {
+		this.users = users;
+	}
+
+	public ArrayList<Activity> getActivities() {
+		return activities;
+	}
+
+	public void setActivities(ArrayList<Activity> activities) {
+		this.activities = activities;
+	}
+
+	public MenuModel getMenu() {
+		return menu;
+	}
+
+	public void setMenu(MenuModel menu) {
+		this.menu = menu;
+	}
 
 	public boolean isAdmin() {
 		return admin;

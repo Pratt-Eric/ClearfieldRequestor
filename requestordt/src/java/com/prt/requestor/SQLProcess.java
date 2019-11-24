@@ -92,4 +92,36 @@ public class SQLProcess {
 		}
 		return false;
 	}
+
+	public static ArrayList<String> selectRequestTypes() throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			ArrayList<String> results = new ArrayList<>();
+
+			String query = "SELECT NAME FROM REQUEST_TYPE_REF";
+			Statement stmt = conn.createStatement();
+			ResultSet set = stmt.executeQuery(query);
+			while (set.next()) {
+				results.add(set.getString("NAME"));
+			}
+			set.close();
+			stmt.close();
+
+			return results;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return null;
+	}
 }
