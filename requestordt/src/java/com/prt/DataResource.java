@@ -591,6 +591,20 @@ public class DataResource {
 		return null;
 	}
 
+	@Path("dashboard/user/delete")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postDeleteUserDashboard(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLDashboardProcess.deleteUserDashboard(gson.fromJson(content, String[].class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Path("dashboard/user/available")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

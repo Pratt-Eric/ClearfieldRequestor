@@ -37,10 +37,15 @@
 										<br/>
 									</ui:repeat>
 								</p:column>
-								<p:column headerText="Make Default">
+								<p:column headerText="Default" style="width: 10%; text-align: center;">
 									<p:selectBooleanCheckbox value="#{dashboard.defaultDashboard}" id="makeDefault">
 										<p:ajax listener="#{userDashboardSetupController.makeDefault(dashboard)}"/>
 									</p:selectBooleanCheckbox>
+								</p:column>
+								<p:column headerText="Actions" style="width: 10%; text-align: center;">
+									<p:commandLink title="Delete" actionListener="#{userDashboardSetupController.deleteDashboard(dashboard)}">
+										<i class="fa fa-lg fa-trash"/>
+									</p:commandLink>
 								</p:column>
 							</p:dataTable>
 						</h:form>

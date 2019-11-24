@@ -141,4 +141,20 @@ public class UserDashboardSetupController implements Serializable {
 			e.printStackTrace();
 		}
 	}
+
+	public void deleteDashboard(Dashboard dashboard) {
+		try {
+			Gson gson = new Gson();
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/user/delete", gson.toJson(new String[]{dashboard.getXrefGuid()})), String.class);
+			if (result != null && result.equalsIgnoreCase("true")) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Dashboard was successfully deleted"));
+				init();
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem deleting your dashboard"));
+			}
+			PrimeFaces.current().ajax().update("dashboardsForm");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

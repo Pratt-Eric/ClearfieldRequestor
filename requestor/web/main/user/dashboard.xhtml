@@ -19,7 +19,7 @@
 						<br/>
 						<h:form id="dashHead">
 							<p:selectOneMenu value="#{userDashboardController.selectedDashboard}" valueChangeListener="#{userDashboardController.selectDashboard}">
-								<p:ajax/>
+								<p:ajax update="dashboardForm"/>
 								<f:selectItems value="#{userDashboardController.dashboards}" var="dashboard" itemLabel="#{dashboard.name}" itemValue="#{dashboard.xrefGuid}"/>
 							</p:selectOneMenu>
 						</h:form>

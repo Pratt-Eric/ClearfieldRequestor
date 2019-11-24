@@ -78,14 +78,13 @@ public class UserDashboardController implements Serializable {
 			Gson gson = new Gson();
 			dashboard = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/user/select/default", gson.toJson(preferences.userGuid)), Dashboard.class);
 			if (dashboard != null) {
-				selectedDashboard = dashboard.getGuid();
+				selectedDashboard = dashboard.getXrefGuid();
 				buildDashboard();
 			}
 
 			//get all dashboards
 			dashboards = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/user/select/all", gson.toJson(preferences.userGuid)), new TypeToken<ArrayList<Dashboard>>() {
 			}.getType());
-			selectedDashboard = dashboard.getXrefGuid();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -40,7 +40,7 @@
 									<p:commandLink title="Edit" actionListener="#{calendarsController.updateSelectedCalendar(calendar)}" update="calendarEditForm" oncomplete="PF('calendarEditDlg').show()">
 										<i class="fa fa-lg fa-edit"/>
 									</p:commandLink>
-									<p:commandLink title="stupid" action="#{calendarsController.prepareAddUsersAndGroups(calendar)}">
+									<p:commandLink title="Add Users and Groups" action="#{calendarsController.prepareAddUsersAndGroups(calendar)}">
 										<i class="fa fa-lg fa-group"/>
 									</p:commandLink>
 									<p:commandLink title="Delete" actionListener="#{calendarsController.updateSelectedCalendar(calendar)}" update="calendarDeleteForm" oncomplete="PF('calendarDeleteDlg').show()">

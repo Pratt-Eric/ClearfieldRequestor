@@ -727,18 +727,18 @@ public class SQLDashboardProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			boolean first = false;
+			boolean first = true;
 			PreparedStatement existing = conn.prepareStatement("SELECT GUID FROM USER_DASHBOARD_XREF WHERE USER_GUID = ?");
 			existing.setString(1, params[0][0]);
 			ResultSet set = existing.executeQuery();
 			while (set.next()) {
-				first = true;
+				first = false;
 				break;
 			}
 			set.close();
 			existing.close();
 
-			String query = "INSERT INTO USER_DASHBOARD_XREF (USER_GUID, DASHBOARD_GUID, DEFAULT) VALUES (?, ?, ?)";
+			String query = "INSERT INTO USER_DASHBOARD_XREF (USER_GUID, DASHBOARD_GUID, \"DEFAULT\") VALUES (?, ?, ?)";
 
 			PreparedStatement stmt = conn.prepareStatement(query);
 			for (String[] param : params) {
@@ -781,6 +781,34 @@ public class SQLDashboardProcess {
 
 			stmt = conn.prepareStatement(update);
 			stmt.setString(1, params[1]);
+			stmt.executeUpdate();
+			stmt.close();
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return false;
+	}
+
+	public static boolean deleteUserDashboard(String[] params) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			String query = "DELETE FROM USER_DASHBOARD_XREF WHERE GUID = ?";
+
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, params[0]);
 			stmt.executeUpdate();
 			stmt.close();
 
