@@ -15,9 +15,45 @@ public class Reimbursement implements Serializable {
 
 	private float amt;
 	private float tax;
+	private float total;
 	private boolean wardAccount;
+	private String wardAccountDetails;
 	private String org;
+	private String orgName;
 	private String orgLeader;
+	private String userGuid;
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public String getWardAccountDetails() {
+		return wardAccountDetails;
+	}
+
+	public void setWardAccountDetails(String wardAccountDetails) {
+		this.wardAccountDetails = wardAccountDetails;
+	}
+
+	public float getTotal() {
+		return total;
+	}
+
+	public void setTotal(float total) {
+		this.total = total;
+	}
+
+	public String getUserGuid() {
+		return userGuid;
+	}
+
+	public void setUserGuid(String userGuid) {
+		this.userGuid = userGuid;
+	}
 
 	public float getAmt() {
 		return amt;
@@ -57,5 +93,9 @@ public class Reimbursement implements Serializable {
 
 	public void setOrgLeader(String orgLeader) {
 		this.orgLeader = orgLeader;
+	}
+
+	public void calculateReimbursementTotal() {
+		total = amt + tax;
 	}
 }

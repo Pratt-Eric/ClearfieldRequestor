@@ -16,6 +16,15 @@ public class Expense implements Serializable {
 	private String name;
 	private String details;
 	private float amt = 0;
+	private String userGuid;
+
+	public String getUserGuid() {
+		return userGuid;
+	}
+
+	public void setUserGuid(String userGuid) {
+		this.userGuid = userGuid;
+	}
 
 	public String getName() {
 		return name;

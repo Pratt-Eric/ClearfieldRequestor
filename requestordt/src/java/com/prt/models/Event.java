@@ -21,6 +21,15 @@ public class Event implements Serializable {
 	private Date end;
 	private Activity activity;
 	private float budget = 0;
+	private String userGuid;
+
+	public String getUserGuid() {
+		return userGuid;
+	}
+
+	public void setUserGuid(String userGuid) {
+		this.userGuid = userGuid;
+	}
 
 	public float getBudget() {
 		return budget;

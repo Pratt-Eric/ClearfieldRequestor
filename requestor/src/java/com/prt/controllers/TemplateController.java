@@ -1,9 +1,13 @@
 package com.prt.controllers;
 
 import com.google.gson.Gson;
+import com.prt.models.Activity;
 import com.prt.models.Event;
+import com.prt.models.Expense;
+import com.prt.models.Reimbursement;
 import com.prt.utils.RestUtil;
 import java.io.Serializable;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -29,104 +33,23 @@ public class TemplateController implements Serializable {
 	private GuestPreferences preferences;
 	private String selectedActivity;
 	private Event event;
-	private float reimbursementAmt;
-	private float tax;
-	private float total;
-	private boolean chargedToWardAccount;
-	private String wardAccount;
-	private String org;
-	private String orgName;
-	private String orgLeader;
-	private String expense;
-	private String expenseDetails;
-	private float amt;
+	private Reimbursement reimbursement;
+	private Expense expense;
 
-	public String getExpense() {
+	public Reimbursement getReimbursement() {
+		return reimbursement;
+	}
+
+	public void setReimbursement(Reimbursement reimbursement) {
+		this.reimbursement = reimbursement;
+	}
+
+	public Expense getExpense() {
 		return expense;
 	}
 
-	public void setExpense(String expense) {
+	public void setExpense(Expense expense) {
 		this.expense = expense;
-	}
-
-	public String getExpenseDetails() {
-		return expenseDetails;
-	}
-
-	public void setExpenseDetails(String expenseDetails) {
-		this.expenseDetails = expenseDetails;
-	}
-
-	public float getAmt() {
-		return amt;
-	}
-
-	public void setAmt(float amt) {
-		this.amt = amt;
-	}
-
-	public String getOrgLeader() {
-		return orgLeader;
-	}
-
-	public void setOrgLeader(String orgLeader) {
-		this.orgLeader = orgLeader;
-	}
-
-	public String getOrgName() {
-		return orgName;
-	}
-
-	public void setOrgName(String orgName) {
-		this.orgName = orgName;
-	}
-
-	public String getOrg() {
-		return org;
-	}
-
-	public void setOrg(String org) {
-		this.org = org;
-	}
-
-	public String getWardAccount() {
-		return wardAccount;
-	}
-
-	public void setWardAccount(String wardAccount) {
-		this.wardAccount = wardAccount;
-	}
-
-	public boolean isChargedToWardAccount() {
-		return chargedToWardAccount;
-	}
-
-	public void setChargedToWardAccount(boolean chargedToWardAccount) {
-		this.chargedToWardAccount = chargedToWardAccount;
-	}
-
-	public float getTotal() {
-		return total;
-	}
-
-	public void setTotal(float total) {
-		this.total = total;
-	}
-
-	public float getTax() {
-		return tax;
-	}
-
-	public void setTax(float tax) {
-		this.tax = tax;
-	}
-
-	public float getReimbursementAmt() {
-		return reimbursementAmt;
-	}
-
-	public void setReimbursementAmt(float reimbursementAmt) {
-		this.reimbursementAmt = reimbursementAmt;
 	}
 
 	public Event getEvent() {
@@ -153,24 +76,31 @@ public class TemplateController implements Serializable {
 		this.preferences = preferences;
 	}
 
+	@PostConstruct
+	void init() {
+		event = new Event();
+		event.setUserGuid(preferences.userGuid);
+		reimbursement = new Reimbursement();
+		reimbursement.setUserGuid(preferences.userGuid);
+		expense = new Expense();
+		expense.setUserGuid(preferences.userGuid);
+	}
+
 	public void prepareRequest() {
 		selectedActivity = "";
 		event = new Event();
-		reimbursementAmt = 0;
-		tax = 0;
-		total = 0;
-		chargedToWardAccount = false;
-		wardAccount = "";
-		org = "";
-		orgName = "";
-		orgLeader = "";
-		expense = "";
-		expenseDetails = "";
-		amt = 0;
+		reimbursement = new Reimbursement();
+		expense = new Expense();
 	}
 
 	public void submitActivityRequest() {
 		try {
+			for (Activity activity : preferences.activities) {
+				if (activity.getGuid().equals(selectedActivity)) {
+					event.setActivity(activity);
+					break;
+				}
+			}
 			Gson gson = new Gson();
 			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "request/activity", gson.toJson(event)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
@@ -218,7 +148,7 @@ public class TemplateController implements Serializable {
 	}
 
 	public void calculateReimbursementTotal() {
-		total = reimbursementAmt + tax;
+		reimbursement.calculateReimbursementTotal();
 	}
 
 	public void refreshPage() {

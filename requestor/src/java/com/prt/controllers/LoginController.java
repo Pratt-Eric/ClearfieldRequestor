@@ -102,11 +102,11 @@ public class LoginController implements Serializable {
 							item.setUpdate(rt.equalsIgnoreCase("Activity") ? "requestActivityForm" : rt.equalsIgnoreCase("Reimbursement") ? "requestReimbursementForm" : rt.equalsIgnoreCase("Expense") ? "requestExpenseForm" : "");
 							item.setCommand("#{templateController.prepareRequest}");
 							//grab activity types and assign them to guestPreferences.activities
-							preferences.activities = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/activity/select/all", null), new TypeToken<ArrayList<Activity>>() {
+							preferences.activities = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "activity/select/all", null), new TypeToken<ArrayList<Activity>>() {
 							}.getType());
 							preferences.menu.addElement(item);
 						}
-						preferences.users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/all", null), new TypeToken<ArrayList<User>>() {
+						preferences.users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/select/all", null), new TypeToken<ArrayList<User>>() {
 						}.getType());
 
 						return "/main/user/dashboard.xhtml?faces-redirect=true";

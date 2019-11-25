@@ -100,30 +100,30 @@
 			<div>
 				<p:outputLabel value="Amount: (Minus Sales Tax)"/>
 				<br/>
-				<p:inputNumber decimalPlaces="2" value="#{templateController.reimbursementAmt}">
+				<p:inputNumber decimalPlaces="2" value="#{templateController.reimbursement.amt}">
 					<p:ajax listener="#{templateController.calculateReimbursementTotal}"/>
 				</p:inputNumber>
 				<br/><br/>
 				<p:outputLabel value="Tax:"/>
 				<br/>
-				<p:inputNumber decimalPlaces="2" value="#{templateController.tax}">
+				<p:inputNumber decimalPlaces="2" value="#{templateController.reimbursement.tax}">
 					<p:ajax listener="#{templateController.calculateReimbursementTotal}"/>
 				</p:inputNumber>
 				<br/>
-				<p:outputLabel value="Total: #{templateController.total}"/>
+				<p:outputLabel value="Total: #{templateController.reimbursement.total}"/>
 				<Br/><br/>
-				<p:selectBooleanCheckbox id="wardAccount" value="#{templateController.chargedToWardAccount}"/>
+				<p:selectBooleanCheckbox id="wardAccount" value="#{templateController.reimbursement.wardAccount}"/>
 				<p:outputLabel value="Charged To Ward Account" for="wardAccount" style="margin-left: 10px;"/>
 				<br/>
 				<p:outputLabel value="Description:"/>
 				<br/>
-				<p:inputTextarea value="#{templateController.wardAccount}" style="width: 400px;">
+				<p:inputTextarea value="#{templateController.reimbursement.wardAccountDetails}" style="width: 400px;">
 					<p:ajax/>
 				</p:inputTextarea>
 				<br/><br/>
 				<p:outputLabel value="Organization:"/>
 				<br/>
-				<p:selectOneMenu value="#{templateController.org}">
+				<p:selectOneMenu value="#{templateController.reimbursement.org}">
 					<p:ajax update="requestReimbursementForm"/>
 					<f:selectItem itemLabel="Select..."/>
 					<f:selectItem itemLabel="Ward Administration" itemValue="Ward Administration"/>
@@ -135,17 +135,17 @@
 					<f:selectItem itemLabel="Other" itemValue="Other"/>
 					<f:selectItem itemLabel="Council Expense" itemValue="Council Expense"/>
 				</p:selectOneMenu>
-				<h:panelGroup rendered="#{templateController.org eq 'Other' or templateController.org eq 'Council Expense'}">
+				<h:panelGroup rendered="#{templateController.reimbursement.org eq 'Other' or templateController.reimbursement.org eq 'Council Expense'}">
 					<br/>
 					<p:outputLabel value="Details: "/>
-					<p:inputText value="#{templateController.orgName}">
+					<p:inputText value="#{templateController.reimbursement.orgName}">
 						<p:ajax/>
 					</p:inputText>
 				</h:panelGroup>
 				<br/><br/>
 				<p:outputLabel value="Organization Leader:"/>
 				<br/>
-				<p:selectOneMenu value="#{templateController.orgLeader}">
+				<p:selectOneMenu value="#{templateController.reimbursement.orgLeader}">
 					<p:ajax/>
 					<f:selectItem itemLabel="Select..."/>
 					<f:selectItems value="#{guestPreferences.users}" var="user" itemLabel="#{user.firstname} #{user.lastname}" itemValue="#{user.guid}"/>
@@ -163,19 +163,19 @@
 			<div>
 				<p:outputLabel value="Expense:"/>
 				<br/>
-				<p:inputText value="#{templateController.expense}" style="width: 300px;">
+				<p:inputText value="#{templateController.expense.name}" style="width: 300px;">
 					<p:ajax/>
 				</p:inputText>
 				<br/><br/>
 				<p:outputLabel value="Expense Details:"/>
 				<br/>
-				<p:inputTextarea value="#{templateController.expenseDetails}" style="width: 100%;">
+				<p:inputTextarea value="#{templateController.expense.details}" style="width: 100%;">
 					<p:ajax/>
 				</p:inputTextarea>
 				<br/><br/>
 				<p:outputLabel value="Expense Cost:"/>
 				<br/>
-				<p:inputNumber value="#{templateController.amt}" decimalPlaces="2">
+				<p:inputNumber value="#{templateController.expense.amt}" decimalPlaces="2">
 					<p:ajax/>
 				</p:inputNumber>
 			</div>
