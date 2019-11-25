@@ -92,7 +92,7 @@ public class UsersController implements Serializable {
 		try {
 			//grab all users and display them
 			Gson gson = new Gson();
-			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/all", null), new TypeToken<ArrayList<User>>() {
+			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/select/all", null), new TypeToken<ArrayList<User>>() {
 			}.getType());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -123,7 +123,7 @@ public class UsersController implements Serializable {
 				tempPass = newPassword;
 
 				Gson gson = new Gson();
-				String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/add", gson.toJson(newUser)), String.class);
+				String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/add", gson.toJson(newUser)), String.class);
 				if (result != null && result.equalsIgnoreCase("true")) {
 					init();
 					PrimeFaces.current().executeScript("PF('addUserDlg').hide()");
@@ -151,7 +151,7 @@ public class UsersController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Username cannot have any white space in it"));
 			} else {
 				Gson gson = new Gson();
-				String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/edit", gson.toJson(selectedUser)), String.class);
+				String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/edit", gson.toJson(selectedUser)), String.class);
 				if (result != null && result.equalsIgnoreCase("true")) {
 					init();
 					PrimeFaces.current().executeScript("PF('editUserDlg').hide()");
@@ -169,7 +169,7 @@ public class UsersController implements Serializable {
 	public void deleteUser() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/remove", gson.toJson(selectedUser)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/remove", gson.toJson(selectedUser)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				init();
 				PrimeFaces.current().executeScript("PF('deleteUserDlg').hide()");

@@ -101,7 +101,7 @@ public class UserBudgetController implements Serializable {
 		budgets.setExpanded(true);
 		try {
 			Gson gson = new Gson();
-			ArrayList<Budget> budgetList = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/select/all/user", gson.toJson(preferences.userGuid)), new TypeToken<ArrayList<Budget>>() {
+			ArrayList<Budget> budgetList = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "budget/select/all/user", gson.toJson(preferences.userGuid)), new TypeToken<ArrayList<Budget>>() {
 			}.getType());
 			assignBudgetHierarchy(budgetList);
 		} catch (Exception e) {
@@ -169,7 +169,7 @@ public class UserBudgetController implements Serializable {
 		//add transaction to budget then edit budget itself
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/transaction/add", gson.toJson(newTransaction)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "budget/transaction/add", gson.toJson(newTransaction)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				editBudget();
 			} else {
@@ -185,7 +185,7 @@ public class UserBudgetController implements Serializable {
 	public void editBudget() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/edit/user", gson.toJson(selectedBudget)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "budget/edit/user", gson.toJson(selectedBudget)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", selectedBudget.getName() + " was successfully modified"));
 				init();

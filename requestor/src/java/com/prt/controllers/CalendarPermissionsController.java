@@ -126,9 +126,9 @@ public class CalendarPermissionsController implements Serializable {
 		calendar = preferences.selectedCalendar;
 		try {
 			Gson gson = new Gson();
-			groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/group/select/all", null), new TypeToken<ArrayList<Group>>() {
+			groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "group/select/all", null), new TypeToken<ArrayList<Group>>() {
 			}.getType());
-			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/all", null), new TypeToken<ArrayList<User>>() {
+			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/select/all", null), new TypeToken<ArrayList<User>>() {
 			}.getType());
 
 			for (User user : users) {
@@ -192,7 +192,7 @@ public class CalendarPermissionsController implements Serializable {
 	public void editCalendarPermissions() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/edit", gson.toJson(calendar)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "calendar/edit", gson.toJson(calendar)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", calendar.getName() + " was successfully modified"));
 				init();

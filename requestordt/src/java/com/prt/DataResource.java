@@ -11,7 +11,10 @@ import com.prt.models.Budget;
 import com.prt.models.BudgetTransaction;
 import com.prt.models.Calendar;
 import com.prt.models.Dashboard;
+import com.prt.models.Event;
+import com.prt.models.Expense;
 import com.prt.models.Group;
+import com.prt.models.Reimbursement;
 import com.prt.models.User;
 import com.prt.requestor.SQLActivityProcess;
 import com.prt.requestor.SQLBudgetProcess;
@@ -19,6 +22,7 @@ import com.prt.requestor.SQLCalendarProcess;
 import com.prt.requestor.SQLDashboardProcess;
 import com.prt.requestor.SQLGroupProcess;
 import com.prt.requestor.SQLProcess;
+import com.prt.requestor.SQLRequestProcess;
 import com.prt.requestor.SQLUserProcess;
 import com.prt.utils.DBConnection;
 import javax.annotation.PostConstruct;
@@ -26,10 +30,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -633,25 +635,45 @@ public class DataResource {
 		return null;
 	}
 
-	/**
-	 * Retrieves representation of an instance of com.prt.DataResource
-	 *
-	 * @return an instance of java.lang.String
-	 */
-	@GET
+	@Path("/request/activity")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getJson() {
-		//TODO return proper representation object
-		throw new UnsupportedOperationException();
+	public String postRequestActivity(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLRequestProcess.requestActivity(gson.fromJson(content, Event.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	/**
-	 * PUT method for updating or creating an instance of DataResource
-	 *
-	 * @param content representation for the resource
-	 */
-	@PUT
+	@Path("/request/reimbursement")
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void putJson(String content) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postRequestReimbursement(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLRequestProcess.requestReimbursement(gson.fromJson(content, Reimbursement.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Path("/request/expense")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postRequestExpense(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLRequestProcess.requestExpense(gson.fromJson(content, Expense.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

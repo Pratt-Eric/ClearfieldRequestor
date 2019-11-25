@@ -19,7 +19,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 import org.primefaces.PrimeFaces;
 
 /**
@@ -128,9 +127,9 @@ public class BudgetPermissionsController implements Serializable {
 			budget = preferences.selectedBudget;
 			if (budget != null) {
 				Gson gson = new Gson();
-				groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/group/select/all", null), new TypeToken<ArrayList<Group>>() {
+				groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "group/select/all", null), new TypeToken<ArrayList<Group>>() {
 				}.getType());
-				users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/all", null), new TypeToken<ArrayList<User>>() {
+				users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/select/all", null), new TypeToken<ArrayList<User>>() {
 				}.getType());
 
 				for (User user : users) {
@@ -195,7 +194,7 @@ public class BudgetPermissionsController implements Serializable {
 	public void editBudgetPermissions() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/edit", gson.toJson(budget)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "budget/edit", gson.toJson(budget)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", budget.getName() + " was successfully modified"));
 				init();

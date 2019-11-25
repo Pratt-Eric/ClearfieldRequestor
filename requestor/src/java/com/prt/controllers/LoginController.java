@@ -65,7 +65,7 @@ public class LoginController implements Serializable {
 	void init() {
 		//create admin user if it doesn't already exist
 		Gson gson = new Gson();
-		String success = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/initialize", gson.toJson(null)), String.class);
+		String success = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "initialize", gson.toJson(null)), String.class);
 		if (success == null || success.equalsIgnoreCase("false")) {
 			//There was an error initializing the system
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was an error initializing the system"));
@@ -76,7 +76,7 @@ public class LoginController implements Serializable {
 		//Get user information and check login info
 		try {
 			Gson gson = new Gson();
-			User user = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select", gson.toJson(username)), User.class);
+			User user = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/select", gson.toJson(username)), User.class);
 			if (user != null) {
 				//compare the password returned with the password provided
 				//first, hash the given password
@@ -93,7 +93,7 @@ public class LoginController implements Serializable {
 						preferences.lastname = user.getLastname();
 						preferences.admin = user.isAdmin();
 						//get all request types to load preferences
-						ArrayList<String> requestTypes = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/types/request", null), new TypeToken<ArrayList<String>>() {
+						ArrayList<String> requestTypes = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "types/request", null), new TypeToken<ArrayList<String>>() {
 						}.getType());
 						preferences.menu = new DefaultMenuModel();
 						for (String rt : requestTypes) {

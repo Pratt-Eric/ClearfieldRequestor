@@ -1,11 +1,16 @@
 package com.prt.controllers;
 
-import com.prt.controllers.GuestPreferences;
+import com.google.gson.Gson;
 import com.prt.models.Event;
+import com.prt.utils.RestUtil;
 import java.io.Serializable;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import org.primefaces.PrimeFaces;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -24,7 +29,6 @@ public class TemplateController implements Serializable {
 	private GuestPreferences preferences;
 	private String selectedActivity;
 	private Event event;
-	private float budget;
 	private float reimbursementAmt;
 	private float tax;
 	private float total;
@@ -133,14 +137,6 @@ public class TemplateController implements Serializable {
 		this.event = event;
 	}
 
-	public float getBudget() {
-		return budget;
-	}
-
-	public void setBudget(float budget) {
-		this.budget = budget;
-	}
-
 	public String getSelectedActivity() {
 		return selectedActivity;
 	}
@@ -160,7 +156,6 @@ public class TemplateController implements Serializable {
 	public void prepareRequest() {
 		selectedActivity = "";
 		event = new Event();
-		budget = 0;
 		reimbursementAmt = 0;
 		tax = 0;
 		total = 0;
@@ -175,19 +170,75 @@ public class TemplateController implements Serializable {
 	}
 
 	public void submitActivityRequest() {
-
+		try {
+			Gson gson = new Gson();
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "request/activity", gson.toJson(event)), String.class);
+			if (result != null && result.equalsIgnoreCase("true")) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Activity request was successfully submitted"));
+				refreshPage();
+				PrimeFaces.current().executeScript("PF('requestActivityForm').hide()");
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem submitting your activity request"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void submitReimbursementRequest() {
-
+		try {
+			Gson gson = new Gson();
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "request/reimbursement", gson.toJson(event)), String.class);
+			if (result != null && result.equalsIgnoreCase("true")) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Reimbursement request was successfully submitted"));
+				refreshPage();
+				PrimeFaces.current().executeScript("PF('requestReimbursementForm').hide()");
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem submitting your reimbursement request"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void submitExpenseRequest() {
-
+		try {
+			Gson gson = new Gson();
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "request/expense", gson.toJson(event)), String.class);
+			if (result != null && result.equalsIgnoreCase("true")) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Activity request was successfully submitted"));
+				refreshPage();
+				PrimeFaces.current().executeScript("PF('requestExpenseForm').hide()");
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "There was a problem submitting your reimbursement request"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void calculateReimbursementTotal() {
 		total = reimbursementAmt + tax;
+	}
+
+	public void refreshPage() {
+		try {
+			HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+			String uri = req.getRequestURI();
+			if (uri.contains("request.xhtml")) {
+				//get request controller
+				FacesContext context = FacesContext.getCurrentInstance();
+				RequestController requestController = context.getApplication().evaluateExpressionGet(context, "#{requestController}", RequestController.class);
+				if (requestController != null) {
+					requestController.init();
+					PrimeFaces.current().ajax().update("");
+				} else {
+					System.out.println("Request Controller was null in order to refresh the page");
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

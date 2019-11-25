@@ -119,9 +119,9 @@ public class DashboardSetupController implements Serializable {
 		try {
 			dashboard = preferences.selectedDashboard;
 			Gson gson = new Gson();
-			budgets = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/select/all", null), new TypeToken<ArrayList<Budget>>() {
+			budgets = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "budget/select/all", null), new TypeToken<ArrayList<Budget>>() {
 			}.getType());
-			calendars = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/select/all", null), new TypeToken<ArrayList<Calendar>>() {
+			calendars = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "calendar/select/all", null), new TypeToken<ArrayList<Calendar>>() {
 			}.getType());
 			loadDashboardItems();
 		} catch (Exception e) {
@@ -162,7 +162,7 @@ public class DashboardSetupController implements Serializable {
 	private void reloadDashboardProperties() {
 		try {
 			Gson gson = new Gson();
-			dashboard = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/select", gson.toJson(dashboard.getGuid())), Dashboard.class);
+			dashboard = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/select", gson.toJson(dashboard.getGuid())), Dashboard.class);
 			loadDashboardItems();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -228,7 +228,7 @@ public class DashboardSetupController implements Serializable {
 	public void saveDashboard() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/edit", gson.toJson(dashboard)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/edit", gson.toJson(dashboard)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Dashboard was successfully modified"));
 				reloadDashboardProperties();

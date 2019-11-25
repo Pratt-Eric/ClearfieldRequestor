@@ -46,7 +46,7 @@ public class LoginFilter implements Filter {
 //			if (!preferences.isAdmin() && preferences.adminScreens.contains(servletRequest.getRequestURI().replace("/requestor/main/", ""))) {
 //				servletResponse.sendRedirect("http://localhost:8080/requestor/access.xhtml");
 //			}
-			if (!preferences.isAdmin() && !servletRequest.getRequestURI().replace("/requestor/main/", "").contains("user/")) {
+			if (!preferences.isAdmin() && !servletRequest.getRequestURI().replace("/requestor/main/", "").contains("user/") || servletRequest.getRequestURI().contains("template.xhtml")) {
 				servletResponse.sendRedirect("http://localhost:8080/requestor/access.xhtml");
 			}
 

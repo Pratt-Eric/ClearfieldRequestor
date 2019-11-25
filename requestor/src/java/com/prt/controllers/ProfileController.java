@@ -62,7 +62,7 @@ public class ProfileController implements Serializable {
 	void init() {
 		try {
 			Gson gson = new Gson();
-			currUser = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/byguid", gson.toJson(preferences.userGuid)), User.class);
+			currUser = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/select/byguid", gson.toJson(preferences.userGuid)), User.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -90,7 +90,7 @@ public class ProfileController implements Serializable {
 				String password = EncryptionHelper.encrypt(newPassword.getPassword(), salt);
 				Gson gson = new Gson();
 				currUser.setPassword(password);
-				String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/password/update", gson.toJson(currUser)), String.class);
+				String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/password/update", gson.toJson(currUser)), String.class);
 				if (result != null && result.equalsIgnoreCase("true")) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Your password was successfully updated"));
 					PrimeFaces.current().executeScript("PF('passwordChangeDlg').hide()");

@@ -120,7 +120,7 @@ public class BudgetsController implements Serializable {
 		budgets.setExpanded(true);
 		Gson gson = new Gson();
 		try {
-			ArrayList<Budget> budgetList = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/select/all", null), new TypeToken<ArrayList<Budget>>() {
+			ArrayList<Budget> budgetList = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "budget/select/all", null), new TypeToken<ArrayList<Budget>>() {
 			}.getType());
 			//modify the username and group name to reflect editor or not
 			for (Budget budget : budgetList) {
@@ -131,9 +131,9 @@ public class BudgetsController implements Serializable {
 					group.setName(group.getName() + (group.isEditBudget() ? " (Editor)" : ""));
 				}
 			}
-			groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/group/select/all", null), new TypeToken<ArrayList<Group>>() {
+			groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "group/select/all", null), new TypeToken<ArrayList<Group>>() {
 			}.getType());
-			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/all", null), new TypeToken<ArrayList<User>>() {
+			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/select/all", null), new TypeToken<ArrayList<User>>() {
 			}.getType());
 			//organize budgets into treeNode
 			assignBudgetHierarchy(budgetList);

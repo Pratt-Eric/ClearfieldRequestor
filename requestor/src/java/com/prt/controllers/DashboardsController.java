@@ -111,11 +111,11 @@ public class DashboardsController implements Serializable {
 	void init() {
 		try {
 			Gson gson = new Gson();
-			dashboards = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/select/all", null), new TypeToken<ArrayList<Dashboard>>() {
+			dashboards = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/select/all", null), new TypeToken<ArrayList<Dashboard>>() {
 			}.getType());
-			groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/group/select/all", null), new TypeToken<ArrayList<Group>>() {
+			groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "group/select/all", null), new TypeToken<ArrayList<Group>>() {
 			}.getType());
-			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/all", null), new TypeToken<ArrayList<User>>() {
+			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/select/all", null), new TypeToken<ArrayList<User>>() {
 			}.getType());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -147,7 +147,7 @@ public class DashboardsController implements Serializable {
 		try {
 			updateSelectedItems(newDashboard);
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/add", gson.toJson(newDashboard)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/add", gson.toJson(newDashboard)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Dashboard was successfully created"));
 				init();
@@ -165,7 +165,7 @@ public class DashboardsController implements Serializable {
 		try {
 			updateSelectedItems(selectedDashboard);
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/edit", gson.toJson(selectedDashboard)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/edit", gson.toJson(selectedDashboard)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Dashboard was successfully modified"));
 				init();
@@ -182,7 +182,7 @@ public class DashboardsController implements Serializable {
 	public void deleteDashboard() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/dashboard/delete", gson.toJson(selectedDashboard)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "dashboard/delete", gson.toJson(selectedDashboard)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Dashboard was successfully deleted"));
 				init();

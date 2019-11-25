@@ -164,15 +164,15 @@ public class ActivitiesController implements Serializable {
 		try {
 			newActivity = new Activity();
 			Gson gson = new Gson();
-			activities = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/activity/select/all", null), new TypeToken<ArrayList<Activity>>() {
+			activities = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "activity/select/all", null), new TypeToken<ArrayList<Activity>>() {
 			}.getType());
-			groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/group/select/all", null), new TypeToken<ArrayList<Group>>() {
+			groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "group/select/all", null), new TypeToken<ArrayList<Group>>() {
 			}.getType());
-			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/all", null), new TypeToken<ArrayList<User>>() {
+			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/select/all", null), new TypeToken<ArrayList<User>>() {
 			}.getType());
-			budgets = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/budget/select/all", null), new TypeToken<ArrayList<Budget>>() {
+			budgets = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "budget/select/all", null), new TypeToken<ArrayList<Budget>>() {
 			}.getType());
-			calendars = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/select/all", null), new TypeToken<ArrayList<Calendar>>() {
+			calendars = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "calendar/select/all", null), new TypeToken<ArrayList<Calendar>>() {
 			}.getType());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -211,7 +211,7 @@ public class ActivitiesController implements Serializable {
 	public void addNewActivity() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/activity/add", gson.toJson(newActivity)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "activity/add", gson.toJson(newActivity)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The new activity was successfully added"));
 				init();
@@ -228,7 +228,7 @@ public class ActivitiesController implements Serializable {
 	public void editExistingActivity() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/activity/edit", gson.toJson(selectedActivity)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "activity/edit", gson.toJson(selectedActivity)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The existing activity was successfully modified"));
 				init();
@@ -246,7 +246,7 @@ public class ActivitiesController implements Serializable {
 	public void deleteExistingActivity() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/activity/delete", gson.toJson(selectedActivity)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "activity/delete", gson.toJson(selectedActivity)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The existing activity was successfully deleted"));
 				init();

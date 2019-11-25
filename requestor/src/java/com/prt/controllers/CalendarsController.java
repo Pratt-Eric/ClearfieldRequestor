@@ -81,7 +81,7 @@ public class CalendarsController implements Serializable {
 		try {
 			newCalendar = new Calendar();
 			Gson gson = new Gson();
-			calendars = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/select/all", null), new TypeToken<ArrayList<Calendar>>() {
+			calendars = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "calendar/select/all", null), new TypeToken<ArrayList<Calendar>>() {
 			}.getType());
 			for (Calendar calendar : calendars) {
 				for (User user : calendar.getUsers()) {
@@ -107,7 +107,7 @@ public class CalendarsController implements Serializable {
 	public void addNewCalendar() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/add", gson.toJson(newCalendar)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "calendar/add", gson.toJson(newCalendar)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The new calendar was successfully added"));
 				init();
@@ -124,7 +124,7 @@ public class CalendarsController implements Serializable {
 	public void editExistingCalendar() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/edit", gson.toJson(selectedCalendar)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "calendar/edit", gson.toJson(selectedCalendar)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The existing calendar was successfully modified"));
 				init();
@@ -141,7 +141,7 @@ public class CalendarsController implements Serializable {
 	public void deleteExistingCalendar() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/calendar/remove", gson.toJson(newCalendar)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "calendar/remove", gson.toJson(newCalendar)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "The existing calendar was successfully deleted"));
 				init();

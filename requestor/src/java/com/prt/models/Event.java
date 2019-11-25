@@ -20,6 +20,15 @@ public class Event implements Serializable {
 	private Date start;
 	private Date end;
 	private Activity activity;
+	private float budget = 0;
+
+	public float getBudget() {
+		return budget;
+	}
+
+	public void setBudget(float budget) {
+		this.budget = budget;
+	}
 
 	public Activity getActivity() {
 		return activity;

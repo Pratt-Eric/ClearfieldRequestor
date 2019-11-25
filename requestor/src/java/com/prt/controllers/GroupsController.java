@@ -98,9 +98,9 @@ public class GroupsController implements Serializable {
 		try {
 			//get existing groups
 			Gson gson = new Gson();
-			groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/group/select/all", null), new TypeToken<ArrayList<Group>>() {
+			groups = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "group/select/all", null), new TypeToken<ArrayList<Group>>() {
 			}.getType());
-			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/user/select/all", null), new TypeToken<ArrayList<User>>() {
+			users = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "user/select/all", null), new TypeToken<ArrayList<User>>() {
 			}.getType());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -114,7 +114,7 @@ public class GroupsController implements Serializable {
 	public void addGroup() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/group/add", gson.toJson(newGroup)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "group/add", gson.toJson(newGroup)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				init();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Group has been added successfully"));
@@ -136,7 +136,7 @@ public class GroupsController implements Serializable {
 	public void editGroup() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/group/edit", gson.toJson(selectedGroup)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "group/edit", gson.toJson(selectedGroup)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				init();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Group has been modified successfully"));
@@ -154,7 +154,7 @@ public class GroupsController implements Serializable {
 	public void deleteGroup() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "/group/remove", gson.toJson(selectedGroup)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "group/remove", gson.toJson(selectedGroup)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				init();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Group has been removed successfully"));

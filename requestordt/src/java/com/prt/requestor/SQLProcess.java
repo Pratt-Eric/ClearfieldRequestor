@@ -5,7 +5,6 @@
  */
 package com.prt.requestor;
 
-import com.prt.models.Password;
 import com.prt.models.User;
 import com.prt.utils.DBConnection;
 import com.prt.utils.EncryptionHelper;
@@ -18,7 +17,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.UUID;
 
 /**
  *

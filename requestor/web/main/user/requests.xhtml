@@ -5,13 +5,20 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/template.xhtml">
 
-    <ui:define name="title">Clearfield Requestor - Requests</ui:define>
+    <ui:define name="title">Clearfield Requestor - Template</ui:define>
 
     <ui:define name="content">
         <div class="ui-g">
             <div class="ui-g-12">
                 <div class="card">
-                    Content goes here
+                    <div class="card-title" style="margin-bottom: 20px;">
+                        <h1>Template</h1>
+                    </div>
+                    <div class="card-content card-content-main">
+                        <h:form id="customForm">
+							<p:growl showDetail="true" showSummary="true"/>
+                        </h:form>
+                    </div>
                 </div>
             </div>
         </div>
