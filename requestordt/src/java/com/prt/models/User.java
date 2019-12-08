@@ -27,6 +27,7 @@ public class User implements Serializable {
 	private String calling;
 	private String createdBy;
 	private boolean admin;
+	private boolean clerk;
 	private boolean editBudget;
 	private boolean selected;
 	private boolean editCalendar;
@@ -36,6 +37,14 @@ public class User implements Serializable {
 	private String state;
 	private String address1;
 	private String address2;
+
+	public boolean isClerk() {
+		return clerk;
+	}
+
+	public void setClerk(boolean clerk) {
+		this.clerk = clerk;
+	}
 
 	public String getAddress1() {
 		return address1;

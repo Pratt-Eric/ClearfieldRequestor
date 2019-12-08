@@ -18,10 +18,19 @@ public class Group implements Serializable {
 	private String name;
 	private String desc;
 	private boolean admin;
+	private boolean clerk;
 	private ArrayList<User> users = new ArrayList<>();
 	private boolean editBudget;
 	private boolean selected;
 	private boolean editCalendar;
+
+	public boolean isClerk() {
+		return clerk;
+	}
+
+	public void setClerk(boolean clerk) {
+		this.clerk = clerk;
+	}
 
 	public boolean isEditCalendar() {
 		return editCalendar;

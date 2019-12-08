@@ -114,13 +114,14 @@ public class SQLGroupProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "UPDATE GROUPS SET NAME = ?, \"DESC\" = ?, ADMINISTRATOR = ? WHERE GUID = ?";
+			String query = "UPDATE GROUPS SET NAME = ?, \"DESC\" = ?, ADMINISTRATOR = ?, CLERK = ? WHERE GUID = ?";
 
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, group.getName());
 			stmt.setString(2, group.getDesc());
 			stmt.setString(3, group.isAdmin() ? "1" : "0");
-			stmt.setString(4, group.getGuid());
+			stmt.setString(4, group.isClerk() ? "1" : "0");
+			stmt.setString(5, group.getGuid());
 			stmt.executeUpdate();
 			stmt.close();
 

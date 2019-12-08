@@ -118,7 +118,7 @@ public class TemplateController implements Serializable {
 	public void submitReimbursementRequest() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "request/reimbursement", gson.toJson(event)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "request/reimbursement", gson.toJson(reimbursement)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Reimbursement request was successfully submitted"));
 				refreshPage();
@@ -134,7 +134,7 @@ public class TemplateController implements Serializable {
 	public void submitExpenseRequest() {
 		try {
 			Gson gson = new Gson();
-			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "request/expense", gson.toJson(event)), String.class);
+			String result = gson.fromJson(RestUtil.post(RestUtil.BASEURL + "request/expense", gson.toJson(expense)), String.class);
 			if (result != null && result.equalsIgnoreCase("true")) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Activity request was successfully submitted"));
 				refreshPage();
@@ -158,9 +158,9 @@ public class TemplateController implements Serializable {
 			if (uri.contains("request.xhtml")) {
 				//get request controller
 				FacesContext context = FacesContext.getCurrentInstance();
-				RequestController requestController = context.getApplication().evaluateExpressionGet(context, "#{requestController}", RequestController.class);
+				RequestsController requestController = context.getApplication().evaluateExpressionGet(context, "#{requestController}", RequestsController.class);
 				if (requestController != null) {
-					requestController.init();
+					requestController.refreshLists();
 					PrimeFaces.current().ajax().update("");
 				} else {
 					System.out.println("Request Controller was null in order to refresh the page");

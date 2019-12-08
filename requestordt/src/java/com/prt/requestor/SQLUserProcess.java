@@ -290,7 +290,7 @@ public class SQLUserProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String query = "UPDATE USERS SET USERNAME = ?, FIRSTNAME = ?, LASTNAME = ?, EMAIL = ?, ADMINISTRATOR = ? WHERE GUID = ?";
+			String query = "UPDATE USERS SET USERNAME = ?, FIRSTNAME = ?, LASTNAME = ?, EMAIL = ?, ADMINISTRATOR = ?, CLERK = ? WHERE GUID = ?";
 
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, user.getUsername());
@@ -298,7 +298,8 @@ public class SQLUserProcess {
 			stmt.setString(3, user.getLastname());
 			stmt.setString(4, user.getEmail());
 			stmt.setString(5, user.isAdmin() ? "1" : "0");
-			stmt.setString(6, user.getGuid());
+			stmt.setString(6, user.isClerk() ? "1" : "0");
+			stmt.setString(7, user.getGuid());
 			stmt.executeUpdate();
 			stmt.close();
 

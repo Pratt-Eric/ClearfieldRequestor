@@ -36,6 +36,11 @@
                                         <p:ajax listener="#{groupsController.editGroup(group)}"/>
                                     </p:selectBooleanCheckbox>
                                 </p:column>
+                                <p:column headerText="Administrator" style="text-align: center; width: 10%;">
+                                    <p:selectBooleanCheckbox value="#{group.clerk}">
+                                        <p:ajax listener="#{groupsController.editGroup(group)}"/>
+                                    </p:selectBooleanCheckbox>
+                                </p:column>
                                 <p:column headerText="Actions" style="text-align: center; width: 10%;">
                                     <p:commandLink title="Edit" actionListener="#{groupsController.selectGroup(group)}" update="groupEditForm" oncomplete="PF('groupEditDlg').show()">
                                         <i class="fa fa-lg fa-edit"/>
@@ -77,6 +82,12 @@
                         </p:selectBooleanCheckbox>
                         <p:outputLabel value="Administrator" for="addGroupAdmin"/>
                     </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:selectBooleanCheckbox id="addGroupClerk" value="#{groupsController.newGroup.clerk}">
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+                        <p:outputLabel value="Clerk" for="addGroupClerk"/>
+                    </div>
                 </div>
                 <div>
                     <p:commandButton value="Add Group" actionListener="#{groupsController.addGroup}"/>
@@ -107,6 +118,12 @@
                             <p:ajax/>
                         </p:selectBooleanCheckbox>
                         <p:outputLabel value="Administrator" for="addGroupAdmin"/>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p:selectBooleanCheckbox id="editGroupClerk" value="#{groupsController.selectedGroup.clerk}">
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+                        <p:outputLabel value="Clerk" for="editGroupClerk"/>
                     </div>
                 </div>
                 <div>

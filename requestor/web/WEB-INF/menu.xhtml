@@ -19,54 +19,55 @@
                             <p:menuitem id="users" value="Users" icon="fa fa-user" outcome="/main/users.xhtml"/>
                         </p:submenu>
 
-                        <p:menuitem id="om_dashboard" value="DASHBOARD" icon="fa fa-fw fa-dashboard" outcome="/main/user/dashboard" />
+                        <p:menuitem id="om_dashboard" value="DASHBOARD" icon="fa fa-fw fa-dashboard" outcome="/main/user/dashboard"/>
 
                         <p:menuitem id="om_budget" value="BUDGETS" icon="fa fa-fw fa-dollar" outcome="/main/user/budgets"/>
 
                         <p:submenu id="om_requests" label="REQUESTS" icon="fa fa-fw fa-check-square-o">
-                            <p:menuitem id="all_requests" value="All Requests" outcome="/main/requests.xhtml"/>
-                        </p:submenu>
+                            <p:menuitem id="all_my_requests" value="My Requests" action="#{menuController.retrieveMyRequests}"/>
+							<p:menuitem id="all_actionable_requests" value="Actionable Requests" action="#{menuController.retrieveActionableRequests}"/>
+						</p:submenu>
 
-                        <p:submenu id="user_prefs" label="USER PREFERENCES" icon="fa fa-fw fa-user">
-                            <p:submenu id="om_topbar_mode" label="TOPBAR COLORS" icon="fa fa-fw fa-magic">
-                                <p:menuitem id="om_customization_topbar_mode_1" value="Light" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-light', 'logo-olympia')}" ajax="false" />
-                                <p:menuitem id="om_customization_topbar_mode_2" value="Dark" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-dark', 'logo-olympia-white')}" ajax="false" />
-                                <p:menuitem id="om_customization_topbar_mode_3" value="Blue-Grey" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-bluegrey', 'logo-olympia-white')}" ajax="false" />
-                                <p:menuitem id="om_customization_topbar_mode_4" value="Purple" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-purple', 'logo-olympia-white')}" ajax="false" />
-                                <p:menuitem id="om_customization_topbar_mode_5" value="Cyan" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-cyan', 'logo-olympia-white')}" ajax="false" />
-                                <p:menuitem id="om_customization_topbar_mode_6" value="Pink" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-pink', 'logo-olympia-white')}" ajax="false" />
-                                <p:menuitem id="om_customization_topbar_mode_7" value="Teal" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-teal', 'logo-olympia-white')}" ajax="false" />
-                                <p:menuitem id="om_customization_topbar_mode_8" value="Yellow" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-yellow', 'logo-olympia')}" ajax="false" />
-                                <p:menuitem id="om_customization_topbar_mode_9" value="Lime" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-lime', 'logo-olympia')}" ajax="false" />
-                                <p:menuitem id="om_customization_topbar_mode_10" value="Green" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-green', 'logo-olympia')}" ajax="false" />
-                            </p:submenu>
-                            <p:submenu id="om_customization_mode" label="MENU COLORS" icon="fa fa-fw fa-list">
-                                <p:menuitem id="om_customization_mode_1" value="Light" icon="fa fa-fw fa-circle-o" actionListener="#{guestPreferences.setMenuColor('layout-menu-light')}" ajax="false" />
-                                <p:menuitem id="om_customization_mode_2" value="Dark" icon="fa fa-fw fa-circle" actionListener="#{guestPreferences.setMenuColor('layout-menu-dark')}" ajax="false" />
-                            </p:submenu>
-                            <p:submenu id="om_customization" label="LAYOUTS" icon="fa fa-fw fa-desktop">
-                                <p:menuitem id="om_customization_1" value="Static" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-static')}" ajax="false" />
-                                <p:menuitem id="om_customization_2" value="Overlay" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-overlay')}" ajax="false" />
-                                <p:menuitem id="om_customization_3" value="Slim" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-slim')}" ajax="false" />
-                                <p:menuitem id="om_customization_4" value="Horizontal" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-horizontal')}" ajax="false" />
-                            </p:submenu>
-                            <p:submenu id="om_themes" label="THEMES" icon="fa fa-fw fa-paint-brush">
-                                <p:menuitem id="om_theme_1" value="Green Yellow" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('green-yellow')}" ajax="false"/>
-                                <p:menuitem id="om_theme_2" value="Purple Blue" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('purple-blue')}" ajax="false"/>
-                                <p:menuitem id="om_theme_3" value="Blue Orange" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('blue-orange')}" ajax="false"/>
-                                <p:menuitem id="om_theme_4" value="Indigo Yellow" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('indigo-yellow')}" ajax="false"/>
-                                <p:menuitem id="om_theme_5" value="Amber Teal" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('amber-teal')}" ajax="false"/>
-                                <p:menuitem id="om_theme_6" value="Cyan Amber" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('cyan-amber')}" ajax="false"/>
-                                <p:menuitem id="om_theme_7" value="Brown Cyan" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('brown-cyan')}" ajax="false"/>
-                                <p:menuitem id="om_theme_8" value="Lime Purple" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('lime-purple')}" ajax="false"/>
-                                <p:menuitem id="om_theme_9" value="Blue-Grey Teal" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('bluegrey-teal')}" ajax="false"/>
-                                <p:menuitem id="om_theme_10" value="Deep-Orange Blue" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('deeporange-blue')}" ajax="false"/>
-                            </p:submenu>
-                        </p:submenu>
+						<p:submenu id="user_prefs" label="USER PREFERENCES" icon="fa fa-fw fa-user">
+							<p:submenu id="om_topbar_mode" label="TOPBAR COLORS" icon="fa fa-fw fa-magic">
+								<p:menuitem id="om_customization_topbar_mode_1" value="Light" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-light', 'logo-olympia')}" ajax="false" />
+								<p:menuitem id="om_customization_topbar_mode_2" value="Dark" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-dark', 'logo-olympia-white')}" ajax="false" />
+								<p:menuitem id="om_customization_topbar_mode_3" value="Blue-Grey" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-bluegrey', 'logo-olympia-white')}" ajax="false" />
+								<p:menuitem id="om_customization_topbar_mode_4" value="Purple" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-purple', 'logo-olympia-white')}" ajax="false" />
+								<p:menuitem id="om_customization_topbar_mode_5" value="Cyan" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-cyan', 'logo-olympia-white')}" ajax="false" />
+								<p:menuitem id="om_customization_topbar_mode_6" value="Pink" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-pink', 'logo-olympia-white')}" ajax="false" />
+								<p:menuitem id="om_customization_topbar_mode_7" value="Teal" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-teal', 'logo-olympia-white')}" ajax="false" />
+								<p:menuitem id="om_customization_topbar_mode_8" value="Yellow" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-yellow', 'logo-olympia')}" ajax="false" />
+								<p:menuitem id="om_customization_topbar_mode_9" value="Lime" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-lime', 'logo-olympia')}" ajax="false" />
+								<p:menuitem id="om_customization_topbar_mode_10" value="Green" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTopBarColor('layout-topbar-green', 'logo-olympia')}" ajax="false" />
+							</p:submenu>
+							<p:submenu id="om_customization_mode" label="MENU COLORS" icon="fa fa-fw fa-list">
+								<p:menuitem id="om_customization_mode_1" value="Light" icon="fa fa-fw fa-circle-o" actionListener="#{guestPreferences.setMenuColor('layout-menu-light')}" ajax="false" />
+								<p:menuitem id="om_customization_mode_2" value="Dark" icon="fa fa-fw fa-circle" actionListener="#{guestPreferences.setMenuColor('layout-menu-dark')}" ajax="false" />
+							</p:submenu>
+							<p:submenu id="om_customization" label="LAYOUTS" icon="fa fa-fw fa-desktop">
+								<p:menuitem id="om_customization_1" value="Static" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-static')}" ajax="false" />
+								<p:menuitem id="om_customization_2" value="Overlay" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-overlay')}" ajax="false" />
+								<p:menuitem id="om_customization_3" value="Slim" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-slim')}" ajax="false" />
+								<p:menuitem id="om_customization_4" value="Horizontal" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-horizontal')}" ajax="false" />
+							</p:submenu>
+							<p:submenu id="om_themes" label="THEMES" icon="fa fa-fw fa-paint-brush">
+								<p:menuitem id="om_theme_1" value="Green Yellow" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('green-yellow')}" ajax="false"/>
+								<p:menuitem id="om_theme_2" value="Purple Blue" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('purple-blue')}" ajax="false"/>
+								<p:menuitem id="om_theme_3" value="Blue Orange" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('blue-orange')}" ajax="false"/>
+								<p:menuitem id="om_theme_4" value="Indigo Yellow" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('indigo-yellow')}" ajax="false"/>
+								<p:menuitem id="om_theme_5" value="Amber Teal" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('amber-teal')}" ajax="false"/>
+								<p:menuitem id="om_theme_6" value="Cyan Amber" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('cyan-amber')}" ajax="false"/>
+								<p:menuitem id="om_theme_7" value="Brown Cyan" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('brown-cyan')}" ajax="false"/>
+								<p:menuitem id="om_theme_8" value="Lime Purple" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('lime-purple')}" ajax="false"/>
+								<p:menuitem id="om_theme_9" value="Blue-Grey Teal" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('bluegrey-teal')}" ajax="false"/>
+								<p:menuitem id="om_theme_10" value="Deep-Orange Blue" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setTheme('deeporange-blue')}" ajax="false"/>
+							</p:submenu>
+						</p:submenu>
 
-                    </po:menu>
-                </h:form>
-            </div>
-        </div>
-    </div>
+					</po:menu>
+				</h:form>
+			</div>
+		</div>
+	</div>
 </ui:composition>

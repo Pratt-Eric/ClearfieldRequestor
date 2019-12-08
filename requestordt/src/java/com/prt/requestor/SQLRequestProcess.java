@@ -9,13 +9,11 @@ import com.prt.models.Event;
 import com.prt.models.Expense;
 import com.prt.models.Reimbursement;
 import com.prt.utils.DBConnection;
-import com.prt.utils.EmailUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 /**
  *
@@ -29,51 +27,34 @@ public class SQLRequestProcess {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
 
-			String req = "SELECT GUID, ID, \"INDEX\" FROM REQUEST_TYPE_REF WHERE NAME = 'Activity'";
-			String reqId = null;
-			String reqGuid = null;
-			String id = null;
-			int index = 0;
+			String req = "SELECT COUNT(*) \"INDEX\" FROM ACTIVITY_REQUESTS";
 			Statement reqStmt = conn.createStatement();
+			int index = 0;
 			ResultSet reqSet = reqStmt.executeQuery(req);
 			while (reqSet.next()) {
-				reqGuid = reqSet.getString("GUID");
-				id = reqSet.getString("ID");
 				index = reqSet.getInt("INDEX");
 			}
 			reqSet.close();
 			reqStmt.close();
+			index++;
 
-			if (reqGuid != null && !reqGuid.isEmpty() && id != null && !id.isEmpty()) {
-				reqId = id + "-" + ++index;
-			}
+			String query = "INSERT INTO ACTIVITY_REQUESTS "
+					+ "(TITLE, SUMMARY, ACTIVITY_TYPE_REF_GUID, \"START\", \"END\", AMOUNT, STATUS_TYPE_REF_GUID, REQUESTED_BY, \"INDEX\", CREATED) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, (SELECT GUID FROM STATUS_TYPE_REF WHERE NAME = 'Pending Review'), ?, ?, SYSTIMESTAMP)";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, event.getTitle());
+			stmt.setString(2, event.getSummary());
+			stmt.setString(3, event.getActivity().getGuid());
+			stmt.setDate(4, new java.sql.Date(event.getStart().getTime()));
+			stmt.setDate(5, new java.sql.Date(event.getEnd().getTime()));
+			stmt.setFloat(6, event.getBudget());
+			stmt.setString(7, event.getUserGuid());
+			stmt.setInt(8, index);
+			stmt.executeUpdate();
+			stmt.close();
 
-			if (reqId != null) {
-				String query = "INSERT INTO REQUESTS "
-						+ "(TITLE, SUMMARY, ACTIVITY_TYPE_REF_GUID, START, END, BUDGET_AMOUNT, STATUS_TYPE_REF_GUID, REQUEST_TYPE_REF_GUID, REQUEST_ID, REQUESTED_BY) "
-						+ "VALUES (?, ?, ?, ?, ?, ?, (SELECT GUID FROM STATUS_TYPE_REF WHERE NAME = 'Pending Review'), ?, ?, ?)";
-				PreparedStatement stmt = conn.prepareStatement(query);
-				stmt.setString(1, event.getTitle());
-				stmt.setString(2, event.getSummary());
-				stmt.setString(3, event.getActivity().getGuid());
-				stmt.setDate(4, new java.sql.Date(event.getStart().getTime()));
-				stmt.setDate(5, new java.sql.Date(event.getEnd().getTime()));
-				stmt.setFloat(6, event.getBudget());
-				stmt.setString(7, reqGuid);
-				stmt.setString(8, reqId);
-				stmt.setString(9, event.getUserGuid());
-				stmt.executeUpdate();
-				stmt.close();
-
-				String updateReq = "UPDATE REQUEST_TYPE_REF SET \"INDEX\" = ? WHERE GUID = ?";
-				PreparedStatement updateReqStmt = conn.prepareStatement(updateReq);
-				updateReqStmt.setInt(1, index);
-				updateReqStmt.setString(2, reqGuid);
-				updateReqStmt.executeUpdate();
-				updateReqStmt.close();
-
-				//email those associated with this activity type
-				//get the users and groups associated with the activity type
+			//email those associated with this activity type
+			//get the users and groups associated with the activity type
 //				ArrayList<String> users = new ArrayList<>();
 //				String userQuery = ""
 //						+ "SELECT U.EMAIL "
@@ -111,8 +92,7 @@ public class SQLRequestProcess {
 //				for(String email : users){
 //					EmailUtils.sendEmail(email, subject, body);
 //				}
-				return true;
-			}
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (conn != null) {
@@ -132,6 +112,33 @@ public class SQLRequestProcess {
 		try {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
+
+			String req = "SELECT COUNT(*) \"INDEX\" FROM REIMBURSEMENT_REQUESTS";
+			Statement reqStmt = conn.createStatement();
+			int index = 0;
+			ResultSet reqSet = reqStmt.executeQuery(req);
+			while (reqSet.next()) {
+				index = reqSet.getInt("INDEX");
+			}
+			reqSet.close();
+			reqStmt.close();
+			index++;
+
+			String query = ""
+					+ "INSERT INTO REIMBURSEMENT_REQUESTS "
+					+ "(AMOUNT, STATUS_TYPE_REF_GUID, REQUESTED_BY, TAX, WARD_ACCOUNT, WARD_ACCOUNT_DETAILS, ORGANIZATION, ORGANIZATION_LEADER, \"INDEX\", CREATED) "
+					+ "VALUES (?, (SELECT GUID FROM STATUS_TYPE_REF WHERE NAME = 'Pending Review'), ?, ?, ?, ?, ?, ?, ?, SYSTIMESTAMP)";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setFloat(1, reimbursement.getAmt());
+			stmt.setString(2, reimbursement.getUserGuid());
+			stmt.setFloat(3, reimbursement.getTax());
+			stmt.setString(4, reimbursement.isWardAccount() ? "1" : "0");
+			stmt.setString(5, reimbursement.getWardAccountDetails());
+			stmt.setString(6, reimbursement.getOrg().equalsIgnoreCase("Other") || reimbursement.getOrg().equalsIgnoreCase("Council Expense") ? reimbursement.getOrgName() : reimbursement.getOrg());
+			stmt.setString(7, reimbursement.getOrgLeader());
+			stmt.setInt(8, index);
+			stmt.executeUpdate();
+			stmt.close();
 
 			return true;
 		} catch (Exception e) {
@@ -153,6 +160,29 @@ public class SQLRequestProcess {
 		try {
 			conn = DBConnection.getInstance().getDataSource().getConnection();
 			conn.setAutoCommit(false);
+
+			String req = "SELECT COUNT(*) \"INDEX\" FROM REIMBURSEMENT_REQUESTS";
+			Statement reqStmt = conn.createStatement();
+			int index = 0;
+			ResultSet reqSet = reqStmt.executeQuery(req);
+			while (reqSet.next()) {
+				index = reqSet.getInt("INDEX");
+			}
+			reqSet.close();
+			reqStmt.close();
+			index++;
+
+			String query = "INSERT INTO EXPENSE_REQUESTS "
+					+ "(AMOUNT, NAME, DETAILS, REQUESTED_BY, \"INDEX\", STATUS_TYPE_REF_GUID, CREATED) "
+					+ "VALUES (?, ?, ?, ?, ?, (SELECT GUID FROM STATUS_TYPE_REF WHERE NAME = 'Pending Review'), SYSTIMESTAMP)";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setFloat(1, expense.getAmt());
+			stmt.setString(2, expense.getName());
+			stmt.setString(3, expense.getDetails());
+			stmt.setString(4, expense.getUserGuid());
+			stmt.setInt(5, index);
+			stmt.executeUpdate();
+			stmt.close();
 
 			return true;
 		} catch (Exception e) {
