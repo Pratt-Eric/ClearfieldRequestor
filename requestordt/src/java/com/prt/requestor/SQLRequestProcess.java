@@ -5,15 +5,20 @@
  */
 package com.prt.requestor;
 
+import com.prt.models.Budget;
 import com.prt.models.Event;
 import com.prt.models.Expense;
 import com.prt.models.Reimbursement;
+import com.prt.models.Request;
+import com.prt.models.User;
 import com.prt.utils.DBConnection;
+import com.prt.utils.DateUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -126,8 +131,8 @@ public class SQLRequestProcess {
 
 			String query = ""
 					+ "INSERT INTO REIMBURSEMENT_REQUESTS "
-					+ "(AMOUNT, STATUS_TYPE_REF_GUID, REQUESTED_BY, TAX, WARD_ACCOUNT, WARD_ACCOUNT_DETAILS, ORGANIZATION, ORGANIZATION_LEADER, \"INDEX\", CREATED) "
-					+ "VALUES (?, (SELECT GUID FROM STATUS_TYPE_REF WHERE NAME = 'Pending Review'), ?, ?, ?, ?, ?, ?, ?, SYSTIMESTAMP)";
+					+ "(AMOUNT, STATUS_TYPE_REF_GUID, REQUESTED_BY, TAX, WARD_ACCOUNT, WARD_ACCOUNT_DETAILS, ORGANIZATION, ORGANIZATION_LEADER, \"INDEX\", CREATED, RELATED_ACTIVITY) "
+					+ "VALUES (?, (SELECT GUID FROM STATUS_TYPE_REF WHERE NAME = 'Pending Review'), ?, ?, ?, ?, ?, ?, ?, SYSTIMESTAMP, ?)";
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setFloat(1, reimbursement.getAmt());
 			stmt.setString(2, reimbursement.getUserGuid());
@@ -137,6 +142,7 @@ public class SQLRequestProcess {
 			stmt.setString(6, reimbursement.getOrg().equalsIgnoreCase("Other") || reimbursement.getOrg().equalsIgnoreCase("Council Expense") ? reimbursement.getOrgName() : reimbursement.getOrg());
 			stmt.setString(7, reimbursement.getOrgLeader());
 			stmt.setInt(8, index);
+			stmt.setString(9, reimbursement.getRelatedActivityGuid());
 			stmt.executeUpdate();
 			stmt.close();
 
@@ -197,5 +203,193 @@ public class SQLRequestProcess {
 			}
 		}
 		return false;
+	}
+
+	public static ArrayList<Request> selectAllUserRequests(String userGuid) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			ArrayList<Request> requests = new ArrayList<>();
+
+			String activityQuery = "SELECT GUID, TITLE, SUMMARY, ACTIVITY_TYPE_REF_GUID, \"START\", \"END\", AMOUNT, STR.NAME STATUS, \"INDEX\", ATR.NAME ACTIVITY_NAME "
+					+ "FROM ACTIVITY_REQUESTS AR "
+					+ "JOIN STATUS_TYPE_REF STR ON AR.STATUS_TYPE_REF_GUID = STR.GUID "
+					+ "JOIN ACTIVITY_TYPE_REF ATR ON AR.ACTIVITY_TYPE_REF_GUID = ATR.GUID "
+					+ "WHERE AR.REQUESTED_BY = ?";
+			String reimbursementQuery = "SELECT GUID, RR.AMOUNT, STR.NAME STATUS, RR.TAX, RR.WARD_ACCOUNT, RR.WARD_ACCOUNT_DETAILS, RR.ORGANIZATION, RR.ORGANIZATION_LEADER, RR.\"INDEX\", ATR.NAME ACTIVITY_NAME "
+					+ "FROM REIMBURSEMENT_REQUESTS RR "
+					+ "JOIN STATUS_TYPE_REF STR ON RR.STATUS_TYPE_REF_GUID = STR.GUID "
+					+ "LEFT JOIN ACTIVITY_TYPE_REF ATR ON RR.RELATED_ACTIVITY = ATR.GUID "
+					+ "WHERE RR.REQUESTED_BY = ?";
+			String expenseQuery = "SELECT GUID, ER.AMOUNT, ER.NAME, ER.DETAILS, ER.\"INDEX\", STR.NAME STATUS "
+					+ "FROM EXPENSE_REQUESTS ER "
+					+ "JOIN STATUS_TYPE_REF STR ON ER.STATUS_TYPE_REF_GUID = STR.GUID "
+					+ "WHERE REQUESTED_BY = ?";
+			String userQuery = "SELECT USERNAME, FIRSTNAME, LASTNAME, EMAIL, P.CALLING "
+					+ "FROM USERS U "
+					+ "JOIN PROFILE P ON U.GUID = P.USER_GUID "
+					+ "WHERE U.GUID = ?";
+			String budgetQuery = "SELECT B.GUID, B.NAME, B.\"DESC\", B.REMAINING, B.PARENT "
+					+ "FROM ACTIVITY_TYPE_ASSOCIATIONS ATA "
+					+ "JOIN BUDGETS B ON ATA.BUDGET_GUID = B.GUID "
+					+ "WHERE ATA.ACTIVITY_TYPE_REF_GUID = ?";
+
+			User user = new User();
+			PreparedStatement stmt2 = conn.prepareStatement(userQuery);
+			stmt2.setString(1, userGuid);
+			ResultSet set2 = stmt2.executeQuery();
+			while (set2.next()) {
+				user.setGuid(userGuid);
+				user.setUsername(set2.getString("USERNAME"));
+				user.setFirstname(set2.getString("FIRSTNAME"));
+				user.setLastname(set2.getString("LASTNAME"));
+				user.setEmail(set2.getString("EMAIL"));
+				user.setCalling(set2.getString("CALLING"));
+			}
+			set2.close();
+			stmt2.close();
+
+			PreparedStatement stmt = conn.prepareStatement(activityQuery);
+			stmt.setString(1, userGuid);
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				Request request = new Request();
+				request.setType("Activity");
+				request.setGuid(set.getString("GUID"));
+				request.setId("ACT-" + set.getString("INDEX"));
+				request.setTitle(set.getString("TITLE"));
+				request.setSummary(set.getString("SUMMARY"));
+				request.setActivityName(set.getString("ACTIVITY_NAME"));
+				request.setStart(DateUtils.parseDate(set.getString("START")));
+				request.setEnd(DateUtils.parseDate(set.getString("END")));
+				request.setAmt(set.getDouble("AMOUNT"));
+				request.setStatus(set.getString("STATUS"));
+				request.setActivity_type_guid(set.getString("ACTIVITY_TYPE_REF_GUID"));
+				request.setUser(user);
+				stmt2 = conn.prepareStatement(budgetQuery);
+				stmt2.setString(1, request.getActivity_type_guid());
+				set2 = stmt2.executeQuery();
+				while (set2.next()) {
+					Budget budget = new Budget();
+					budget.setGuid(set2.getString("GUID"));
+					budget.setName(set2.getString("NAME"));
+					budget.setDesc(set2.getString("DESC"));
+					budget.setRemaining(set2.getDouble("REMAINING"));
+					budget.setParentGuid(set2.getString("PARENT"));
+					setParent(conn, budget);
+					request.setBudget(budget);
+				}
+				set2.close();
+				stmt2.close();
+				requests.add(request);
+			}
+			set.close();
+			stmt.close();
+
+			stmt = conn.prepareStatement(reimbursementQuery);
+			stmt.setString(1, userGuid);
+			set = stmt.executeQuery();
+			while (set.next()) {
+				Request request = new Request();
+				request.setType("Reimbursement");
+				request.setGuid(set.getString("GUID"));
+				request.setAmt(set.getDouble("AMOUNT"));
+				request.setStatus(set.getString("STATUS"));
+				request.setTax(set.getFloat("TAX"));
+				request.setWardAccount(set.getString("WARD_ACCOUNT").equals("1"));
+				request.setWardAccountDetails(set.getString("WARD_ACCOUNT_DETAILS"));
+				request.setOrg(set.getString("ORGANIZATION"));
+				request.setOrgLeader(set.getString("ORGANIZATION_LEADER"));
+				request.setId("REI-" + set.getString("INDEX"));
+				request.setActivityName(set.getString("ACTIVITY_NAME"));
+				request.setUser(user);
+				requests.add(request);
+			}
+			set.close();
+			stmt.close();
+
+			stmt = conn.prepareStatement(expenseQuery);
+			stmt.setString(1, userGuid);
+			set = stmt.executeQuery();
+			while (set.next()) {
+				Request request = new Request();
+				request.setType("Expense");
+				request.setGuid(set.getString("GUID"));
+				request.setAmt(set.getDouble("AMOUNT"));
+				request.setName(set.getString("NAME"));
+				request.setDetails(set.getString("DETAILS"));
+				request.setId("EXP-" + set.getString("INDEX"));
+				request.setStatus(set.getString("STATUS"));
+				request.setUser(user);
+				requests.add(request);
+			}
+			set.close();
+			stmt.close();
+
+			return requests;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return null;
+	}
+
+	public static void setParent(Connection conn, Budget child) {
+		try {
+			String query = "SELECT B.NAME, B.\"DESC\", B.REMAINING, B.PARENT FROM BUDGETS WHERE GUID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, child.getParentGuid());
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				Budget parent = new Budget();
+				parent.setGuid(child.getParentGuid());
+				parent.setName(set.getString("NAME"));
+				parent.setDesc(set.getString("DESC"));
+				parent.setRemaining(set.getDouble("REMAINING"));
+				parent.setParentGuid(set.getString("PARENT"));
+				setParent(conn, parent);
+				child.setParent(parent);
+			}
+			set.close();
+			stmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static ArrayList<Request> selectAllActionableRequests(String userGuid) throws SQLException {
+		Connection conn = null;
+		try {
+			conn = DBConnection.getInstance().getDataSource().getConnection();
+			conn.setAutoCommit(false);
+
+			ArrayList<Request> requests = new ArrayList<>();
+
+			String query = "";
+
+			PreparedStatement stmt = conn.prepareStatement(query);
+
+			return requests;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (conn != null) {
+				conn.rollback();
+			}
+		} finally {
+			if (conn != null) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+		}
+		return null;
 	}
 }

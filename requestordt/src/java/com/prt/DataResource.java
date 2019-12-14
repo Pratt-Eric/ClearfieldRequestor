@@ -676,4 +676,32 @@ public class DataResource {
 		}
 		return null;
 	}
+
+	@Path("/request/select/my/all")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectAllUserRequests(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLRequestProcess.selectAllUserRequests(gson.fromJson(content, String.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Path("/request/select/actionable/all")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String postSelectAllActionableRequests(String content) {
+		Gson gson = new Gson();
+		try {
+			return gson.toJson(SQLRequestProcess.selectAllActionableRequests(gson.fromJson(content, String.class)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

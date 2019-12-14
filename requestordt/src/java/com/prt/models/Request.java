@@ -7,7 +7,6 @@ package com.prt.models;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  *
@@ -19,11 +18,155 @@ public class Request implements Serializable {
 	private String title;
 	private String summary;
 	private String activity_type_guid;
+	private String activityName;
 	private Date start;
 	private Date end;
-	private double budget_amount;
+	private double amt = 0;
 	private String status_type_guid;
 	private String userGuid;
+	private float tax;
+	private float total;
+	private boolean wardAccount;
+	private String wardAccountDetails;
+	private String org;
+	private String orgName;
+	private String orgLeader;
+	private String name;
+	private String details;
+	private String type;
+	private String id;
+	private String status;
+	private User user;
+	private Budget budget;
+	private String comment;
+
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}
+
+	public Budget getBudget() {
+		return budget;
+	}
+
+	public void setBudget(Budget budget) {
+		this.budget = budget;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public float getTax() {
+		return tax;
+	}
+
+	public void setTax(float tax) {
+		this.tax = tax;
+	}
+
+	public float getTotal() {
+		return total;
+	}
+
+	public void setTotal(float total) {
+		this.total = total;
+	}
+
+	public boolean isWardAccount() {
+		return wardAccount;
+	}
+
+	public void setWardAccount(boolean wardAccount) {
+		this.wardAccount = wardAccount;
+	}
+
+	public String getWardAccountDetails() {
+		return wardAccountDetails;
+	}
+
+	public void setWardAccountDetails(String wardAccountDetails) {
+		this.wardAccountDetails = wardAccountDetails;
+	}
+
+	public String getOrg() {
+		return org;
+	}
+
+	public void setOrg(String org) {
+		this.org = org;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public String getOrgLeader() {
+		return orgLeader;
+	}
+
+	public void setOrgLeader(String orgLeader) {
+		this.orgLeader = orgLeader;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDetails() {
+		return details;
+	}
+
+	public void setDetails(String details) {
+		this.details = details;
+	}
 
 	public String getUserGuid() {
 		return userGuid;
@@ -65,12 +208,12 @@ public class Request implements Serializable {
 		this.end = end;
 	}
 
-	public double getBudget_amount() {
-		return budget_amount;
+	public double getAmt() {
+		return amt;
 	}
 
-	public void setBudget_amount(double budget_amount) {
-		this.budget_amount = budget_amount;
+	public void setAmt(double amt) {
+		this.amt = amt;
 	}
 
 	public String getGuid() {

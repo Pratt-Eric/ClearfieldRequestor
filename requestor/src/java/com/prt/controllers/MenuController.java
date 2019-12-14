@@ -30,15 +30,15 @@ public class MenuController implements Serializable {
 
 	@ManagedProperty("#{guestPreferences}")
 	private GuestPreferences preferences;
-	@ManagedProperty("#{requestController}")
-	private RequestsController requestController;
+	@ManagedProperty("#{requestsController}")
+	private RequestsController requestsController;
 
-	public RequestsController getRequestController() {
-		return requestController;
+	public RequestsController getRequestsController() {
+		return requestsController;
 	}
 
-	public void setRequestController(RequestsController requestController) {
-		this.requestController = requestController;
+	public void setRequestsController(RequestsController requestsController) {
+		this.requestsController = requestsController;
 	}
 
 	public GuestPreferences getPreferences() {
@@ -50,12 +50,12 @@ public class MenuController implements Serializable {
 	}
 
 	public String retrieveMyRequests() {
-
+		preferences.myRequests = true;
 		return "/main/user/myrequests.xhtml?faces-redirect=true";
 	}
 
 	public String retrieveActionableRequests() {
-
+		preferences.myRequests = false;
 		return "/main/user/requests.xhtml?faces-redirect=true";
 	}
 }

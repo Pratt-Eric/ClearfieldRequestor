@@ -6,6 +6,7 @@
 package com.prt.models;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  *
@@ -22,6 +23,69 @@ public class Reimbursement implements Serializable {
 	private String orgLeader;
 	private String userGuid;
 	private String orgName;
+	private Date datePaid;
+	private String checkNumber;
+	private String budgetGuid;
+	private String missionary;
+	private String fastOffering;
+	private String relatedActivityGuid;
+	private Activity relatedActivity;
+
+	public String getRelatedActivityGuid() {
+		return relatedActivityGuid;
+	}
+
+	public void setRelatedActivityGuid(String relatedActivityGuid) {
+		this.relatedActivityGuid = relatedActivityGuid;
+	}
+
+	public Activity getRelatedActivity() {
+		return relatedActivity;
+	}
+
+	public void setRelatedActivity(Activity relatedActivity) {
+		this.relatedActivity = relatedActivity;
+	}
+
+	public Date getDatePaid() {
+		return datePaid;
+	}
+
+	public void setDatePaid(Date datePaid) {
+		this.datePaid = datePaid;
+	}
+
+	public String getCheckNumber() {
+		return checkNumber;
+	}
+
+	public void setCheckNumber(String checkNumber) {
+		this.checkNumber = checkNumber;
+	}
+
+	public String getBudgetGuid() {
+		return budgetGuid;
+	}
+
+	public void setBudgetGuid(String budgetGuid) {
+		this.budgetGuid = budgetGuid;
+	}
+
+	public String getMissionary() {
+		return missionary;
+	}
+
+	public void setMissionary(String missionary) {
+		this.missionary = missionary;
+	}
+
+	public String getFastOffering() {
+		return fastOffering;
+	}
+
+	public void setFastOffering(String fastOffering) {
+		this.fastOffering = fastOffering;
+	}
 
 	public String getOrgName() {
 		return orgName;

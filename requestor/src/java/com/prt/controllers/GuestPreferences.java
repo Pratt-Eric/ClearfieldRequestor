@@ -53,6 +53,7 @@ public class GuestPreferences implements Serializable {
 		"groups.xhtml",
 		"users.xhtml"
 	}));
+	public boolean myRequests = false;
 
 	public ArrayList<User> getUsers() {
 		return users;

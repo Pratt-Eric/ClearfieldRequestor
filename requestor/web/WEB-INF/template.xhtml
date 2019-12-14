@@ -89,7 +89,7 @@
 				</p:inputNumber>
 			</div>
 			<div style="margin-top: 20px;">
-				<p:commandButton value="Submit" title="Submit Activity Request"/>
+				<p:commandButton value="Submit" title="Submit Activity Request" actionListener="#{templateController.submitActivityRequest}"/>
 				<p:commandButton value="Cancel" oncomplete="PF('requestActivityDlg').hide()" style="margin-left: 10px;"/>
 			</div>
 		</h:form>
@@ -98,6 +98,14 @@
 	<p:dialog modal="true" widgetVar="requestReimbursementDlg" header="Reimbursement Request">
 		<h:form id="requestReimbursementForm" style="width: 400px;">
 			<div>
+				<p:outputLabel value="Related Activity"/>
+				<br/>
+				<p:selectOneMenu value="#{templateController.reimbursement.relatedActivityGuid}">
+					<p:ajax/>
+					<f:selectItem itemLabel="Select..."/>
+					<f:selectItems value="#{guestPreferences.activities}" var="activity" itemLabel="#{activity.name}" itemValue="#{activity.guid}"/>
+				</p:selectOneMenu>
+				<br/><br/>
 				<p:outputLabel value="Amount: (Minus Sales Tax)"/>
 				<br/>
 				<p:inputNumber decimalPlaces="2" value="#{templateController.reimbursement.amt}">
@@ -152,7 +160,7 @@
 				</p:selectOneMenu>
 			</div>
 			<div style="margin-top: 20px;">
-				<p:commandButton value="Submit" title="Submit Reimbursement Request"/>
+				<p:commandButton value="Submit" title="Submit Reimbursement Request" actionListener="#{templateController.submitReimbursementRequest}"/>
 				<p:commandButton value="Cancel" oncomplete="PF('requestReimbursementDlg').hide()" style="margin-left: 10px;"/>
 			</div>
 		</h:form>
@@ -180,7 +188,7 @@
 				</p:inputNumber>
 			</div>
 			<div style="margin-top: 20px;">
-				<p:commandButton value="Submit" title="Submit Expense Request"/>
+				<p:commandButton value="Submit" title="Submit Expense Request" actionListener="#{templateController.submitExpenseRequest}"/>
 				<p:commandButton value="Cancel" oncomplete="PF('requestExpenseDlg').hide()" style="margin-left: 10px;"/>
 			</div>
 		</h:form>
