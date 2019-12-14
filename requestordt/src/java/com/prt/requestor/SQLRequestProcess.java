@@ -374,9 +374,209 @@ public class SQLRequestProcess {
 
 			ArrayList<Request> requests = new ArrayList<>();
 
-			String query = "";
+			//Grab all activities that I have access to
+			//then grab all requests for those activity types
+			String activityQuery = "SELECT ACTIVITY_TYPE_REF_GUID "
+					+ "FROM ACTIVITY_TYPE_ASSOCIATIONS ATA "
+					+ "WHERE ATA.USER_GUID = ? OR ATA.GROUP_GUID = (SELECT GROUP_GUID FROM USER_GROUP_XREF WHERE USER_GUID = ?)";
 
-			PreparedStatement stmt = conn.prepareStatement(query);
+			ArrayList<String> activities = new ArrayList<>();
+			PreparedStatement stmt = conn.prepareStatement(activityQuery);
+			stmt.setString(1, userGuid);
+			stmt.setString(2, userGuid);
+			ResultSet set = stmt.executeQuery();
+			while (set.next()) {
+				activities.add(set.getString("ACTIVITY_TYPE_REF_GUID"));
+			}
+			set.close();
+			stmt.close();
+
+			String activityRequests = ""
+					+ "SELECT "
+					+ "AR.GUID, "
+					+ "AR.TITLE, "
+					+ "AR.SUMMARY, "
+					+ "AR.\"START\", "
+					+ "AR.\"END\", "
+					+ "AR.AMOUNT, "
+					+ "STR.NAME STATUS, "
+					+ "U.USERNAME, "
+					+ "AR.\"INDEX\", "
+					+ "ATR.NAME ACTIVITY_NAME, "
+					+ "AR.REQUESTED_BY "
+					+ "FROM ACTIVITY_REQUESTS AR "
+					+ "JOIN STATUS_TYPE_REF STR ON AR.STATUS_TYPE_REF_GUID = STR.GUID "
+					+ "JOIN ACTIVITY_TYPE_REF ATR ON AR.ACTIVITY_TYPE_REF_GUID = ATR.GUID "
+					+ "JOIN USERS U ON U.GUID = AR.REQUESTED_BY "
+					+ ""
+					+ "WHERE AR.ACTIVITY_TYPE_REF_GUID = ?";
+			String reimbursementRequests = ""
+					+ "SELECT "
+					+ "RR.GUID, "
+					+ "RR.AMOUNT, "
+					+ "STR.NAME STATUS, "
+					+ "U.USERNAME, "
+					+ "RR.TAX, "
+					+ "RR.WARD_ACCOUNT, "
+					+ "RR.WARD_ACCOUNT_DETAILS, "
+					+ "RR.ORGANIZATION, "
+					+ "RR.ORGANIZATION_LEADER, "
+					+ "RR.\"INDEX\", "
+					+ "ATR.NAME ACTIVITY_NAME "
+					+ "FROM REIMBURSEMENT_REQUESTS RR "
+					+ "JOIN STATUS_TYPE_REF STR ON RR.STATUS_TYPE_REF_GUID = STR.GUID "
+					+ "JOIN USERS U ON U.GUID = RR.REQUESTED_BY "
+					+ "LEFT JOIN ACTIVITY_TYPE_REF ATR ON ATR.GUID = RR.RELATED_ACTIVITY "
+					+ "WHERE RR.ACTIVITY_TYPE_REF_GUID = ?";
+			String expenseRequests = ""
+					+ "SELECT "
+					+ "ER.GUID, "
+					+ "ER.AMOUNT, "
+					+ "ER.NAME, "
+					+ "ER.DETAILS, "
+					+ "U.USERNAME, "
+					+ "ER.\"INDEX\", "
+					+ "STR.NAME STATUS "
+					+ "FROM EXPENSE_REQUESTS ER "
+					+ "JOIN STATUS_TYPE_REF STR ON RR.STATUS_TYPE_REF_GUID = STR.GUID "
+					+ "JOIN USERS U ON U.GUID = RR.REQUESTED_BY "
+					+ "WHERE RR.ACTIVITY_TYPE_REF_GUID = ?";
+			String userQuery = "SELECT USERNAME, FIRSTNAME, LASTNAME, EMAIL, P.CALLING "
+					+ "FROM USERS U "
+					+ "JOIN PROFILE P ON U.GUID = P.USER_GUID "
+					+ "WHERE U.GUID = ?";
+			String budgetQuery = "SELECT B.GUID, B.NAME, B.\"DESC\", B.REMAINING, B.PARENT "
+					+ "FROM ACTIVITY_TYPE_ASSOCIATIONS ATA "
+					+ "JOIN BUDGETS B ON ATA.BUDGET_GUID = B.GUID "
+					+ "WHERE ATA.ACTIVITY_TYPE_REF_GUID = ?";
+
+			for (String activity : activities) {
+				stmt = conn.prepareStatement(activityRequests);
+				stmt.setString(1, activity);
+				set = stmt.executeQuery();
+				while (set.next()) {
+					Request request = new Request();
+					request.setType("Activity");
+					request.setGuid(set.getString("GUID"));
+					request.setId("ACT-" + set.getString("INDEX"));
+					request.setTitle(set.getString("TITLE"));
+					request.setSummary(set.getString("SUMMARY"));
+					request.setStart(DateUtils.parseDate(set.getString("START")));
+					request.setEnd(DateUtils.parseDate(set.getString("END")));
+					request.setAmt(set.getDouble("AMOUNT"));
+					request.setStatus(set.getString("STATUS"));
+					request.setActivity_type_guid(activity);
+					request.setActivityName(set.getString("ACTIVITY_NAME"));
+					request.setUserGuid(set.getString("REQUESTED_BY"));
+					request.setActivity_type_guid(activity);
+					PreparedStatement stmt2 = conn.prepareStatement(userQuery);
+					stmt2.setString(1, request.getUserGuid());
+					ResultSet set2 = stmt2.executeQuery();
+					while (set2.next()) {
+						User user = new User();
+						user.setGuid(request.getUserGuid());
+						user.setUsername(set2.getString("USERNAME"));
+						user.setFirstname(set2.getString("FIRSTNAME"));
+						user.setLastname(set2.getString("LASTNAME"));
+						user.setEmail(set2.getString("EMAIL"));
+						user.setCalling(set2.getString("CALLING"));
+						request.setUser(user);
+					}
+					set2.close();
+					stmt2.close();
+
+					stmt2 = conn.prepareStatement(budgetQuery);
+					stmt2.setString(1, activity);
+					set2 = stmt2.executeQuery();
+					while (set2.next()) {
+						Budget budget = new Budget();
+						budget.setGuid(set2.getString("GUID"));
+						budget.setName(set2.getString("NAME"));
+						budget.setDesc(set2.getString("DESC"));
+						budget.setRemaining(set2.getDouble("REMAINING"));
+						budget.setParentGuid(set2.getString("PARENT"));
+						setParent(conn, budget);
+						request.setBudget(budget);
+					}
+					set2.close();
+					stmt2.close();
+					requests.add(request);
+				}
+				set.close();
+				stmt.close();
+
+				stmt = conn.prepareStatement(reimbursementRequests);
+				stmt.setString(1, activity);
+				set = stmt.executeQuery();
+				while (set.next()) {
+					Request request = new Request();
+					request.setType("Reimbursement");
+					request.setGuid(set.getString("GUID"));
+					request.setAmt(set.getDouble("AMOUNT"));
+					request.setStatus(set.getString("STATUS"));
+					request.setTax(set.getFloat("TAX"));
+					request.setWardAccount(set.getString("WARD_ACCOUNT").equals("1"));
+					request.setWardAccountDetails(set.getString("WARD_ACCOUNT_DETAILS"));
+					request.setOrg(set.getString("ORGANIZATION"));
+					request.setOrgLeader(set.getString("ORGANIZATION_LEADER"));
+					request.setId("REI-" + set.getString("INDEX"));
+					request.setActivityName(set.getString("ACTIVITY_NAME"));
+
+					PreparedStatement stmt2 = conn.prepareStatement(userQuery);
+					stmt2.setString(1, request.getUserGuid());
+					ResultSet set2 = stmt2.executeQuery();
+					while (set2.next()) {
+						User user = new User();
+						user.setGuid(request.getUserGuid());
+						user.setUsername(set2.getString("USERNAME"));
+						user.setFirstname(set2.getString("FIRSTNAME"));
+						user.setLastname(set2.getString("LASTNAME"));
+						user.setEmail(set2.getString("EMAIL"));
+						user.setCalling(set2.getString("CALLING"));
+						request.setUser(user);
+					}
+					set2.close();
+					stmt2.close();
+
+					requests.add(request);
+				}
+				set.close();
+				stmt.close();
+
+				stmt = conn.prepareStatement(expenseRequests);
+				stmt.setString(1, activity);
+				set = stmt.executeQuery();
+				while (set.next()) {
+					Request request = new Request();
+					request.setType("Expense");
+					request.setGuid(set.getString("GUID"));
+					request.setAmt(set.getDouble("AMOUNT"));
+					request.setName(set.getString("NAME"));
+					request.setDetails(set.getString("DETAILS"));
+					request.setId("EXP-" + set.getString("INDEX"));
+					request.setStatus(set.getString("STATUS"));
+
+					PreparedStatement stmt2 = conn.prepareStatement(userQuery);
+					stmt2.setString(1, request.getUserGuid());
+					ResultSet set2 = stmt2.executeQuery();
+					while (set2.next()) {
+						User user = new User();
+						user.setGuid(request.getUserGuid());
+						user.setUsername(set2.getString("USERNAME"));
+						user.setFirstname(set2.getString("FIRSTNAME"));
+						user.setLastname(set2.getString("LASTNAME"));
+						user.setEmail(set2.getString("EMAIL"));
+						user.setCalling(set2.getString("CALLING"));
+						request.setUser(user);
+					}
+					set2.close();
+					stmt2.close();
+
+					requests.add(request);
+				}
+				set.close();
+				stmt.close();
+			}
 
 			return requests;
 		} catch (Exception e) {
