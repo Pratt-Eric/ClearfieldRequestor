@@ -33,12 +33,20 @@ public class Request implements Serializable {
 	private String orgLeader;
 	private String name;
 	private String details;
-	private String type;
 	private String id;
 	private String status;
 	private User user;
 	private Budget budget;
 	private String comment;
+	private String type;
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public String getActivityName() {
 		return activityName;
@@ -86,14 +94,6 @@ public class Request implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public float getTax() {

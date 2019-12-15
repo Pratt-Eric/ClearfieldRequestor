@@ -30,7 +30,7 @@ public class RequestsController implements Serializable {
 	@ManagedProperty("#{guestPreferences}")
 	private GuestPreferences preferences;
 	private String title;
-	public ArrayList<Request> requests = new ArrayList<>();
+	private ArrayList<Request> requests = new ArrayList<>();
 	private boolean approver;
 	private Request selectedRequest;
 	private Reimbursement newReimbursement;

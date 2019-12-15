@@ -24,8 +24,8 @@
                         <p:menuitem id="om_budget" value="BUDGETS" icon="fa fa-fw fa-dollar" outcome="/main/user/budgets"/>
 
                         <p:submenu id="om_requests" label="REQUESTS" icon="fa fa-fw fa-check-square-o">
-                            <p:menuitem id="all_my_requests" value="My Requests" action="#{menuController.retrieveMyRequests}"/>
-							<p:menuitem id="all_actionable_requests" value="Actionable Requests" action="#{menuController.retrieveActionableRequests}"/>
+                            <p:menuitem id="all_my_requests" value="My Requests" action="#{menuController.retrieveRequests(true)}"/>
+							<p:menuitem id="all_actionable_requests" value="Actionable Requests" action="#{menuController.retrieveRequests(false)}"/>
 						</p:submenu>
 
 						<p:submenu id="user_prefs" label="USER PREFERENCES" icon="fa fa-fw fa-user">

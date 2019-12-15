@@ -5,20 +5,10 @@
  */
 package com.prt.controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.prt.models.Request;
-import com.prt.utils.RestUtil;
 import java.io.Serializable;
-import java.util.ArrayList;
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import org.primefaces.model.menu.DefaultMenuItem;
-import org.primefaces.model.menu.DefaultMenuModel;
-import org.primefaces.model.menu.DefaultSubMenu;
-import org.primefaces.model.menu.MenuModel;
 
 /**
  *
@@ -49,13 +39,8 @@ public class MenuController implements Serializable {
 		this.preferences = preferences;
 	}
 
-	public String retrieveMyRequests() {
-		preferences.myRequests = true;
-		return "/main/user/myrequests.xhtml?faces-redirect=true";
-	}
-
-	public String retrieveActionableRequests() {
-		preferences.myRequests = false;
+	public String retrieveRequests(boolean myRequests) {
+		preferences.myRequests = myRequests;
 		return "/main/user/requests.xhtml?faces-redirect=true";
 	}
 }
