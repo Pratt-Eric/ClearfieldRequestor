@@ -158,9 +158,9 @@ public class TemplateController implements Serializable {
 			if (uri.contains("request.xhtml")) {
 				//get request controller
 				FacesContext context = FacesContext.getCurrentInstance();
-				RequestsController requestController = context.getApplication().evaluateExpressionGet(context, "#{requestController}", RequestsController.class);
-				if (requestController != null) {
-					requestController.refreshLists();
+				RequestsController requestsController = context.getApplication().evaluateExpressionGet(context, "#{requestController}", RequestsController.class);
+				if (requestsController != null) {
+					requestsController.refreshLists();
 					PrimeFaces.current().ajax().update("");
 				} else {
 					System.out.println("Request Controller was null in order to refresh the page");

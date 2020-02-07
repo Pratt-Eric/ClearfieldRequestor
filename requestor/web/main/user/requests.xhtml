@@ -17,29 +17,29 @@
 						</h:form>
                     </div>
                     <div class="card-content card-content-main">
-                        <h:form id="requestForm">
+                        <h:form id="reqForm">
 							<p:growl showDetail="true" showSummary="true"/>
 							<p:accordionPanel multiple="true" activeIndex="0">
 								<p:tab title="Activity Requests">
-									<p:dataTable value="#{requestsController.requests}" var="request">
-										<h:panelGroup rendered="#{request.type eq 'Activity'}">
+									<p:dataTable value="#{requestsController.requests}" var="req">
+										<h:panelGroup rendered="#{req.type eq 'Activity'}">
 											<f:facet name="header">
 												Activity Requests
 											</f:facet>
 											<p:column headerText="ID">
-												<p:commandLink value="#{request.id}" title="Open #{request.id}"/>
+												<p:commandLink value="#{req.id}" title="Open #{req.id}"/>
 											</p:column>
 											<p:column headerText="Title">
-												<p:outputLabel value="#{request.title}"/>
+												<p:outputLabel value="#{req.title}"/>
 											</p:column>
 											<p:column headerText="Requestor">
-												<p:commandLink value="#{request.user.username}" title="View User Details" actionListener="#{requestsController.updateSelectedUser(request.user)}"/>
+												<p:commandLink value="#{req.user.username}" title="View User Details" actionListener="#{requestsController.updateSelectedUser(req.user)}"/>
 											</p:column>
 											<p:column headerText="Status">
-												<p:outputLabel value="#{request.status}"/>
+												<p:outputLabel value="#{req.status}"/>
 											</p:column>
 											<p:column headerText="Budget">
-												<p:inputNumber readonly="true" decimalPlaces="2" value="#{request.amt}"/>
+												<p:inputNumber readonly="true" decimalPlaces="2" value="#{req.amt}"/>
 											</p:column>
 											<p:column headerText="Actions" rendered="#{requestsController.approver}">
 												<p:commandLink title="Approve">
@@ -53,28 +53,28 @@
 									</p:dataTable>
 								</p:tab>
 								<p:tab title="Reimbursement Requests">
-									<p:dataTable value="#{requestsController.requests}" var="request">
-										<h:panelGroup rendered="#{request.type eq 'Reimbursement'}">
+									<p:dataTable value="#{requestsController.requests}" var="req">
+										<h:panelGroup rendered="#{req.type eq 'Reimbursement'}">
 											<f:facet name="header">
 												Reimbursement Requests
 											</f:facet>
 											<p:column headerText="ID">
-												<p:commandLink value="#{request.id}" title="Open #{request.id}"/>
+												<p:commandLink value="#{req.id}" title="Open #{req.id}"/>
 											</p:column>
 											<p:column headerText="Requestor">
-												<p:commandLink value="#{request.user.username}" title="View User Details" actionListener="#{requestsController.updateSelectedUser(request.user)}"/>
+												<p:commandLink value="#{req.user.username}" title="View User Details" actionListener="#{requestsController.updateSelectedUser(req.user)}"/>
 											</p:column>
 											<p:column headerText="Related Activity">
-												<p:outputLabel value="#{request.activityName}"/>
+												<p:outputLabel value="#{req.activityName}"/>
 											</p:column>
 											<p:column headerText="Budget">
-												<p:commandLink value="#{request.budget.name}" title="View Budget Details" actionListener="#{requestsController.updateSelectedBudget(request.budget)}"/>
+												<p:commandLink value="#{req.budget.name}" title="View Budget Details" actionListener="#{requestsController.updateSelectedBudget(req.budget)}"/>
 											</p:column>
 											<p:column headerText="Status">
-												<p:outputLabel value="#{request.status}"/>
+												<p:outputLabel value="#{req.status}"/>
 											</p:column>
 											<p:column headerText="Budget">
-												<p:inputNumber readonly="true" decimalPlaces="2" value="#{request.amt}"/>
+												<p:inputNumber readonly="true" decimalPlaces="2" value="#{req.amt}"/>
 											</p:column>
 											<p:column headerText="Actions" rendered="#{requestsController.approver}">
 												<p:commandLink title="View Receipts">
@@ -91,25 +91,25 @@
 									</p:dataTable>
 								</p:tab>
 								<p:tab title="Expense Requests">
-									<p:dataTable value="#{requestsController.requests}" var="request">
-										<h:panelGroup rendered="#{request.type eq 'Expense'}">
+									<p:dataTable value="#{requestsController.requests}" var="req">
+										<h:panelGroup rendered="#{req.type eq 'Expense'}">
 											<f:facet name="header">
 												Expense Requests
 											</f:facet>
 											<p:column headerText="ID">
-												<p:commandLink value="#{request.id}" title="Open #{request.id}"/>
+												<p:commandLink value="#{req.id}" title="Open #{req.id}"/>
 											</p:column>
 											<p:column headerText="Title">
-												<p:outputLabel value="#{request.name}"/>
+												<p:outputLabel value="#{req.name}"/>
 											</p:column>
 											<p:column headerText="Title">
-												<p:commandLink value="#{request.user.username}" title="View User Details" actionListener="#{requestsController.updateSelectedUser(request.user)}"/>
+												<p:commandLink value="#{req.user.username}" title="View User Details" actionListener="#{requestsController.updateSelectedUser(req.user)}"/>
 											</p:column>
 											<p:column headerText="Status">
-												<p:outputLabel value="#{request.status}"/>
+												<p:outputLabel value="#{req.status}"/>
 											</p:column>
 											<p:column headerText="Budget">
-												<p:inputNumber readonly="true" decimalPlaces="2" value="#{request.amt}"/>
+												<p:inputNumber readonly="true" decimalPlaces="2" value="#{req.amt}"/>
 											</p:column>
 											<p:column headerText="Actions" rendered="#{requestsController.approver}">
 												<p:commandLink title="Approve">
