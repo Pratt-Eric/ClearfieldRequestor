@@ -23,7 +23,7 @@ import org.primefaces.PrimeFaces;
  *
  * @author P-ratt
  */
-@ManagedBean(name = "reqController")
+@ManagedBean(name = "requestsController")
 @ViewScoped
 public class RequestsController implements Serializable {
 
